@@ -13,11 +13,11 @@ Branch: `002-features-login`
 - [x] T004 [P] Auth 基礎 Provider: `auth_providers.dart` 新規 (FirebaseAuth / authStateChanges) ファイル: `app/lib/providers/auth_providers.dart`
 
 ## Phase 3.2: Core Implementation
-- [ ] T005 AuthResult モデル (freezed, FirebaseUser 変換) フィールド: email, userUid, identifier, lastLoginAt ファイル: `app/lib/domain/entities/auth_result.dart`
-- [ ] T006 [P] Validation ユーティリティ (email/password) ファイル: `app/lib/core/utils/validators/auth_validators.dart`
-- [ ] T007 AuthService 実装 (signIn/signOut/getCurrentUser/observeAuthState) ファイル: `app/lib/data/services/auth_service.dart`
-- [ ] T008 [P] AuthService Provider 追加 (authServiceProvider) ファイル: `app/lib/providers/auth_providers.dart`
-- [ ] T009 LoginViewModel 作成 (状態: idle/loading/error/success) ファイル: `app/lib/presentation/viewmodels/auth/login_view_model.dart`
+- [x] T005 AuthResult モデル (freezed, FirebaseUser 変換) フィールド: email, userUid, identifier, lastLoginAt ファイル: `app/lib/domain/entities/auth_result.dart`
+- [x] T006 [P] Validation ユーティリティ (email/password) ファイル: `app/lib/core/utils/validators/auth_validators.dart`
+- [x] T007 AuthService 実装 (signIn/signOut/getCurrentUser/observeAuthState) ファイル: `app/lib/data/services/auth_service.dart`
+- [x] T008 [P] AuthService Provider 追加 (authServiceProvider) ファイル: `app/lib/providers/auth_providers.dart`
+- [x] T009 LoginViewModel 作成 (状態: idle/loading/error/success) ファイル: `app/lib/presentation/viewmodels/auth/login_view_model.dart`
 - [ ] T010 認証ガード実装: `auth_guard.dart` 新規 (AutoRoute Guard; 未ログイン→LoginRoute リダイレクト / ログイン時継続) ファイル: `app/lib/presentation/router/auth_guard.dart`
 - [ ] T011 ルーティング変更: LoginRoute 追加 & MonthCalendarRoute に AuthGuard 適用 (初期ルートは LoginRoute / Guard 経由で遷移) ファイル: `app/lib/presentation/router/app_router.dart`
 - [ ] T012 [P] ルートコード生成: `build_runner` 実行で `app_router.gr.dart` 更新 (コマンド実行)
