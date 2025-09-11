@@ -5,6 +5,8 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:fujii_photo_calendar/domain/entities/auth_result.dart';
 import 'package:fujii_photo_calendar/providers/auth_providers.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fujii_photo_calendar/core/error/auth_error_mapper.dart';
+import 'package:fujii_photo_calendar/core/logger/logger.dart';
 
 part 'login_view_model.g.dart';
 
@@ -44,9 +46,11 @@ class LoginViewModel extends _$LoginViewModel {
       final res = await service.signIn(email: email, password: password);
       state = LoginSuccess(res);
     } on FirebaseAuthException catch (e) {
-      state = LoginError(e.code);
+      state = LoginError(mapAuthError(e));
+      AppLogger.instance.logAuthSignInFailure(email: email, error: e.code);
     } catch (e) {
-      state = LoginError(e.toString());
+      state = LoginError(mapAuthError(e));
+      AppLogger.instance.logAuthSignInFailure(email: email, error: e);
     }
   }
 

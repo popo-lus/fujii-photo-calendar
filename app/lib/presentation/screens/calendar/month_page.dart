@@ -1,9 +1,11 @@
 // (T020) 月ページスクリーン: ViewModel を監視し状態に応じてウィジェット切替
 
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:auto_route/auto_route.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:fujii_photo_calendar/presentation/viewmodels/calendar/month_view_model.dart';
+import 'package:fujii_photo_calendar/providers/auth_providers.dart';
+import 'package:auto_route/auto_route.dart';
+import 'package:fujii_photo_calendar/presentation/router/app_router.dart';
 import 'widgets/month_grid.dart';
 import 'widgets/photo_slideshow.dart';
 import 'widgets/empty_month_placeholder.dart';
@@ -26,6 +28,15 @@ class MonthCalendarPage extends ConsumerWidget {
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: asyncData.isLoading ? null : () => notifier.reload(),
+          ),
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () async {
+              await ref.read(authServiceProvider).signOut();
+              if (context.mounted) {
+                context.router.replaceAll([const LoginRoute()]);
+              }
+            },
           ),
           asyncData.maybeWhen(
             data: (MonthData data) {

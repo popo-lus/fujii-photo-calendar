@@ -3,7 +3,7 @@
 // NOTE: build_runner による生成不要なためプレーン定義
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:riverpod/riverpod.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:fujii_photo_calendar/data/services/auth_service.dart';
 
 // FirebaseAuth シングルトン provider

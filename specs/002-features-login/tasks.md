@@ -18,16 +18,16 @@ Branch: `002-features-login`
 - [x] T007 AuthService 実装 (signIn/signOut/getCurrentUser/observeAuthState) ファイル: `app/lib/data/services/auth_service.dart`
 - [x] T008 [P] AuthService Provider 追加 (authServiceProvider) ファイル: `app/lib/providers/auth_providers.dart`
 - [x] T009 LoginViewModel 作成 (状態: idle/loading/error/success) ファイル: `app/lib/presentation/viewmodels/auth/login_view_model.dart`
-- [ ] T010 認証ガード実装: `auth_guard.dart` 新規 (AutoRoute Guard; 未ログイン→LoginRoute リダイレクト / ログイン時継続) ファイル: `app/lib/presentation/router/auth_guard.dart`
-- [ ] T011 ルーティング変更: LoginRoute 追加 & MonthCalendarRoute に AuthGuard 適用 (初期ルートは LoginRoute / Guard 経由で遷移) ファイル: `app/lib/presentation/router/app_router.dart`
-- [ ] T012 [P] ルートコード生成: `build_runner` 実行で `app_router.gr.dart` 更新 (コマンド実行)
-- [ ] T013 Login UI 画面 (`LoginPage`) 作成: email/password(トグル) + ローディング/エラー表示 ファイル: `app/lib/presentation/screens/auth/login_page.dart`
+- [x] T010 認証ガード実装: `auth_guard.dart` 新規 (AutoRoute Guard; 未ログイン→LoginRoute リダイレクト / ログイン時継続) ファイル: `app/lib/presentation/router/auth_guard.dart`
+- [x] T011 ルーティング変更: LoginRoute 追加 & MonthCalendarRoute に AuthGuard 適用 (初期ルートは LoginRoute / Guard 経由で遷移) ファイル: `app/lib/presentation/router/app_router.dart`
+- [x] T012 [P] ルートコード生成: `build_runner` 実行で `app_router.gr.dart` 更新 (コマンド実行)
+- [x] T013 Login UI 画面 (`LoginPage`) 作成: email/password(トグル) + ローディング/エラー表示 ファイル: `app/lib/presentation/screens/auth/login_page.dart`
 
 ## Phase 3.3: Integration & Behavior
-- [ ] T014 `main.dart` 微調整: 既存初期化のみ維持 (ルート判定ロジックは Guard へ委譲) ファイル: `app/lib/main.dart`
-- [ ] T015 [P] カレンダー AppBar に ログアウトボタン追加 ファイル: `app/lib/presentation/screens/calendar/month_page.dart`
-- [ ] T016 エラー正規化: FirebaseAuthException -> UI 文言マッピング ヘルパー ファイル: `app/lib/core/error/auth_error_mapper.dart`
-- [ ] T017 [P] ログ出力挿入: signIn start/success/failure, signOut, セッション再利用 ファイル: `app/lib/data/services/auth_service.dart`, `app/lib/presentation/viewmodels/auth/login_view_model.dart`
+- [x] T014 `main.dart` 微調整: 既存初期化のみ維持 (ルート判定ロジックは Guard へ委譲) ファイル: `app/lib/main.dart` (初期仕様通りのため変更不要と判断)
+- [x] T015 [P] カレンダー AppBar に ログアウトボタン追加 ファイル: `app/lib/presentation/screens/calendar/month_page.dart`
+- [x] T016 エラー正規化: FirebaseAuthException -> UI 文言マッピング ヘルパー ファイル: `app/lib/core/error/auth_error_mapper.dart`
+- [x] T017 [P] ログ出力挿入: signIn start/success/failure, signOut, セッション再利用 ファイル: `app/lib/data/services/auth_service.dart`, `app/lib/presentation/viewmodels/auth/login_view_model.dart`
 
 ## Phase 3.4: Polish
 - [ ] T018 クリーニング: 不要コメント/print 削除

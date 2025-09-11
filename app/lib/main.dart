@@ -4,7 +4,7 @@ import 'firebase_options.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:fujii_photo_calendar/presentation/router/app_router.dart';
 import 'package:fujii_photo_calendar/core/logger/logger.dart';
 import 'package:fujii_photo_calendar/core/utils/perf_timer.dart';
