@@ -4,11 +4,25 @@
 ```
 users/{userId}
   calendar/{MM}
-    fujii-photos/{filename}
-    user-photos/{filename}
+    (doc fields)
+      month: number
+      updatedAt: timestamp
+      userPhotos: PhotoItem[]
+      fujiiPhotos: PhotoItem[]
 ```
 
-## Raw Document Schema (Seed) per photo
+## Raw Document Schema (Seed)
+### Month Document
+```
+{
+  month: number,           // 1..12
+  updatedAt: timestamp,    // serverTimestamp
+  userPhotos: PhotoItem[],
+  fujiiPhotos: PhotoItem[]
+}
+```
+
+### PhotoItem (array element)
 ```
 {
   id: string,          // filename
@@ -30,8 +44,7 @@ users/{userId}
 
 ## Queries
 - 月表示ロード:
-  - users/{uid}/calendar/{MM}/fujii-photos/* 全件取得
-  - users/{uid}/calendar/{MM}/user-photos/* 全件取得
+  - users/{uid}/calendar/{MM} ドキュメントを単一取得/購読（`userPhotos[]` と `fujiiPhotos[]` を結合）
 - 過剰時: クライアントでランダムサンプリング + priority(=admin加点) ソート
 
 ## Constraints (High Level)
