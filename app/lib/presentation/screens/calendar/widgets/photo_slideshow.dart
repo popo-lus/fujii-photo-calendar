@@ -1,13 +1,13 @@
 // (T022) スライドショー (簡易版)
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:fujii_photo_calendar/domain/entities/photo_entity.dart';
 
-// インデックスを保持する StateProvider (Widget 単位)
-final slideshowIndexProvider = StateProvider.autoDispose<int>((ref) => 0);
+// Hooks でインデックス管理に変更
 
-class PhotoSlideshow extends ConsumerWidget {
+class PhotoSlideshow extends HookConsumerWidget {
   const PhotoSlideshow({super.key, required this.all, required this.batch});
   final List<PhotoEntity> all;
   final List<PhotoEntity> batch;
@@ -17,11 +17,18 @@ class PhotoSlideshow extends ConsumerWidget {
     if (batch.isEmpty) {
       return const Center(child: Text('No slideshow photos'));
     }
-    final index = ref.watch(slideshowIndexProvider);
-    final current = batch[index % batch.length];
-    void next() => ref
-        .read(slideshowIndexProvider.notifier)
-        .update((i) => (i + 1) % batch.length);
+    final index = useState<int>(0);
+
+    // バッチが変わった/短くなった時に index をリセット
+    useEffect(() {
+      if (index.value >= batch.length) {
+        index.value = 0;
+      }
+      return null;
+    }, [batch.length]);
+
+    final current = batch[index.value % batch.length];
+    void next() => index.value = (index.value + 1) % batch.length;
     return GestureDetector(
       onTap: next,
       child: Stack(
@@ -41,7 +48,7 @@ class PhotoSlideshow extends ConsumerWidget {
               ),
               padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
               child: Text(
-                '${index + 1}/${batch.length}',
+                '${index.value + 1}/${batch.length}',
                 style: const TextStyle(color: Colors.white70),
               ),
             ),
