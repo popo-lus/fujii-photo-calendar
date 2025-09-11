@@ -23,12 +23,13 @@
 
 ---
 ## Phase 3.1: Setup
-- [ ] T001 初期 Flutter プロジェクト構成作成 (`lib/`, `analysis_options.yaml`) と plan 記載ディレクトリ骨格生成
-- [ ] T002 pubspec.yaml 依存追加 (auto_route, auto_route_generator, flutter_riverpod, freezed, json_serializable, build_runner, cached_network_image, firebase_core, cloud_firestore, firebase_storage, meta, collection)
-- [ ] T003 [P] Freezed / JsonSerializable / build_runner 設定 (`dev_dependencies` 追記 + `build.yaml` 雛形)
-- [ ] T004 [P] Lint & formatter 設定 (`analysis_options.yaml` recommended + 将来 import_lint コメント)
-- [ ] T005 [P] Firebase 初期化ファイル雛形 (`lib/firebase_options.dart`, `lib/main.dart` 最低限起動) + fvm config (`.fvm/fvm_config.json`)
-- [ ] T006 CI ワークフロー下書き `.github/workflows/ci.yaml` (flutter analyze / build_runner build)
+- [ ] T001 Flutter プロジェクト生成 `flutter create . --project-name fujii_photo_calendar`（既存不要ファイルあれば整理）
+- [ ] T002 pubspec.yaml 依存追加 (auto_route, auto_route_generator, flutter_riverpod, freezed, json_serializable, build_runner, cached_network_image, firebase_core, cloud_firestore, firebase_storage, meta, collection) ※ firebase_* は `flutterfire configure` でも追加され得るが明示列挙
+- [ ] T003 [P] Flutter SDK バージョン固定 `fvm use <FLUTTER_VERSION> --force` + `.fvm/fvm_config.json` をコミット（後続全コマンドは `fvm flutter ...` 推奨コメント追記）
+- [ ] T004 [P] Freezed / JsonSerializable / build_runner 設定 (`dev_dependencies` 追記 + `build.yaml` 雛形) および `dart run build_runner build --delete-conflicting-outputs` 初回実行（結果は未コミットでも可）
+- [ ] T005 [P] FlutterFire 設定 `flutterfire configure` 実行（ターゲット Firebase プロジェクト選択→ `lib/firebase_options.dart` 生成→ `main.dart` に `Firebase.initializeApp` 追記）
+- [ ] T006 Lint & formatter 設定 (`analysis_options.yaml` recommended + 将来 import_lint 予告コメント) + `make format` / `scripts/format.sh` 雛形（任意）
+- [ ] T007 CI ワークフロー下書き `.github/workflows/ci.yaml` (fvm セットアップ → flutter pub get → analyze → build_runner build)
 
 ## Phase 3.2: Core / Model Implementation
 - [ ] T007 `core/result/result.dart` Result<T> 実装 (success/error, map, flatMap)
@@ -75,9 +76,11 @@
 
 ---
 ## Dependencies
-- T001 → (T002,T005)
-- T002 → (T003,T007..T010,T011)
-- T005 → (T024)  
+- T001 → (T002,T003,T005)
+- T002 → (T004,T011)  # 依存追加後にコード生成/Service 実装が可能
+- T003 → (T004,T005,T007)  # fvm 固定後に他コマンド統一
+- T004 → (T007..T010,T011)  # コード生成と Lint 設定後に Core 実装開始
+- T005 → (T024)  # firebase_options.dart 生成後に main 初期化強化
 - T007 (Result) → T011 以降
 - T009 (Entity) → T010, T011, T012, T013, T014
 - T010 → T013, T014
