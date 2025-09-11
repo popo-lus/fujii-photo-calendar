@@ -31,7 +31,7 @@
 
 ## Relationships
 - users/{userId}/calendar/{MM} ドキュメント直下に `userPhotos[]` と `fujiiPhotos[]` の配列要素として保存
-- アプリでは両配列を読み込み、単一の `List<PhotoEntity>` に正規化して扱う
+- 取得は Service/Repository を分離（fujii/user）し、UseCase 側で両者を結合して単一の `List<PhotoEntity>` に正規化して扱う
 - 表示は同一 month の複数年を混在許容（year フィールドは seed では未保持のため過去年比較は capturedAt 年で判定）
 
 ## Validation Rules
