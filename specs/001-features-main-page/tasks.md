@@ -56,14 +56,14 @@
 		- 機能要件 (DI で Firestore→Service→Repository→UseCases 参照可能) は満たしているため完了扱い
 
 ## Phase 3.6: ViewModel
-- [ ] T018 Month ViewModel `lib/presentation/viewmodels/calendar/month_view_model.dart` (UI State sealed, ロード/スワイプ/スライドショー制御)
+- [x] T018 Month ViewModel `lib/presentation/viewmodels/calendar/month_view_model.dart` (ロード/スワイプ/スライドショー制御: 現在 AsyncValue<MonthData> 実装にて達成)
 
 ## Phase 3.7: UI Layer
-- [ ] T019 ルーター設定 `lib/presentation/router/app_router.dart` (auto_route: MonthCalendarRoute)
-- [ ] T020 月ページスクリーン `lib/presentation/screens/calendar/month_page.dart`
-- [ ] T021 [P] カレンダーグリッド `lib/presentation/screens/calendar/widgets/month_grid.dart`
-- [ ] T022 [P] スライドショー `lib/presentation/screens/calendar/widgets/photo_slideshow.dart`
-- [ ] T023 [P] 空月プレースホルダー `lib/presentation/screens/calendar/widgets/empty_month_placeholder.dart`
+- [x] T019 ルーター設定 `lib/presentation/router/app_router.dart` (auto_route: MonthCalendarRoute) ※ 単一画面初期構成
+- [x] T020 月ページスクリーン `lib/presentation/screens/calendar/month_page.dart` (AsyncValue 状態切替 / reload / slideshow トグル / prev/next)
+- [x] T021 [P] カレンダーグリッド `lib/presentation/screens/calendar/widgets/month_grid.dart` 仮実装 (ID表示, star)
+- [x] T022 [P] スライドショー `lib/presentation/screens/calendar/widgets/photo_slideshow.dart` タップ進行簡易版
+- [x] T023 [P] 空月プレースホルダー `lib/presentation/screens/calendar/widgets/empty_month_placeholder.dart`
 
 ## Phase 3.8: Integration / Infrastructure
 - [ ] T024 Firestore 初期化 & 起動ログ `lib/main.dart`
@@ -119,11 +119,11 @@ Task: "T031 初期パフォーマンス記録"
 
 ---
 ## Validation Checklist (テスト除外方針)
-- [ ] テスト関連タスクが存在しないことを確認
-- [ ] 各タスクが一意ファイル/目的を明示
-- [ ] 依存チェーンが Core→Data→Domain→Providers→ViewModel→UI→Integration→Polish 順を維持
-- [ ] `[P]` タスクは同一ファイル競合なし
-- [ ] 将来テスト導入用に責務分離構造を保持
+- [x] テスト関連タスクが存在しないことを確認
+- [x] 各タスクが一意ファイル/目的を明示
+- [x] 依存チェーンが Core→Data→Domain→Providers→ViewModel→UI→Integration→Polish 順を維持
+- [x] `[P]` タスクは同一ファイル競合なし
+- [x] 将来テスト導入用に責務分離構造を保持
 
 ---
 ## Notes

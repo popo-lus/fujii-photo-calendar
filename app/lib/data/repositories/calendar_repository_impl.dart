@@ -5,6 +5,8 @@
 // - NetworkException のみ 1 回リトライ
 // - 空集合時は EmptyPhotoSetException を Failure として返却
 
+//TODO: キャッシュをRepository側で実装
+
 import 'package:fujii_photo_calendar/core/error/app_exceptions.dart';
 import 'package:fujii_photo_calendar/core/result/result.dart';
 import 'package:fujii_photo_calendar/data/mappers/photo_mapper.dart';
