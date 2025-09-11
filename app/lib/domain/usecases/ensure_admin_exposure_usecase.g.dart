@@ -6,25 +6,54 @@ part of 'ensure_admin_exposure_usecase.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+
+@ProviderFor(ensureAdminExposureUseCase)
+const ensureAdminExposureUseCaseProvider =
+    EnsureAdminExposureUseCaseProvider._();
+
+final class EnsureAdminExposureUseCaseProvider
+    extends
+        $FunctionalProvider<
+          EnsureAdminExposureUseCase,
+          EnsureAdminExposureUseCase,
+          EnsureAdminExposureUseCase
+        >
+    with $Provider<EnsureAdminExposureUseCase> {
+  const EnsureAdminExposureUseCaseProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'ensureAdminExposureUseCaseProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$ensureAdminExposureUseCaseHash();
+
+  @$internal
+  @override
+  $ProviderElement<EnsureAdminExposureUseCase> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  EnsureAdminExposureUseCase create(Ref ref) {
+    return ensureAdminExposureUseCase(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(EnsureAdminExposureUseCase value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<EnsureAdminExposureUseCase>(value),
+    );
+  }
+}
+
 String _$ensureAdminExposureUseCaseHash() =>
     r'86f0f34c32dd2ecb05ebba445d5884226208bbee';
-
-/// See also [ensureAdminExposureUseCase].
-@ProviderFor(ensureAdminExposureUseCase)
-final ensureAdminExposureUseCaseProvider =
-    AutoDisposeProvider<EnsureAdminExposureUseCase>.internal(
-      ensureAdminExposureUseCase,
-      name: r'ensureAdminExposureUseCaseProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$ensureAdminExposureUseCaseHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
-
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef EnsureAdminExposureUseCaseRef =
-    AutoDisposeProviderRef<EnsureAdminExposureUseCase>;
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

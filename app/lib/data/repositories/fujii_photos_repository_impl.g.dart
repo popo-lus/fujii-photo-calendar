@@ -6,23 +6,53 @@ part of 'fujii_photos_repository_impl.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+
+@ProviderFor(fujiiPhotosRepository)
+const fujiiPhotosRepositoryProvider = FujiiPhotosRepositoryProvider._();
+
+final class FujiiPhotosRepositoryProvider
+    extends
+        $FunctionalProvider<
+          FujiiPhotosRepository,
+          FujiiPhotosRepository,
+          FujiiPhotosRepository
+        >
+    with $Provider<FujiiPhotosRepository> {
+  const FujiiPhotosRepositoryProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'fujiiPhotosRepositoryProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$fujiiPhotosRepositoryHash();
+
+  @$internal
+  @override
+  $ProviderElement<FujiiPhotosRepository> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  FujiiPhotosRepository create(Ref ref) {
+    return fujiiPhotosRepository(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(FujiiPhotosRepository value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<FujiiPhotosRepository>(value),
+    );
+  }
+}
+
 String _$fujiiPhotosRepositoryHash() =>
     r'36bb1ba6a553a4a46dfbc0fb16d65edc1b06f26b';
-
-/// See also [fujiiPhotosRepository].
-@ProviderFor(fujiiPhotosRepository)
-final fujiiPhotosRepositoryProvider = Provider<FujiiPhotosRepository>.internal(
-  fujiiPhotosRepository,
-  name: r'fujiiPhotosRepositoryProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$fujiiPhotosRepositoryHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef FujiiPhotosRepositoryRef = ProviderRef<FujiiPhotosRepository>;
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

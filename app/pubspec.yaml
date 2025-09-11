@@ -33,15 +33,15 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^1.0.8
   # (T002) Core architecture libs
-  hooks_riverpod: ^2.5.1
-  riverpod_annotation: ^2.3.5
-  flutter_hooks: ^0.20.5
-  freezed_annotation: ^2.4.4
+  hooks_riverpod: ^3.0.0
+  riverpod_annotation: ^3.0.0
+  flutter_hooks: ^0.21.3
+  freezed_annotation: ^3.1.0
   json_annotation: ^4.9.0
   collection: ^1.18.0
   meta: ^1.12.0
   # Routing
-  auto_route: ^9.2.0
+  auto_route: ^10.1.2
   # UI / Image cache
   cached_network_image: ^3.4.1
   flutter_cache_manager: ^3.3.2
@@ -54,13 +54,13 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^5.0.0
+  flutter_lints: ^6.0.0
   # (T004) Code generation
   build_runner: ^2.4.12
-  freezed: ^2.5.7
-  json_serializable: ^6.8.0
-  auto_route_generator: ^9.2.0
-  riverpod_generator: ^2.3.5
+  freezed: ^3.2.3
+  json_serializable: ^6.11.1
+  auto_route_generator: ^10.2.4
+  riverpod_generator: ^3.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

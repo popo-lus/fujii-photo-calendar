@@ -1,5 +1,5 @@
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
@@ -9,234 +9,278 @@ part of 'auth_result.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
-);
-
-AuthResult _$AuthResultFromJson(Map<String, dynamic> json) {
-  return _AuthResult.fromJson(json);
-}
 
 /// @nodoc
 mixin _$AuthResult {
-  String get email => throw _privateConstructorUsedError;
-  String get userUid => throw _privateConstructorUsedError;
-  String get identifier => throw _privateConstructorUsedError;
-  DateTime? get lastLoginAt => throw _privateConstructorUsedError;
+
+ String get email; String get userUid; String get identifier; DateTime? get lastLoginAt;
+/// Create a copy of AuthResult
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$AuthResultCopyWith<AuthResult> get copyWith => _$AuthResultCopyWithImpl<AuthResult>(this as AuthResult, _$identity);
 
   /// Serializes this AuthResult to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  Map<String, dynamic> toJson();
 
-  /// Create a copy of AuthResult
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $AuthResultCopyWith<AuthResult> get copyWith =>
-      throw _privateConstructorUsedError;
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AuthResult&&(identical(other.email, email) || other.email == email)&&(identical(other.userUid, userUid) || other.userUid == userUid)&&(identical(other.identifier, identifier) || other.identifier == identifier)&&(identical(other.lastLoginAt, lastLoginAt) || other.lastLoginAt == lastLoginAt));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,email,userUid,identifier,lastLoginAt);
+
+@override
+String toString() {
+  return 'AuthResult(email: $email, userUid: $userUid, identifier: $identifier, lastLoginAt: $lastLoginAt)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $AuthResultCopyWith<$Res> {
-  factory $AuthResultCopyWith(
-    AuthResult value,
-    $Res Function(AuthResult) then,
-  ) = _$AuthResultCopyWithImpl<$Res, AuthResult>;
-  @useResult
-  $Res call({
-    String email,
-    String userUid,
-    String identifier,
-    DateTime? lastLoginAt,
-  });
-}
+abstract mixin class $AuthResultCopyWith<$Res>  {
+  factory $AuthResultCopyWith(AuthResult value, $Res Function(AuthResult) _then) = _$AuthResultCopyWithImpl;
+@useResult
+$Res call({
+ String email, String userUid, String identifier, DateTime? lastLoginAt
+});
 
+
+
+
+}
 /// @nodoc
-class _$AuthResultCopyWithImpl<$Res, $Val extends AuthResult>
+class _$AuthResultCopyWithImpl<$Res>
     implements $AuthResultCopyWith<$Res> {
-  _$AuthResultCopyWithImpl(this._value, this._then);
+  _$AuthResultCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final AuthResult _self;
+  final $Res Function(AuthResult) _then;
 
-  /// Create a copy of AuthResult
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? email = null,
-    Object? userUid = null,
-    Object? identifier = null,
-    Object? lastLoginAt = freezed,
-  }) {
-    return _then(
-      _value.copyWith(
-            email: null == email
-                ? _value.email
-                : email // ignore: cast_nullable_to_non_nullable
-                      as String,
-            userUid: null == userUid
-                ? _value.userUid
-                : userUid // ignore: cast_nullable_to_non_nullable
-                      as String,
-            identifier: null == identifier
-                ? _value.identifier
-                : identifier // ignore: cast_nullable_to_non_nullable
-                      as String,
-            lastLoginAt: freezed == lastLoginAt
-                ? _value.lastLoginAt
-                : lastLoginAt // ignore: cast_nullable_to_non_nullable
-                      as DateTime?,
-          )
-          as $Val,
-    );
-  }
+/// Create a copy of AuthResult
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? email = null,Object? userUid = null,Object? identifier = null,Object? lastLoginAt = freezed,}) {
+  return _then(_self.copyWith(
+email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
+as String,userUid: null == userUid ? _self.userUid : userUid // ignore: cast_nullable_to_non_nullable
+as String,identifier: null == identifier ? _self.identifier : identifier // ignore: cast_nullable_to_non_nullable
+as String,lastLoginAt: freezed == lastLoginAt ? _self.lastLoginAt : lastLoginAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,
+  ));
 }
 
-/// @nodoc
-abstract class _$$AuthResultImplCopyWith<$Res>
-    implements $AuthResultCopyWith<$Res> {
-  factory _$$AuthResultImplCopyWith(
-    _$AuthResultImpl value,
-    $Res Function(_$AuthResultImpl) then,
-  ) = __$$AuthResultImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({
-    String email,
-    String userUid,
-    String identifier,
-    DateTime? lastLoginAt,
-  });
 }
 
-/// @nodoc
-class __$$AuthResultImplCopyWithImpl<$Res>
-    extends _$AuthResultCopyWithImpl<$Res, _$AuthResultImpl>
-    implements _$$AuthResultImplCopyWith<$Res> {
-  __$$AuthResultImplCopyWithImpl(
-    _$AuthResultImpl _value,
-    $Res Function(_$AuthResultImpl) _then,
-  ) : super(_value, _then);
 
-  /// Create a copy of AuthResult
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? email = null,
-    Object? userUid = null,
-    Object? identifier = null,
-    Object? lastLoginAt = freezed,
-  }) {
-    return _then(
-      _$AuthResultImpl(
-        email: null == email
-            ? _value.email
-            : email // ignore: cast_nullable_to_non_nullable
-                  as String,
-        userUid: null == userUid
-            ? _value.userUid
-            : userUid // ignore: cast_nullable_to_non_nullable
-                  as String,
-        identifier: null == identifier
-            ? _value.identifier
-            : identifier // ignore: cast_nullable_to_non_nullable
-                  as String,
-        lastLoginAt: freezed == lastLoginAt
-            ? _value.lastLoginAt
-            : lastLoginAt // ignore: cast_nullable_to_non_nullable
-                  as DateTime?,
-      ),
-    );
-  }
+/// Adds pattern-matching-related methods to [AuthResult].
+extension AuthResultPatterns on AuthResult {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _AuthResult value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _AuthResult() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _AuthResult value)  $default,){
+final _that = this;
+switch (_that) {
+case _AuthResult():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _AuthResult value)?  $default,){
+final _that = this;
+switch (_that) {
+case _AuthResult() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String email,  String userUid,  String identifier,  DateTime? lastLoginAt)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _AuthResult() when $default != null:
+return $default(_that.email,_that.userUid,_that.identifier,_that.lastLoginAt);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String email,  String userUid,  String identifier,  DateTime? lastLoginAt)  $default,) {final _that = this;
+switch (_that) {
+case _AuthResult():
+return $default(_that.email,_that.userUid,_that.identifier,_that.lastLoginAt);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String email,  String userUid,  String identifier,  DateTime? lastLoginAt)?  $default,) {final _that = this;
+switch (_that) {
+case _AuthResult() when $default != null:
+return $default(_that.email,_that.userUid,_that.identifier,_that.lastLoginAt);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
 @JsonSerializable()
-class _$AuthResultImpl implements _AuthResult {
-  const _$AuthResultImpl({
-    required this.email,
-    required this.userUid,
-    required this.identifier,
-    this.lastLoginAt,
-  });
 
-  factory _$AuthResultImpl.fromJson(Map<String, dynamic> json) =>
-      _$$AuthResultImplFromJson(json);
+class _AuthResult implements AuthResult {
+  const _AuthResult({required this.email, required this.userUid, required this.identifier, this.lastLoginAt});
+  factory _AuthResult.fromJson(Map<String, dynamic> json) => _$AuthResultFromJson(json);
 
-  @override
-  final String email;
-  @override
-  final String userUid;
-  @override
-  final String identifier;
-  @override
-  final DateTime? lastLoginAt;
+@override final  String email;
+@override final  String userUid;
+@override final  String identifier;
+@override final  DateTime? lastLoginAt;
 
-  @override
-  String toString() {
-    return 'AuthResult(email: $email, userUid: $userUid, identifier: $identifier, lastLoginAt: $lastLoginAt)';
-  }
+/// Create a copy of AuthResult
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$AuthResultCopyWith<_AuthResult> get copyWith => __$AuthResultCopyWithImpl<_AuthResult>(this, _$identity);
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$AuthResultImpl &&
-            (identical(other.email, email) || other.email == email) &&
-            (identical(other.userUid, userUid) || other.userUid == userUid) &&
-            (identical(other.identifier, identifier) ||
-                other.identifier == identifier) &&
-            (identical(other.lastLoginAt, lastLoginAt) ||
-                other.lastLoginAt == lastLoginAt));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode =>
-      Object.hash(runtimeType, email, userUid, identifier, lastLoginAt);
-
-  /// Create a copy of AuthResult
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$AuthResultImplCopyWith<_$AuthResultImpl> get copyWith =>
-      __$$AuthResultImplCopyWithImpl<_$AuthResultImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$AuthResultImplToJson(this);
-  }
+@override
+Map<String, dynamic> toJson() {
+  return _$AuthResultToJson(this, );
 }
 
-abstract class _AuthResult implements AuthResult {
-  const factory _AuthResult({
-    required final String email,
-    required final String userUid,
-    required final String identifier,
-    final DateTime? lastLoginAt,
-  }) = _$AuthResultImpl;
-
-  factory _AuthResult.fromJson(Map<String, dynamic> json) =
-      _$AuthResultImpl.fromJson;
-
-  @override
-  String get email;
-  @override
-  String get userUid;
-  @override
-  String get identifier;
-  @override
-  DateTime? get lastLoginAt;
-
-  /// Create a copy of AuthResult
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$AuthResultImplCopyWith<_$AuthResultImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AuthResult&&(identical(other.email, email) || other.email == email)&&(identical(other.userUid, userUid) || other.userUid == userUid)&&(identical(other.identifier, identifier) || other.identifier == identifier)&&(identical(other.lastLoginAt, lastLoginAt) || other.lastLoginAt == lastLoginAt));
 }
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,email,userUid,identifier,lastLoginAt);
+
+@override
+String toString() {
+  return 'AuthResult(email: $email, userUid: $userUid, identifier: $identifier, lastLoginAt: $lastLoginAt)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$AuthResultCopyWith<$Res> implements $AuthResultCopyWith<$Res> {
+  factory _$AuthResultCopyWith(_AuthResult value, $Res Function(_AuthResult) _then) = __$AuthResultCopyWithImpl;
+@override @useResult
+$Res call({
+ String email, String userUid, String identifier, DateTime? lastLoginAt
+});
+
+
+
+
+}
+/// @nodoc
+class __$AuthResultCopyWithImpl<$Res>
+    implements _$AuthResultCopyWith<$Res> {
+  __$AuthResultCopyWithImpl(this._self, this._then);
+
+  final _AuthResult _self;
+  final $Res Function(_AuthResult) _then;
+
+/// Create a copy of AuthResult
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? email = null,Object? userUid = null,Object? identifier = null,Object? lastLoginAt = freezed,}) {
+  return _then(_AuthResult(
+email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
+as String,userUid: null == userUid ? _self.userUid : userUid // ignore: cast_nullable_to_non_nullable
+as String,identifier: null == identifier ? _self.identifier : identifier // ignore: cast_nullable_to_non_nullable
+as String,lastLoginAt: freezed == lastLoginAt ? _self.lastLoginAt : lastLoginAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,
+  ));
+}
+
+
+}
+
+// dart format on

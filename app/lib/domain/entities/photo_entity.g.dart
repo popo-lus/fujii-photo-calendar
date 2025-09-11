@@ -6,20 +6,19 @@ part of 'photo_entity.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$PhotoEntityImpl _$$PhotoEntityImplFromJson(Map<String, dynamic> json) =>
-    _$PhotoEntityImpl(
-      id: json['id'] as String,
-      type: $enumDecode(_$PhotoTypeEnumMap, json['type']),
-      month: (json['month'] as num).toInt(),
-      monthKey: json['monthKey'] as String,
-      capturedAt: DateTime.parse(json['capturedAt'] as String),
-      url: json['url'] as String,
-      priority: (json['priority'] as num).toInt(),
-      memo: json['memo'] as String?,
-      updatedAt: DateTime.parse(json['updatedAt'] as String),
-    );
+_PhotoEntity _$PhotoEntityFromJson(Map<String, dynamic> json) => _PhotoEntity(
+  id: json['id'] as String,
+  type: $enumDecode(_$PhotoTypeEnumMap, json['type']),
+  month: (json['month'] as num).toInt(),
+  monthKey: json['monthKey'] as String,
+  capturedAt: DateTime.parse(json['capturedAt'] as String),
+  url: json['url'] as String,
+  priority: (json['priority'] as num).toInt(),
+  memo: json['memo'] as String?,
+  updatedAt: DateTime.parse(json['updatedAt'] as String),
+);
 
-Map<String, dynamic> _$$PhotoEntityImplToJson(_$PhotoEntityImpl instance) =>
+Map<String, dynamic> _$PhotoEntityToJson(_PhotoEntity instance) =>
     <String, dynamic>{
       'id': instance.id,
       'type': _$PhotoTypeEnumMap[instance.type]!,
