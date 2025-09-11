@@ -36,7 +36,7 @@
 **Primary Dependencies**: auto_route, flutter_riverpod, freezed, json_serializable, cached_network_image, firebase_core, cloud_firestore（必要に応じて firebase_storage）  
 **Storage**: Firebase Firestore（ユーザーごとの calendar/{month} 階層配下に fujii-photos, user-photos）  
 **Seed Data Alignment**: `users/{uid}` に role (admin|user) を保持。`users/{uid}/calendar/{MM}/(fujii-photos|user-photos)/{filename}` ドキュメントに `id,url,capturedAt,month,type,updatedAt,memo` が格納（seed-storage.js）。アプリ側で追加で計算/派生する `monthKey`, `priority(任意)` を付与し、`type` は Firestore 値（'fujii-photos'|'user-photos'）をそのまま enum として利用。
-**Testing**: flutter_test、golden test（UI）、integration_test（起動〜月遷移/スライドショー）  
+（自動テストは本フェーズ対象外。手動確認と観測ログで品質確保）  
 **Target Platform**: タブレット（8〜9インチ、横画面）＋スマホ対応（レスポンシブ）
 **Project Type**: mobile（アプリ＋Firebase BaaS）  
 **Performance Goals**: 60fps維持、スワイプ応答 p95 ≤ 50ms、月遷移アニメ 250–350ms、初回描画 p95 ≤ 1.0s（詳細は spec の成功基準）  
@@ -59,13 +59,7 @@
 - CLI per library: N/A
 - Library docs: 本plan配下のドキュメントで代替
 
-**Testing (NON-NEGOTIABLE)**:
-- RED-GREEN-Refactor: 遵守（まずゴールデン/統合テストを作成し失敗を確認）
-- Commit順序: テスト→実装
-- Order: Contract(インターフェース)→Integration→E2E→Unit
-- Real deps: Firestoreエミュレータ優先（本番直結は避ける）
-- Integration対象: 画像キャッシュ/Firestoreクエリ/ルーティング
-- Forbidden: 実装先行・RED省略
+（自動テスト運用ルールは今回は非適用）
 
 **Observability**:
 - 構造化ログ（重要イベント: 初回描画、写真初表示、スワイプ開始/完了、エラー）
@@ -98,10 +92,7 @@ src/
 ├── cli/
 └── lib/
 
-tests/
-├── contract/
-├── integration/
-└── unit/
+（tests ディレクトリは未作成: 将来必要時に追加）
 
 # Option 2: Web application (when "frontend" + "backend" detected)
 backend/
@@ -126,42 +117,151 @@ ios/ or android/
 └── [platform-specific structure]
 ```
 
-**Structure Decision**: Option 3（Mobile+BaaS）。Flutterは以下の構成（ユーザー指定）:
+**Structure Decision**: Option 3（Mobile+BaaS）。Flutter公式アーキテクチャ + Riverpod 記事を参照し、UI / Domain / Data の 3 層＋Cross-cutting(core) を明確化。既存案を再編し以下ディレクトリ構成を採用:
 
 ```
-lib
-├── firebase_options.dart
+lib/
 ├── main.dart
-├── models/
-│  └── calendar/
-│      ├── photo_entity.dart
-│      ├── photo_entity.freezed.dart
-│      └── photo_entity.g.dart
-├── providers/
-│  └── calendar/
-│      ├── calendar_provider.dart
-│      └── calendar_provider.g.dart
-├── repositories/
-│  └── calendar/
-│      ├── calendar_repository.dart
-│      └── calendar_repository.g.dart
-├── router/
-│  ├── auto_route_guard.dart
-│  ├── auto_route_guard.g.dart
-│  ├── router.dart
-│  ├── router.g.dart
-│  └── router.gr.dart
-├── screens/
-│  └── calendar/
-│      ├── month_page.dart
-│      ├── month_view_model.dart
-│      ├── month_view_model.freezed.dart
-│      └── month_view_model.g.dart
-└── services/
-   └── calendar/
-      ├── calendar_service.dart
-      └── calendar_service.g.dart
+├── firebase_options.dart
+├── core/                       # 共通基盤（例外, Result, logger, utils, constants）
+│   ├── result/                 # Result<T> 定義（compass_app 準拠 + 拡張）
+│   ├── error/                  # 例外種別（NetworkException 等）
+│   ├── logger/                 # ログ/メトリクス出力アダプタ
+│   └── utils/
+├── presentation/               # UI層 (公式: UI Layer)
+│   ├── router/                 # auto_route 設定
+│   ├── screens/                # Page Widget（1画面=1ディレクトリ）
+│   │   └── calendar/
+│   │       ├── month_page.dart
+│   │       └── widgets/        # 月セル, グリッド, スライドショー部品
+│   ├── viewmodels/             # StateNotifier / AsyncNotifier / Hooks VM
+│   │   └── calendar/
+│   │       └── month_view_model.dart
+│   └── widgets/                # 汎用再利用コンポーネント
+├── domain/                     # ドメイン層 (Entities / Repository Interface / UseCase)
+│   ├── entities/
+│   │   └── photo_entity.dart
+│   ├── repositories/           # interface (抽象) e.g. calendar_repository.dart
+│   └── usecases/
+│       ├── load_month_photos_usecase.dart
+│       ├── compute_slideshow_batch_usecase.dart
+│       └── ensure_admin_exposure_usecase.dart
+├── data/                       # データ層 (実装 + 外部I/O)
+│   ├── services/               # Firestore/Storage/Platform/Dio 等純粋I/O
+│   │   └── calendar_service.dart
+│   ├── repositories/           # impl (Repository interfaces の実装)
+│   │   └── calendar_repository_impl.dart
+│   ├── mappers/                # Firestore Document → Entity 変換 (純関数)
+│   └── models/                 # Service層専用 DTO（必要最小限 / JSON 変換のみ）
+├── providers/                  # Riverpod Provider 定義（依存グラフ）
+│   └── calendar_providers.dart
+└── configuration/              # 環境設定, flavor, feature flags
+
+test/ （将来の自動テスト導入時に利用）
 ```
+
+### 公式アーキテクチャ適用差分
+- Domain 層を `entities / repositories(interface) / usecases` に分離し、Data 層実装の差し替え容易性を確保。
+- Repository interface を Domain に置く（UI からは Domain までしか意識させない）→ Data 実装は隠蔽。
+- Result<T> を core/result に導入し、Service/Repository/UseCase 境界で例外を握り潰さず型で扱う（UI では AsyncValue<Result<…>> もしくは ViewModel 内で state 正規化）。
+- Firestore Document → DTO(model) → Entity の 2 段構成は過剰になり得るためルール化:
+   - 変換ロジックが domain 検証/派生計算を含む場合: DTO + Mapper を保持
+   - 現状: Photo は派生 `priority` / `monthKey` 計算のみ（軽量）。→ 初期は DTO スキップし Service → Mapper → Entity 直行。拡張余地として `data/models` は空で作成。
+- UseCase は複数 Repository/Service 連携または複雑ロジック（ランダム選抜 + Admin 露出保証）が存在するため採用（Flutter公式指針: 不要なら省略可）。
+- Riverpod Provider 生成順: serviceProvider → repositoryImplProvider → repositoryProvider(interface expose) → useCaseProviders → viewModelProviders → screen widgets。
+
+### レイヤ依存ルール (Allow List)
+```
+presentation  → domain, (providers, core)
+domain        → core
+data          → domain (ONLY interfaces), core
+core          → (依存なし / 外部パッケージのみ)
+providers     → data, domain, core (DI wiring) ※ UI ロジック禁止
+```
+逆方向依存（例: domain→data, core→presentation）は禁止。CI 将来タスクで import graph 検査を追加予定。
+
+### Result<T> ポリシー
+- Service: 失敗を AppException (core/error) へ正規化し Result.error で返却
+- Repository Impl: キャッシュ/再試行/フォールバック適用後も失敗ならそのまま伝播
+- UseCase: 可能な限りビジネスルール検証失敗を domain-level Exception に変換（例: EmptyPhotoSetException）
+- ViewModel: Result<T> を UI 状態に flatten（`loading / ready(data) / error(message)`）
+
+### Photo 関連適用例
+1. Service (Firestore): ドキュメント Snapshots を生 Raw Map List に→ Mapper へ
+2. Mapper: priority, monthKey を計算し Entity 生成
+3. Repository Impl: メモリキャッシュ + 一括フェッチ + 型安全変換 + 失敗時リトライ (1 回) + Result<T>
+4. UseCase: ランダムシャッフル（seed対応）→ Admin 露出保証 → スライドショーバッチ生成
+5. ViewModel: `MonthCalendarState` (sealed) { loading, placeholder, ready(photos, slideshowBatch) }
+
+### Provider 役割最小化
+providers では「組み立てとスコープ管理」以外のロジック（変換/検証/選抜）は禁止。テスト容易性確保のため Provider 経由で差し替えできるよう interface 型を公開。
+
+### タスク影響 (Phase 2 以降反映予定)
+追加予定タスク例:
+- core/result/result.dart 追加 + 単体テスト
+- core/error/ 例外階層 (Network/Decode/EmptyPhotoSet/AdminExposureViolation)
+- data/mappers/photo_mapper.dart 実装
+- domain/repositories/calendar_repository.dart (interface)
+- data/repositories/calendar_repository_impl.dart
+- providers/calendar_providers.dart: layered wiring
+- viewmodels/month_view_model.dart: Result flatten + sealed UI state
+- 依存グラフ静的検査 (import_lint) 下書き
+
+### 移行方針
+現行 plan に記載の `services/ repositories/ usecases/ viewmodels/` 構成は上記へ rename/再配置（初コード投入時）。既存ドキュメントとの乖離を避けるため spec 側へのフィールド/レイヤ説明は追従不要（本 plan のみで差分管理）。
+
+---
+
+（以下 旧アーキテクチャ説明を本節に統合済み）
+
+## Architecture Alignment (Updated: Flutter公式 + Riverpod)
+| Layer          | Dir (root)              | Responsibility (要約)                              | State    |
+| -------------- | ----------------------- | -------------------------------------------------- | -------- |
+| Presentation   | presentation/           | Widget/レイアウト/簡易分岐/アニメ/入力イベント     | No       |
+| ViewModel      | presentation/viewmodels | UI状態保持・イベント→UseCase or Repository 呼出    | Yes      |
+| Domain         | domain/                 | ビジネスルール/Entity/Repository Interface/UseCase | No       |
+| Data Repo Impl | data/repositories       | 取得/集約/キャッシュ/失敗処理                      | Optional |
+| Service        | data/services           | 外部I/O (Firestore/Storage/Platform) 状態無し      | No       |
+| Core           | core/                   | 共通基盤(Result/Exception/Logger/Utils)            | No       |
+
+### UseCase 継続採用理由
+複数 Repository（写真 + 将来メタデータ）協調やランダム/露出保証の純化。公式指針上 optional だがドメイン複雑度 > trivial のため維持。
+
+### 初期ユースケース（不変）
+1. load_month_photos_usecase
+2. compute_slideshow_batch_usecase
+3. ensure_admin_exposure_usecase
+
+（自動テスト順序は削除）
+
+### 設計メモ更新
+- Mapper 導入判断基準: ドメイン派生ロジック > 単純コピーか否かで決定
+- 乱数は `SeededRandom` (core/utils) 封装で再現性確保
+- In-memory cache は Map<(uid, month), List<PhotoEntity>> 単純実装
+- 露出保証: スライドショー総フレーム内で admin >=1 を assert。違反で fallback (最初差替) + metrics event
+
+### Provider Wiring サンプル（擬似コード）
+```
+final firestoreProvider = Provider((ref) => FirebaseFirestore.instance);
+final calendarServiceProvider = Provider((ref) => CalendarService(ref.watch(firestoreProvider)));
+final calendarRepositoryImplProvider = Provider((ref) => CalendarRepositoryImpl(ref.watch(calendarServiceProvider)));
+final calendarRepositoryProvider = Provider<CalendarRepository>((ref) => ref.watch(calendarRepositoryImplProvider));
+final loadMonthPhotosUseCaseProvider = Provider((ref) => LoadMonthPhotosUseCase(ref.watch(calendarRepositoryProvider)));
+// ... etc
+```
+
+### UI State (Sealed 案)
+```
+sealed class MonthCalendarState {
+   const MonthCalendarState();
+}
+class Loading extends MonthCalendarState { const Loading(); }
+class Placeholder extends MonthCalendarState { const Placeholder(this.reason); final String reason; }
+class Ready extends MonthCalendarState { const Ready(this.photos, this.slideshow); final List<PhotoEntity> photos; final List<PhotoEntity> slideshow; }
+class ErrorState extends MonthCalendarState { const ErrorState(this.message); final String message; }
+```
+
+---
 
 ### Seed Integration / Data Normalization
 | Concern    | Firestore Raw (seed)                     | App Entity (内部)            | 取扱方針                                           |
@@ -223,16 +323,7 @@ lib
    - Use standard REST/GraphQL patterns
    - Output OpenAPI/GraphQL schema to `/contracts/`
 
-3. **Generate contract tests** from contracts:
-   - One test file per endpoint
-   - Assert request/response schemas
-   - Tests must fail (no implementation yet)
-
-4. **Extract test scenarios** from user stories:
-   - Each story → integration test scenario
-   - Quickstart test = story validation steps
-
-5. **Update agent file incrementally** (O(1) operation):
+3. **Update agent file incrementally** (O(1) operation):
    - Run `/scripts/update-agent-context.sh [claude|gemini|copilot]` for your AI assistant
    - If exists: Add only NEW tech from current plan
    - Preserve manual additions between markers
@@ -245,20 +336,13 @@ lib
 ## Phase 2: Task Planning Approach
 *This section describes what the /tasks command will do - DO NOT execute during /plan*
 
-**Task Generation Strategy**:
-- Load `/templates/tasks-template.md` as base
-- Generate tasks from Phase 1 design docs (contracts, data model, quickstart)
-- Each contract → contract test task [P]
-- Each entity → model creation task [P] 
-- Each user story → integration test task
-- Implementation tasks to make tests pass
+**Task Generation Strategy (簡略化)**:
+- contracts / data-model / quickstart から実装タスクのみ抽出
 
 **Ordering Strategy**:
-- TDD order: Tests before implementation 
-- Dependency order: Models before services before UI
-- Mark [P] for parallel execution (independent files)
+- Model → Service → Repository Impl → UseCase → ViewModel → UI → Wiring → 手動確認
 
-**Estimated Output**: 25-30 numbered, ordered tasks in tasks.md
+**Estimated Output**: 15-20 tasks
 
 **IMPORTANT**: This phase is executed by the /tasks command, NOT by /plan
 
@@ -266,16 +350,16 @@ lib
 *These phases are beyond the scope of the /plan command*
 
 **Phase 3**: Task execution (/tasks command creates tasks.md)  
-**Phase 4**: Implementation (execute tasks.md following constitutional principles)  
-**Phase 5**: Validation (run tests, execute quickstart.md, performance validation)
+**Phase 4**: Implementation (quickstart.md に基づき手動確認 + パフォーマンス観測)  
+**Phase 5**: 保留
 
 ## Complexity Tracking
 *Fill ONLY if Constitution Check has violations that must be justified*
 
-| Violation                       | Why Needed                                 | Simpler Alternative Rejected Because                                      |
-| ------------------------------- | ------------------------------------------ | ------------------------------------------------------------------------- |
-| Repository pattern              | 可読性とテスト容易性、データ取得とUIの分離 | 直接Firestore参照だとUI/ビジネスロジックが結合し、テストが困難            |
-| Client-side priority derivation | Admin強調表示を迅速に実現                  | Firestoreフィールド追加は初期段階で過剰、将来必要時にサーバー側計算へ移行 |
+| Violation                       | Why Needed                             | Simpler Alternative Rejected Because                                      |
+| ------------------------------- | -------------------------------------- | ------------------------------------------------------------------------- |
+| Repository pattern              | 可読性と関心分離、データ取得とUIの分離 | 直接Firestore参照だとUI/ビジネスロジックが結合し責務肥大                  |
+| Client-side priority derivation | Admin強調表示を迅速に実現              | Firestoreフィールド追加は初期段階で過剰、将来必要時にサーバー側計算へ移行 |
 
 
 ## Progress Tracking
@@ -286,8 +370,8 @@ lib
 - [x] Phase 1: Design complete (/plan command)
 - [ ] Phase 2: Task planning complete (/plan command - describe approach only)
 - [ ] Phase 3: Tasks generated (/tasks command)
-- [ ] Phase 4: Implementation complete
-- [ ] Phase 5: Validation passed
+- [ ] Phase 4: Implementation complete (manual verification)
+- [ ] Phase 5: (reserved)
 
 **Gate Status**:
 - [x] Initial Constitution Check: PASS
