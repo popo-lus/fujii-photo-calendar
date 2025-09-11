@@ -23,13 +23,13 @@
 
 ---
 ## Phase 3.1: Setup
-- [ ] T001 Flutter プロジェクト生成 `flutter create . --project-name fujii_photo_calendar`（既存不要ファイルあれば整理）
-- [ ] T002 pubspec.yaml 依存追加 (auto_route, auto_route_generator, flutter_riverpod, freezed, json_serializable, build_runner, cached_network_image, firebase_core, cloud_firestore, firebase_storage, meta, collection) ※ firebase_* は `flutterfire configure` でも追加され得るが明示列挙
-- [ ] T003 [P] Flutter SDK バージョン固定 `fvm use <FLUTTER_VERSION> --force` + `.fvm/fvm_config.json` をコミット（後続全コマンドは `fvm flutter ...` 推奨コメント追記）
-- [ ] T004 [P] Freezed / JsonSerializable / build_runner 設定 (`dev_dependencies` 追記 + `build.yaml` 雛形) および `dart run build_runner build --delete-conflicting-outputs` 初回実行（結果は未コミットでも可）
-- [ ] T005 [P] FlutterFire 設定 `flutterfire configure` 実行（ターゲット Firebase プロジェクト選択→ `lib/firebase_options.dart` 生成→ `main.dart` に `Firebase.initializeApp` 追記）
-- [ ] T006 Lint & formatter 設定 (`analysis_options.yaml` recommended + 将来 import_lint 予告コメント) + `make format` / `scripts/format.sh` 雛形（任意）
-- [ ] T007 CI ワークフロー下書き `.github/workflows/ci.yaml` (fvm セットアップ → flutter pub get → analyze → build_runner build)
+- [x] T001 Flutter プロジェクト生成 `flutter create . --project-name fujii_photo_calendar`（既存不要ファイルあれば整理）
+- [x] T002 pubspec.yaml 依存追加 (auto_route, auto_route_generator, flutter_riverpod, freezed, json_serializable, build_runner, cached_network_image, firebase_core, cloud_firestore, firebase_storage, meta, collection) ※ firebase_* は `flutterfire configure` でも追加され得るが明示列挙
+- [x] T003 [P] Flutter SDK バージョン固定 `fvm use <FLUTTER_VERSION> --force` + `.fvm/fvm_config.json` をコミット（後続全コマンドは `fvm flutter ...` 推奨コメント追記）
+- [x] T004 [P] Freezed / JsonSerializable / build_runner 設定 (`dev_dependencies` 追記 + `build.yaml` 雛形) および `dart run build_runner build --delete-conflicting-outputs` 初回実行（結果は未コミットでも可）
+- [x] T005 [P] FlutterFire 設定 `flutterfire configure` 実行（ターゲット Firebase プロジェクト選択→ `lib/firebase_options.dart` 生成→ `main.dart` に `Firebase.initializeApp` 追記）
+- [x] T006 Lint & formatter 設定 (`analysis_options.yaml` recommended + 将来 import_lint 予告コメント) + `make format` / `scripts/format.sh` 雛形（任意）
+- [x] T007 CI ワークフロー下書き `.github/workflows/ci.yaml` (fvm セットアップ → flutter pub get → analyze → build_runner build)
 
 ## Phase 3.2: Core / Model Implementation
 - [ ] T007 `core/result/result.dart` Result<T> 実装 (success/error, map, flatMap)
