@@ -43,8 +43,9 @@ users/{userId}
 | priority | (derived) | type=='fujii-photos' ? 10 : 0 |
 
 ## Queries
-- 月表示ロード:
-  - users/{uid}/calendar/{MM} ドキュメントを単一取得/購読（`userPhotos[]` と `fujiiPhotos[]` を結合）
+- 月表示ロード（分離取得）:
+  - users/{uid}/calendar/{MM} ドキュメントを単一取得/購読し、Service 層で `fujiiPhotos[]` と `userPhotos[]` をそれぞれ抽出（2 系列）
+  - UseCase で両系列を結合→表示用に正規化
 - 過剰時: クライアントでランダムサンプリング + priority(=admin加点) ソート
 
 ## Constraints (High Level)

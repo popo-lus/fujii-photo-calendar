@@ -1,4 +1,5 @@
 // (T021) カレンダーグリッド (簡易版プレースホルダー)
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:fujii_photo_calendar/domain/entities/photo_entity.dart';
 
@@ -28,10 +29,10 @@ class MonthGrid extends StatelessWidget {
           child: Stack(
             fit: StackFit.expand,
             children: [
-              // TODO: cached_network_image へ差し替え (T025)
               FittedBox(
                 fit: BoxFit.cover,
-                child: Text(p.id, style: const TextStyle(fontSize: 8)),
+                clipBehavior: Clip.hardEdge,
+                child: CachedNetworkImage(imageUrl: p.url),
               ),
               if (p.type.isAdmin)
                 const Positioned(

@@ -1,27 +1,27 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'calendar_service.dart';
+part of 'user_photos_service.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$calendarServiceHash() => r'43014e69a24402dc18f15437c609d29360acc869';
+String _$userPhotosServiceHash() => r'925c2562508be77565d34fdc9e77c8c76428c9f1';
 
-/// See also [calendarService].
-@ProviderFor(calendarService)
-final calendarServiceProvider = Provider<CalendarService>.internal(
-  calendarService,
-  name: r'calendarServiceProvider',
+/// See also [userPhotosService].
+@ProviderFor(userPhotosService)
+final userPhotosServiceProvider = Provider<UserPhotosService>.internal(
+  userPhotosService,
+  name: r'userPhotosServiceProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$calendarServiceHash,
+      : _$userPhotosServiceHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef CalendarServiceRef = ProviderRef<CalendarService>;
+typedef UserPhotosServiceRef = ProviderRef<UserPhotosService>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

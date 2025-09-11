@@ -31,6 +31,13 @@
 ## Summary
 本機能は、アプリ起動時に「日付のみの月カレンダー」を表示し、その背後に「過去の同月に撮影した写真」を正方形グリッドでスライドショー表示するメインページを提供する。Admin 追加写真は一回り大きく表示し、スタジオ撮影実績が無い月は撮影促進プレースホルダーを表示する。左右スワイプで月遷移。表示対象の月判定は「撮影タイムゾーンの暦日」。成功基準は描画/応答/露出/信頼性などを定量化（spec参照）。実装は Flutter（fvm管理）＋ Firebase/Firestore を採用し、auto_route によるルーティング、Riverpod によるDI/状態管理を用いる。Auth/Storage/Firestore の初期データは提供された seed スクリプト（`seed-auth.js`, `seed-storage.js`）で生成される前提とし、それらの実際のコレクション/フィールド構造をデータモデルへ反映する。
 
+### Update: fujii/user サービス・リポジトリ分割
+現状の「単一 calendar サービス/リポジトリで fujiiPhotos と userPhotos をまとめて取得」する方式を改め、責務分離と将来の権限制御/キャッシュ最適化のため次の通り分割する。
+- data/services: `fujii_photos_service.dart`（藤井写真館写真の取得）/ `user_photos_service.dart`（ユーザー写真の取得）
+- domain/repositories: `FujiiPhotosRepository` / `UserPhotosRepository`（各サービスに1:1 対応する抽象）
+- data/repositories: `FujiiPhotosRepositoryImpl` / `UserPhotosRepositoryImpl`
+両系列の結果は UseCase（`load_month_photos_usecase.dart`）で結合し、UI は統合済みの `List<PhotoEntity>` を利用する。
+
 ## Technical Context
 **Language/Version**: Dart 3.x / Flutter 3.x（fvmでバージョン固定）  
 **Primary Dependencies**: auto_route, flutter_riverpod, freezed, json_serializable, cached_network_image, firebase_core, cloud_firestore（必要に応じて firebase_storage）  
@@ -141,16 +148,20 @@ lib/
 ├── domain/                     # ドメイン層 (Entities / Repository Interface / UseCase)
 │   ├── entities/
 │   │   └── photo_entity.dart
-│   ├── repositories/           # interface (抽象) e.g. calendar_repository.dart
+│   ├── repositories/           # interface（分離）
+│   │   ├── fujii_photos_repository.dart
+│   │   └── user_photos_repository.dart
 │   └── usecases/
-│       ├── load_month_photos_usecase.dart
+│       ├── load_month_photos_usecase.dart   # 両Repoを集約して結合
 │       ├── compute_slideshow_batch_usecase.dart
 │       └── ensure_admin_exposure_usecase.dart
 ├── data/                       # データ層 (実装 + 外部I/O)
-│   ├── services/               # Firestore/Storage/Platform/Dio 等純粋I/O
-│   │   └── calendar_service.dart
-│   ├── repositories/           # impl (Repository interfaces の実装)
-│   │   └── calendar_repository_impl.dart
+│   ├── services/               # Firestore/Storage/Platform/Dio 等純粋I/O（分離）
+│   │   ├── fujii_photos_service.dart
+│   │   └── user_photos_service.dart
+│   ├── repositories/           # impl（分離）
+│   │   ├── fujii_photos_repository_impl.dart
+│   │   └── user_photos_repository_impl.dart
 │   ├── mappers/                # Firestore Document → Entity 変換 (純関数)
 │   └── models/                 # Service層専用 DTO（必要最小限 / JSON 変換のみ）
 ├── providers/                  # Riverpod Provider 定義（依存グラフ）
@@ -187,10 +198,10 @@ providers     → data, domain, core (DI wiring) ※ UI ロジック禁止
 - ViewModel: Result<T> を UI 状態に flatten（`loading / ready(data) / error(message)`）
 
 ### Photo 関連適用例
-1. Service (Firestore): ドキュメント Snapshots を生 Raw Map List に→ Mapper へ
+1. Service (Firestore, 分離): 月ドキュメントを取得し、それぞれ `fujiiPhotos[]` / `userPhotos[]` のみを抽出→ Mapper へ
 2. Mapper: priority, monthKey を計算し Entity 生成
-3. Repository Impl: メモリキャッシュ + 一括フェッチ + 型安全変換 + 失敗時リトライ (1 回) + Result<T>
-4. UseCase: ランダムシャッフル（seed対応）→ Admin 露出保証 → スライドショーバッチ生成
+3. Repository Impl（分離）: メモリキャッシュ + 型安全変換 + 失敗時リトライ (各1 回) + Result<T>
+4. UseCase（集約）: 両Repoの結果をマージ→ ランダムシャッフル（seed対応）→ Admin 露出保証 → スライドショーバッチ生成
 5. ViewModel: `MonthCalendarState` (sealed) { loading, placeholder, ready(photos, slideshowBatch) }
 
 ### Provider 役割最小化
@@ -201,8 +212,8 @@ providers では「組み立てとスコープ管理」以外のロジック（�
 - core/result/result.dart 追加 + 単体テスト
 - core/error/ 例外階層 (Network/Decode/EmptyPhotoSet/AdminExposureViolation)
 - data/mappers/photo_mapper.dart 実装
-- domain/repositories/calendar_repository.dart (interface)
-- data/repositories/calendar_repository_impl.dart
+- domain/repositories/{fujii_photos_repository.dart, user_photos_repository.dart} (interfaces)
+- data/repositories/{fujii_photos_repository_impl.dart, user_photos_repository_impl.dart}
 - providers/calendar_providers.dart: layered wiring
 - viewmodels/month_view_model.dart: Result flatten + sealed UI state
 - 依存グラフ静的検査 (import_lint) 下書き
@@ -243,10 +254,24 @@ providers では「組み立てとスコープ管理」以外のロジック（�
 ### Provider Wiring サンプル（擬似コード）
 ```
 final firestoreProvider = Provider((ref) => FirebaseFirestore.instance);
-final calendarServiceProvider = Provider((ref) => CalendarService(ref.watch(firestoreProvider)));
-final calendarRepositoryImplProvider = Provider((ref) => CalendarRepositoryImpl(ref.watch(calendarServiceProvider)));
-final calendarRepositoryProvider = Provider<CalendarRepository>((ref) => ref.watch(calendarRepositoryImplProvider));
-final loadMonthPhotosUseCaseProvider = Provider((ref) => LoadMonthPhotosUseCase(ref.watch(calendarRepositoryProvider)));
+
+// Services（分離）
+final fujiiPhotosServiceProvider = Provider((ref) => FujiiPhotosService(ref.watch(firestoreProvider)));
+final userPhotosServiceProvider  = Provider((ref) => UserPhotosService(ref.watch(firestoreProvider)));
+
+// Repositories（分離）
+final fujiiPhotosRepositoryProvider = Provider<FujiiPhotosRepository>((ref) =>
+   FujiiPhotosRepositoryImpl(ref.watch(fujiiPhotosServiceProvider))
+);
+final userPhotosRepositoryProvider = Provider<UserPhotosRepository>((ref) =>
+   UserPhotosRepositoryImpl(ref.watch(userPhotosServiceProvider))
+);
+
+// UseCase（集約: 両Repoから読み込み結合）
+final loadMonthPhotosUseCaseProvider = Provider((ref) => LoadMonthPhotosUseCase(
+   fujiiRepo: ref.watch(fujiiPhotosRepositoryProvider),
+   userRepo:  ref.watch(userPhotosRepositoryProvider),
+));
 // ... etc
 ```
 

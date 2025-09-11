@@ -8,6 +8,7 @@
 - 撮影TZで月判定、EXIF不正は登録時弾くため表示時のフォールバック不要
 - グリッド最大枚数はデバイスサイズから算出、超過時はランダム選択
 - Admin写真は必ず最低1枚露出（ローテーション選出で保証）
+- 取得責務の分割: fujii/user を Service・Repository で分離し、UseCase で統合
 
 ## Rationale
 - Flutter はターゲット端末（タブレット/スマホ）へ横断デプロイが容易
@@ -15,6 +16,7 @@
 - auto_route と Riverpod は保守性高く、画面遷移とDIをシンプルに保てる
 - freezed/json_serializable により型安全とシリアライズ整合性を担保
 - cached_network_image のキャッシュによりオフライン要件と初期描画の速さを確保
+- 分割理由: 権限制御（Admin 専用更新/閲覧ルール）やキャッシュ/再試行ポリシーを系列ごとに独立調整可能にし、将来的な機能拡張（例: fujii 側の審査フラグ、ユーザー側のアップロード制限）を局所変更で実現するため
 
 ## Alternatives Considered
 - Supabase/PostgreSQL: 迅速だがBaaS統合（Push/Storage/Rules）でFirebase優位
