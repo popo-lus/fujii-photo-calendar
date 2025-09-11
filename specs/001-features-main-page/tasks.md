@@ -43,9 +43,9 @@
 - [x] T013 Repository 実装 `lib/data/repositories/calendar_repository_impl.dart` (Service 呼出 + Mapper + メモリキャッシュ + 単回リトライ)
 
 ## Phase 3.4: Domain UseCases
-- [ ] T014 UseCase: 月写真ロード `lib/domain/usecases/load_month_photos_usecase.dart`
-- [ ] T015 UseCase: スライドショーバッチ計算 `lib/domain/usecases/compute_slideshow_batch_usecase.dart`
-- [ ] T016 UseCase: Admin 露出保証 `lib/domain/usecases/ensure_admin_exposure_usecase.dart`
+- [x] T014 UseCase: 月写真ロード `lib/domain/usecases/load_month_photos_usecase.dart`
+- [x] T015 UseCase: スライドショーバッチ計算 `lib/domain/usecases/compute_slideshow_batch_usecase.dart`
+- [x] T016 UseCase: Admin 露出保証 `lib/domain/usecases/ensure_admin_exposure_usecase.dart`
 
 ## Phase 3.5: Providers (DI Wiring)
 - [ ] T017 Provider 定義 `lib/providers/calendar_providers.dart` (firestore, service, repository, usecases, viewmodel)
