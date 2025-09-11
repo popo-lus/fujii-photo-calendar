@@ -4,7 +4,6 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:fujii_photo_calendar/data/services/auth_service.dart';
 
 // FirebaseAuth シングルトン provider
 final firebaseAuthProvider = Provider<FirebaseAuth>((ref) {
@@ -15,10 +14,4 @@ final firebaseAuthProvider = Provider<FirebaseAuth>((ref) {
 final authStateChangesProvider = StreamProvider<User?>((ref) {
   final auth = ref.watch(firebaseAuthProvider);
   return auth.authStateChanges();
-});
-
-// (T008) AuthService Provider
-final authServiceProvider = Provider<AuthService>((ref) {
-  final auth = ref.watch(firebaseAuthProvider);
-  return AuthService(auth);
 });

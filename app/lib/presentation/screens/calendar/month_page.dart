@@ -3,7 +3,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:fujii_photo_calendar/presentation/viewmodels/calendar/month_view_model.dart';
-import 'package:fujii_photo_calendar/providers/auth_providers.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:fujii_photo_calendar/presentation/router/app_router.dart';
 import 'widgets/month_grid.dart';
@@ -32,7 +31,7 @@ class MonthCalendarPage extends ConsumerWidget {
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () async {
-              await ref.read(authServiceProvider).signOut();
+              await ref.read(monthViewModelProvider.notifier).logout();
               if (context.mounted) {
                 context.router.replaceAll([const LoginRoute()]);
               }

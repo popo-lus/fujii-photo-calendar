@@ -1,9 +1,9 @@
 // (T009) LoginViewModel: ログインフォーム状態管理
 // 状態: idle / loading / error / success(AuthResult)
 
+import 'package:fujii_photo_calendar/data/services/auth_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:fujii_photo_calendar/domain/entities/auth_result.dart';
-import 'package:fujii_photo_calendar/providers/auth_providers.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fujii_photo_calendar/core/error/auth_error_mapper.dart';
 import 'package:fujii_photo_calendar/core/logger/logger.dart';
@@ -51,6 +51,17 @@ class LoginViewModel extends _$LoginViewModel {
     } catch (e) {
       state = LoginError(mapAuthError(e));
       AppLogger.instance.logAuthSignInFailure(email: email, error: e);
+    }
+  }
+
+  Future<void> logout() async {
+    final service = ref.read(authServiceProvider);
+    try {
+      await service.signOut();
+      state = const LoginIdle();
+    } catch (e) {
+      AppLogger.instance.logAuthSignOutFailure(error: e);
+      // 失敗しても状態は変えない
     }
   }
 

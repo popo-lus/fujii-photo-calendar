@@ -88,4 +88,6 @@ class AppLogger {
       );
   void logAuthSignOut({required String uid}) =>
       _emit('auth_signout', data: {'uid': uid});
+  void logAuthSignOutFailure({required Object error}) =>
+      _emit('auth_signout_failure', data: {'error': error.toString()});
 }

@@ -5,6 +5,11 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fujii_photo_calendar/domain/entities/auth_result.dart';
 import 'package:fujii_photo_calendar/core/logger/logger.dart';
+import 'package:fujii_photo_calendar/providers/auth_providers.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'auth_service.g.dart';
 
 class AuthService {
   AuthService(this._auth);
@@ -53,4 +58,10 @@ class AuthService {
   Stream<AuthResult?> observeAuthState() => _auth.authStateChanges().map(
     (u) => u == null ? null : AuthResult.fromFirebaseUser(u),
   );
+}
+
+@Riverpod(keepAlive: true)
+AuthService authService(Ref ref) {
+  final auth = ref.watch(firebaseAuthProvider);
+  return AuthService(auth);
 }
