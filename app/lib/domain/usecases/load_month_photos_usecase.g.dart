@@ -7,7 +7,7 @@ part of 'load_month_photos_usecase.dart';
 // **************************************************************************
 
 String _$loadMonthPhotosUseCaseHash() =>
-    r'8e65103f6b3f9c51b1d59bf4ac5dceb2a136d4fa';
+    r'c12613015431b02811d30c0b6356b7b7cae88bd4';
 
 /// See also [loadMonthPhotosUseCase].
 @ProviderFor(loadMonthPhotosUseCase)
