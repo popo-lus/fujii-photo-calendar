@@ -6,23 +6,53 @@ part of 'fujii_photos_service.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+
+@ProviderFor(fujiiPhotosService)
+const fujiiPhotosServiceProvider = FujiiPhotosServiceProvider._();
+
+final class FujiiPhotosServiceProvider
+    extends
+        $FunctionalProvider<
+          FujiiPhotosService,
+          FujiiPhotosService,
+          FujiiPhotosService
+        >
+    with $Provider<FujiiPhotosService> {
+  const FujiiPhotosServiceProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'fujiiPhotosServiceProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$fujiiPhotosServiceHash();
+
+  @$internal
+  @override
+  $ProviderElement<FujiiPhotosService> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  FujiiPhotosService create(Ref ref) {
+    return fujiiPhotosService(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(FujiiPhotosService value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<FujiiPhotosService>(value),
+    );
+  }
+}
+
 String _$fujiiPhotosServiceHash() =>
     r'3f605f7085e89f272474c20f06bdbbe14fef9402';
-
-/// See also [fujiiPhotosService].
-@ProviderFor(fujiiPhotosService)
-final fujiiPhotosServiceProvider = Provider<FujiiPhotosService>.internal(
-  fujiiPhotosService,
-  name: r'fujiiPhotosServiceProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$fujiiPhotosServiceHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef FujiiPhotosServiceRef = ProviderRef<FujiiPhotosService>;
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

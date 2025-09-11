@@ -127,7 +127,7 @@ class MonthViewModel extends _$MonthViewModel {
   }
 
   Future<void> startSlideshow({int? maxCount, int? seed}) async {
-    final data = state.valueOrNull;
+    final data = state.value;
     if (data == null || data.photos.isEmpty) return;
     final compute = ref.read(computeSlideshowBatchUseCaseProvider);
     final ensure = ref.read(ensureAdminExposureUseCaseProvider);
@@ -138,7 +138,7 @@ class MonthViewModel extends _$MonthViewModel {
   }
 
   void endSlideshow() {
-    final data = state.valueOrNull;
+    final data = state.value;
     if (data == null) return;
     if (!data.inSlideshow) return;
     state = AsyncData(data.copyWith(slideshowBatch: null));

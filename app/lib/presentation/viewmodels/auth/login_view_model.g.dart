@@ -6,21 +6,58 @@ part of 'login_view_model.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$loginViewModelHash() => r'28a7493148322df803be1efaac7b142af576ce29';
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
 
-/// See also [LoginViewModel].
 @ProviderFor(LoginViewModel)
-final loginViewModelProvider =
-    NotifierProvider<LoginViewModel, LoginState>.internal(
-      LoginViewModel.new,
-      name: r'loginViewModelProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$loginViewModelHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
+const loginViewModelProvider = LoginViewModelProvider._();
 
-typedef _$LoginViewModel = Notifier<LoginState>;
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+final class LoginViewModelProvider
+    extends $NotifierProvider<LoginViewModel, LoginState> {
+  const LoginViewModelProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'loginViewModelProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$loginViewModelHash();
+
+  @$internal
+  @override
+  LoginViewModel create() => LoginViewModel();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(LoginState value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<LoginState>(value),
+    );
+  }
+}
+
+String _$loginViewModelHash() => r'86e9e685ec8633380e7a23a9194d9e93bc9bdc70';
+
+abstract class _$LoginViewModel extends $Notifier<LoginState> {
+  LoginState build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<LoginState, LoginState>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<LoginState, LoginState>,
+              LoginState,
+              Object?,
+              Object?
+            >;
+    element.handleValue(ref, created);
+  }
+}

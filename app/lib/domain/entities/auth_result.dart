@@ -8,7 +8,7 @@ part 'auth_result.g.dart';
 // 仕様フィールド: email, userUid, identifier, lastLoginAt
 // identifier は displayName 廃止方針のため暫定: email ローカル部 or UID
 @freezed
-class AuthResult with _$AuthResult {
+abstract class AuthResult with _$AuthResult {
   const factory AuthResult({
     required String email,
     required String userUid,

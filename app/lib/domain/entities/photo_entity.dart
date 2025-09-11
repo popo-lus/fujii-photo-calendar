@@ -23,7 +23,7 @@ extension PhotoTypeX on PhotoType {
 }
 
 @freezed
-class PhotoEntity with _$PhotoEntity {
+abstract class PhotoEntity with _$PhotoEntity {
   const factory PhotoEntity({
     required String id,
     required PhotoType type,
