@@ -17,10 +17,11 @@ class AppRouter extends RootStackRouter {
 
   @override
   List<AutoRoute> get routes => [
-    AutoRoute(page: LoginRoute.page, initial: true),
-    AutoRoute(page: MonthCalendarRoute.page, guards: [_authGuard]),
+    AutoRoute(page: LoginRoute.page),
+    AutoRoute(
+      page: MonthCalendarRoute.page,
+      guards: [_authGuard],
+      initial: true,
+    ),
   ];
-
-  @override
-  List<AutoRouteGuard> get guards => [_authGuard];
 }
