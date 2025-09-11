@@ -5,10 +5,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fujii_photo_calendar/presentation/router/app_router.dart';
+import 'package:fujii_photo_calendar/core/logger/logger.dart';
+import 'package:fujii_photo_calendar/core/utils/perf_timer.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  final initTimer = PerfTimer('firebase_init');
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  final initMs = initTimer.stop();
 
   const useEmulators = bool.fromEnvironment(
     'USE_FIREBASE_EMULATORS',
@@ -23,7 +27,10 @@ Future<void> main() async {
     }
   }
 
-  debugPrint('[Startup] Firebase initialized. useEmulators=$useEmulators');
+  AppLogger.instance.logStartup(
+    useEmulators: useEmulators,
+    firebaseInitMs: initMs,
+  );
   runApp(const ProviderScope(child: MyApp()));
 }
 

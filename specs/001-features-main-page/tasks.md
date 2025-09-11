@@ -66,10 +66,10 @@
 - [x] T023 [P] 空月プレースホルダー `lib/presentation/screens/calendar/widgets/empty_month_placeholder.dart`
 
 ## Phase 3.8: Integration / Infrastructure
-- [ ] T024 Firestore 初期化 & 起動ログ `lib/main.dart`
-- [ ] T025 キャッシュ設定 `lib/core/utils/cache_config.dart` (cached_network_image カスタム CacheManager)
-- [ ] T026 ロギング/メトリクス `lib/core/logger/logger.dart` (初回描画/スワイプ/露出イベント記録 API)
-- [ ] T027 パフォーマンス計測ラッパー `lib/core/utils/perf_timer.dart`
+- [x] T024 Firestore 初期化 & 起動ログ `lib/main.dart` (AppLogger + PerfTimer で firebase init 計測 & ログ)
+- [x] T025 キャッシュ設定 `lib/core/utils/cache_config.dart` (custom CacheManager + placeholder)
+- [x] T026 ロギング/メトリクス `lib/core/logger/logger.dart` (startup / month_load / swipe / slideshow / perf / error)
+- [x] T027 パフォーマンス計測ラッパー `lib/core/utils/perf_timer.dart`
 
 ## Phase 3.9: Polish
 - [ ] T028 Import 依存グラフ lint 雛形 `import_lint.yaml`

@@ -6,7 +6,7 @@ part of 'month_view_model.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$monthViewModelHash() => r'd6392ea7d156b5c4fa40a22a1613c32a137a3456';
+String _$monthViewModelHash() => r'5dbf33d18be06ee0e6acfcee0f5b0fd2c34f632a';
 
 /// See also [MonthViewModel].
 @ProviderFor(MonthViewModel)

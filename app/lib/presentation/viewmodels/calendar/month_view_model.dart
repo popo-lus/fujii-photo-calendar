@@ -27,6 +27,8 @@ import 'package:fujii_photo_calendar/domain/entities/photo_entity.dart';
 import 'package:fujii_photo_calendar/domain/usecases/load_month_photos_usecase.dart';
 import 'package:fujii_photo_calendar/domain/usecases/compute_slideshow_batch_usecase.dart';
 import 'package:fujii_photo_calendar/domain/usecases/ensure_admin_exposure_usecase.dart';
+import 'package:fujii_photo_calendar/core/logger/logger.dart';
+import 'package:fujii_photo_calendar/core/utils/perf_timer.dart';
 
 part 'month_view_model.g.dart';
 
@@ -78,13 +80,21 @@ class MonthViewModel extends _$MonthViewModel {
 
   Future<MonthData> _fetch() async {
     final loader = ref.read(loadMonthPhotosUseCaseProvider);
-    final result = await loader.call(uid: _uid, month: _month);
-    switch (result) {
-      case Success<List<PhotoEntity>>(value: final list):
-        return MonthData(uid: _uid, month: _month, photos: list);
-      case Failure<List<PhotoEntity>>(rawError: final e):
-        throw e; // AsyncValue.error へ伝播
-    }
+    return PerfTimer.measureFuture('month_load_$_month', () async {
+      final result = await loader.call(uid: _uid, month: _month);
+      switch (result) {
+        case Success<List<PhotoEntity>>(value: final list):
+          AppLogger.instance.logMonthLoad(
+            uid: _uid,
+            month: _month,
+            count: list.length,
+          );
+          return MonthData(uid: _uid, month: _month, photos: list);
+        case Failure<List<PhotoEntity>>(rawError: final e):
+          AppLogger.instance.logError(e, phase: 'month_load');
+          throw e; // AsyncValue.error へ伝播
+      }
+    });
   }
 
   Future<void> reload() async {
@@ -94,11 +104,19 @@ class MonthViewModel extends _$MonthViewModel {
 
   Future<void> nextMonth() async {
     _month = _month >= 12 ? 1 : _month + 1;
+    AppLogger.instance.logMonthSwipe(
+      from: _month == 1 ? 12 : _month - 1,
+      to: _month,
+    );
     await reload();
   }
 
   Future<void> prevMonth() async {
     _month = _month <= 1 ? 12 : _month - 1;
+    AppLogger.instance.logMonthSwipe(
+      from: _month == 12 ? 1 : _month + 1,
+      to: _month,
+    );
     await reload();
   }
 
@@ -110,6 +128,7 @@ class MonthViewModel extends _$MonthViewModel {
     final batch0 = compute.call(data.photos, maxCount: maxCount, seed: seed);
     final batch = ensure.call(allPhotos: data.photos, batch: batch0);
     state = AsyncData(data.copyWith(slideshowBatch: batch));
+    AppLogger.instance.logSlideshowStart(batch.length, data.photos.length);
   }
 
   void endSlideshow() {
@@ -117,5 +136,6 @@ class MonthViewModel extends _$MonthViewModel {
     if (data == null) return;
     if (!data.inSlideshow) return;
     state = AsyncData(data.copyWith(slideshowBatch: null));
+    AppLogger.instance.logSlideshowEnd();
   }
 }
