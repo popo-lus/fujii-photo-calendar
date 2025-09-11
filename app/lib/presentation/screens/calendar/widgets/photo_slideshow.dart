@@ -34,9 +34,16 @@ class PhotoSlideshow extends ConsumerWidget {
           Positioned(
             bottom: 16,
             right: 16,
-            child: Text(
-              '${index + 1}/${batch.length}',
-              style: const TextStyle(color: Colors.white70),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.black45,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+              child: Text(
+                '${index + 1}/${batch.length}',
+                style: const TextStyle(color: Colors.white70),
+              ),
             ),
           ),
         ],
