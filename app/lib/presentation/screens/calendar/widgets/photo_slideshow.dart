@@ -1,4 +1,5 @@
 // (T022) スライドショー (簡易版)
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:fujii_photo_calendar/domain/entities/photo_entity.dart';
@@ -27,12 +28,8 @@ class PhotoSlideshow extends ConsumerWidget {
         fit: StackFit.expand,
         children: [
           Container(
-            color: Colors.black,
             alignment: Alignment.center,
-            child: Text(
-              current.id,
-              style: const TextStyle(color: Colors.white, fontSize: 24),
-            ),
+            child: CachedNetworkImage(imageUrl: current.url),
           ),
           Positioned(
             bottom: 16,
