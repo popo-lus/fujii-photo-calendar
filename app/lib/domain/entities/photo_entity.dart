@@ -1,7 +1,6 @@
-/// (T009) PhotoEntity: Firestore 写真ドキュメントのアプリ内部正規化モデル。
-///
-/// Freezed + json_serializable を利用。Firestore からの直接デシリアライズは行わず
-/// `data/mappers/photo_mapper.dart` 経由で導出フィールド (priority, monthKey) を付与する。
+// (T009) PhotoEntity: Firestore 写真ドキュメントのアプリ内部正規化モデル。
+// Freezed + json_serializable を利用。Firestore からの直接デシリアライズは行わず
+// data/mappers/photo_mapper.dart 経由で導出フィールド (priority, monthKey) を付与する。
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'photo_entity.freezed.dart';

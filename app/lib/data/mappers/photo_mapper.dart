@@ -1,8 +1,7 @@
-/// (T010) Firestore Raw Data -> PhotoEntity 変換。
-///
-/// Firestore 取得結果 (Map<String,dynamic>) からアプリ内部モデルへ変換し、
-/// 導出フィールド `priority`, `monthKey` を付与する。
-/// 失敗時は DecodeException を投げ、呼び出し側で Result.guard 利用を推奨。
+// (T010) Firestore Raw Data -> PhotoEntity 変換。
+// Firestore 取得結果 (Map<String,dynamic>) からアプリ内部モデルへ変換し、
+// 導出フィールド priority, monthKey を付与する。
+// 失敗時は DecodeException を投げ、呼び出し側で Result.guard 利用を推奨。
 import 'package:fujii_photo_calendar/core/error/app_exceptions.dart';
 import 'package:fujii_photo_calendar/domain/entities/photo_entity.dart';
 

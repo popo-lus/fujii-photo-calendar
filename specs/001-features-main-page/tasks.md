@@ -48,7 +48,12 @@
 - [x] T016 UseCase: Admin 露出保証 `lib/domain/usecases/ensure_admin_exposure_usecase.dart`
 
 ## Phase 3.5: Providers (DI Wiring)
-- [ ] T017 Provider 定義 `lib/providers/calendar_providers.dart` (firestore, service, repository, usecases, viewmodel)
+- [x] T017 Provider 定義 `lib/providers/calendar_providers.dart` (firestore, service, repository, usecases, viewmodel)
+	- 実装メモ: 要件変更により単一 `calendar_providers.dart` ではなく
+		- `lib/providers/firebase_providers.dart` (Firestore のみ集約)
+		- Service / Repository / UseCase は各定義ファイル内で `@Riverpod` により生成
+		- ViewModel Provider は ViewModel 実装 (Phase 3.6) で追加予定（元タスクの「viewmodel」項目は後段で実現）
+		- 機能要件 (DI で Firestore→Service→Repository→UseCases 参照可能) は満たしているため完了扱い
 
 ## Phase 3.6: ViewModel
 - [ ] T018 Month ViewModel `lib/presentation/viewmodels/calendar/month_view_model.dart` (UI State sealed, ロード/スワイプ/スライドショー制御)

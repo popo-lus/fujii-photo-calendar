@@ -11,6 +11,10 @@ import 'package:fujii_photo_calendar/data/mappers/photo_mapper.dart';
 import 'package:fujii_photo_calendar/data/services/calendar_service.dart';
 import 'package:fujii_photo_calendar/domain/entities/photo_entity.dart';
 import 'package:fujii_photo_calendar/domain/repositories/calendar_repository.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:riverpod/riverpod.dart';
+
+part 'calendar_repository_impl.g.dart';
 
 class CalendarRepositoryImpl implements CalendarRepository {
   CalendarRepositoryImpl(this._service);
@@ -65,4 +69,10 @@ class CalendarRepositoryImpl implements CalendarRepository {
 
   String _cacheKey(String uid, int month) =>
       '$uid:${month.toString().padLeft(2, '0')}'.toLowerCase();
+}
+
+@Riverpod(keepAlive: true)
+CalendarRepository calendarRepository(Ref ref) {
+  final service = ref.watch(calendarServiceProvider); // generated function name
+  return CalendarRepositoryImpl(service);
 }

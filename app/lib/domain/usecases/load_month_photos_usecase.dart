@@ -4,6 +4,11 @@
 import 'package:fujii_photo_calendar/core/result/result.dart';
 import 'package:fujii_photo_calendar/domain/entities/photo_entity.dart';
 import 'package:fujii_photo_calendar/domain/repositories/calendar_repository.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:riverpod/riverpod.dart';
+import 'package:fujii_photo_calendar/data/repositories/calendar_repository_impl.dart';
+
+part 'load_month_photos_usecase.g.dart';
 
 class LoadMonthPhotosUseCase {
   const LoadMonthPhotosUseCase(this._repository);
@@ -15,4 +20,10 @@ class LoadMonthPhotosUseCase {
   }) async {
     return _repository.loadMonthPhotos(uid: uid, month: month);
   }
+}
+
+@Riverpod()
+LoadMonthPhotosUseCase loadMonthPhotosUseCase(Ref ref) {
+  final repo = ref.watch(calendarRepositoryProvider);
+  return LoadMonthPhotosUseCase(repo);
 }

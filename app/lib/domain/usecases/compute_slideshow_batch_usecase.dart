@@ -13,6 +13,10 @@
 import 'dart:math';
 
 import 'package:fujii_photo_calendar/domain/entities/photo_entity.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:riverpod/riverpod.dart';
+
+part 'compute_slideshow_batch_usecase.g.dart';
 
 class ComputeSlideshowBatchUseCase {
   const ComputeSlideshowBatchUseCase({this.defaultMaxCount = 20});
@@ -54,3 +58,7 @@ class ComputeSlideshowBatchUseCase {
     return result.take(maxC).toList();
   }
 }
+
+@Riverpod()
+ComputeSlideshowBatchUseCase computeSlideshowBatchUseCase(Ref ref) =>
+    const ComputeSlideshowBatchUseCase();

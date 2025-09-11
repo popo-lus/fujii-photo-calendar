@@ -1,4 +1,5 @@
 // (T016) UseCase: Admin 露出保証
+// ignore_for_file: prefer_const_constructors
 // 入力: 全写真リスト allPhotos, 現在のスライドショーバッチ batch
 // 要件: Admin(fujii) 写真が all に存在する場合、batch に最低 1 枚含まれるよう保証。
 // 方法: batch に存在しなければ admin 内から 1 枚選び先頭差替 (もしくは空なら追加)。
@@ -7,6 +8,10 @@
 
 import 'package:fujii_photo_calendar/core/error/app_exceptions.dart';
 import 'package:fujii_photo_calendar/domain/entities/photo_entity.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:riverpod/riverpod.dart';
+
+part 'ensure_admin_exposure_usecase.g.dart';
 
 class EnsureAdminExposureUseCase {
   const EnsureAdminExposureUseCase();
@@ -37,3 +42,7 @@ class EnsureAdminExposureUseCase {
     return newBatch;
   }
 }
+
+@Riverpod()
+EnsureAdminExposureUseCase ensureAdminExposureUseCase(Ref ref) =>
+    const EnsureAdminExposureUseCase();
