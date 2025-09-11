@@ -21,6 +21,7 @@
 
 import 'dart:async';
 
+import 'package:fujii_photo_calendar/data/services/auth_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:fujii_photo_calendar/core/result/result.dart';
 import 'package:fujii_photo_calendar/domain/entities/photo_entity.dart';
@@ -137,5 +138,14 @@ class MonthViewModel extends _$MonthViewModel {
     if (!data.inSlideshow) return;
     state = AsyncData(data.copyWith(slideshowBatch: null));
     AppLogger.instance.logSlideshowEnd();
+  }
+
+  Future<void> logout() async {
+    final service = ref.read(authServiceProvider);
+    try {
+      await service.signOut();
+    } catch (e) {
+      AppLogger.instance.logAuthSignOutFailure(error: e);
+    }
   }
 }

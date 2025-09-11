@@ -1,50 +1,68 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
-
-## Core Principles
-
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
-
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
-
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
-
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
-
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
-
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
-
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
-
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
-
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
-
-## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
-
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
-
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+# カレンダー×デジタルフォトフレームアプリ
+## 目的
+- ユーザー(子連れの親子)が藤井写真館で継続的に写真を撮りたいと思わせるようにする
+## ターゲットユーザー
+- 被撮影者：子連れの親子（写真アップロード・管理・撮影促進が中心）
+- 閲覧者：祖父祖母、その他子供の写真を見たいユーザー（閲覧・簡単なリアクションが中心）
+- Admin：藤井写真館（写真追加・キャンペーン配信）
+- デジタルフォトフレームのようなイメージで、常時起動に近い形
+## 主要機能
+- 月カレンダー閲覧機能（メインページ）
+  - 月のカレンダーを閲覧できる（日付のみ、予定等の表示はなし）
+  - 背景に写真が複数枚表示（正方形のグリット表示）、Admin（写真館）が追加した写真はひとまわり大きく表示
+  - スライドショー的に写真は移り変わる
+  - 写真は、過去の当該月に撮影したものを表示
+  - 過去に写真館で撮影したことのない月には、「撮影予定を入れましょう」「来店をおすすめします」といったプレースホルダーを表示
+- 日カレンダー(詳細)閲覧機能
+  - 過去の当該日に撮影した写真を一覧表示
+  - Admin（写真館）が追加した写真はひとまわり大きく表示
+  - 写真に付随するタイトルやメモを同時に表示
+- ユーザー登録機能
+  - 被撮影者のユーザー側でアカウントを作成
+  - Admin側のWebサイトで作成したユーザーデータと後から紐付け（QRコードなどで一意に定まるコードを設定）
+- ログイン機能
+  - 作成したアカウントでログインできる機能
+- チュートリアル機能  
+  - 初回起動時にチュートリアルを表示  
+  - 親向け：写真アップロード・リクエスト管理・撮影促進  
+  - 祖父母向け：閲覧方法・スライドショー・通知の確認  
+  - Admin（写真館）側で登録したデータとの紐付けや、新規写真追加までをアニメーション等でわかりやすく案内
+- 通知機能  
+  - 被撮影者向け  
+    - 新しい写真館写真が届いた  
+    - 閲覧者からリクエストが届いた  
+    - 前回撮影から一定期間後に再来店を促す通知  
+  - 閲覧者向け  
+    - 新しい写真が追加された  
+- 写真メモ機能
+  - 写真に付属して、日付、タイトル、メモなどを記録できる機能
+- 招待機能
+  - 被撮影者は、閲覧者向けに閲覧だけできるコードを作成可能
+  - QRコードやURLで共有
+  - 閲覧者はアカウント登録の必要なし（閲覧者の名前のみ登録）
+  - 閲覧者と被撮影者でUIの出し分けを行う
+- 写真アップロード機能
+  - Admin（写真館）が追加する写真だけでなく、ユーザー（被撮影者）がスマホなどで撮った写真も追加できるようにする
+  - 1ヶ月に5枚など制限を課す
+  - スマホの共有メニューから直接アップロード可能
+- 写真ダウンロード機能
+  - ダウンロード可能にする
+- リクエスト機能
+  - 閲覧者から「写真館で写真を撮って欲しい！」というリクエストを被撮影者に送信できる機能
+  - 閲覧者はコメントと一緒に送信できる
+  - 月単位でリクエストを送信する（9月に撮って欲しい！）
+  - 被撮影者は、通知やアプリ上の表示でリクエストに気づくことができる
+- ライフアルバムモード
+  - 写真館で撮った写真のみをアルバム表示するモード
+## 非機能要件
+- 対応環境
+  - タブレット（8-9インチ）を想定
+  - レスポンシブ対応で、スマホでも閲覧可能にする
+  - 横画面が基本
+- ユーザー体験設計  
+  - アプリ起動時は常に「カレンダー画面」を表示（専用フォトフレーム的挙動）  
+  - 被撮影者と閲覧者でUI・通知を出し分け
+- データ処理・セキュリティ  
+  - 写真データはクラウド同期、オフライン時はキャッシュ表示可能
+- その他前提
+  - Admin側はWebで実装予定のため、今回のプロジェクトには含まない

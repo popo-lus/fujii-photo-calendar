@@ -1,6 +1,6 @@
 // (T022) スライドショー (簡易版)
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:fujii_photo_calendar/domain/entities/photo_entity.dart';
 
 // インデックスを保持する StateProvider (Widget 単位)

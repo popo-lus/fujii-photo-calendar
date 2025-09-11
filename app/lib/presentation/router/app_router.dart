@@ -3,19 +3,25 @@
 
 import 'package:auto_route/auto_route.dart';
 import 'package:fujii_photo_calendar/presentation/screens/calendar/month_page.dart';
+import 'package:fujii_photo_calendar/presentation/screens/auth/login_page.dart';
+import 'auth_guard.dart';
 
 part 'app_router.gr.dart';
 
 @AutoRouterConfig(replaceInRouteName: 'Page,Route')
 class AppRouter extends RootStackRouter {
+  AppRouter({super.navigatorKey}) : _authGuard = AuthGuard();
+  final AuthGuard _authGuard;
   @override
   RouteType get defaultRouteType => const RouteType.material();
 
   @override
   List<AutoRoute> get routes => [
-    AutoRoute(page: MonthCalendarRoute.page, initial: true),
+    AutoRoute(page: LoginRoute.page),
+    AutoRoute(
+      page: MonthCalendarRoute.page,
+      guards: [_authGuard],
+      initial: true,
+    ),
   ];
-
-  @override
-  List<AutoRouteGuard> get guards => const [];
 }
