@@ -34,14 +34,14 @@
 ## Technical Context
 **Language/Version**: Dart 3.x / Flutter 3.x（fvmでバージョン固定）  
 **Primary Dependencies**: auto_route, flutter_riverpod, freezed, json_serializable, cached_network_image, firebase_core, cloud_firestore（必要に応じて firebase_storage）  
-**Storage**: Firebase Firestore（ユーザーごとの calendar/{month} 階層配下に fujii-photos, user-photos）  
-**Seed Data Alignment**: `users/{uid}` に role (admin|user) を保持。`users/{uid}/calendar/{MM}/(fujii-photos|user-photos)/{filename}` ドキュメントに `id,url,capturedAt,month,type,updatedAt,memo` が格納（seed-storage.js）。アプリ側で追加で計算/派生する `monthKey`, `priority(任意)` を付与し、`type` は Firestore 値（'fujii-photos'|'user-photos'）をそのまま enum として利用。
+**Storage**: Firebase Firestore（ユーザーごとの `calendar/{MM}` ドキュメントに `userPhotos[]` と `fujiiPhotos[]` の配列フィールドを保持）  
+**Seed Data Alignment**: `users/{uid}` に role (admin|user) を保持。`users/{uid}/calendar/{MM}` ドキュメント配下の配列 `userPhotos` / `fujiiPhotos` の各要素に `id,url,capturedAt,month,type,updatedAt,memo` が格納（seed-storage.js）。アプリ側では両配列を読み込み結合し、派生 `monthKey`, `priority` を付与。`type` は Firestore 値（'fujii-photos'|'user-photos'）をそのまま enum として利用。
 （自動テストは本フェーズ対象外。手動確認と観測ログで品質確保）  
 **Target Platform**: タブレット（8〜9インチ、横画面）＋スマホ対応（レスポンシブ）
 **Project Type**: mobile（アプリ＋Firebase BaaS）  
 **Performance Goals**: 60fps維持、スワイプ応答 p95 ≤ 50ms、月遷移アニメ 250–350ms、初回描画 p95 ≤ 1.0s（詳細は spec の成功基準）  
 **Constraints**: オフラインフォールバック（キャッシュ/プレースホルダー）、撮影TZ基準の月判定、Admin写真最低1枚露出  
-**Data Normalization Constraints**: Firestore の seed スキーマとアプリ内部エンティティの差異を以下方針で吸収: (1) Firestoreには存在しない派生フィールドは ViewModel で構築 (2) priority は Admin 強調要件に合わせクライアント側ルール（fujii-photos=高優先度, user-photos=0）で算出。
+**Data Normalization Constraints**: Firestore の seed スキーマとアプリ内部エンティティの差異を以下方針で吸収: (1) 月ドキュメント内の `userPhotos[]`/`fujiiPhotos[]` を読み込み単一リストへ正規化 (2) Firestoreには存在しない派生フィールドは ViewModel/Mapper で構築 (3) priority は Admin 強調要件に合わせクライアント側ルール（fujii-photos=高優先度, user-photos=0）で算出。
 **Scale/Scope**: 当面は単一被写体の月ビュー中心（将来拡張: 日ビュー/通知/認証等は別Issue）
 
 ## Constitution Check
@@ -267,24 +267,23 @@ class ErrorState extends MonthCalendarState { const ErrorState(this.message); fi
 | Concern    | Firestore Raw (seed)                     | App Entity (内部)            | 取扱方針                                           |
 | ---------- | ---------------------------------------- | ---------------------------- | -------------------------------------------------- |
 | Role       | `users/{uid}.role`                       | `User.role`                  | 認証済みユーザーコンテキストに読み込み Provider 化 |
-| Photo Path | `users/{uid}/calendar/{MM}/(fujii-photos | user-photos)/{filename}`     | `PhotoEntity`                                      | 取得後に type 正規化 / monthKey を付与 |
-| capturedAt | timestamp (UTC/Z)                        | captureAt (TZ含)             | 端末側で TZ 判定用に DateTime.parse                |
+| Photo Path | `users/{uid}/calendar/{MM}` の `userPhotos[]` / `fujiiPhotos[]` | `PhotoEntity`                                      | 取得後に結合→type正規化 / monthKey付与 |
+| capturedAt | timestamp (UTC/Z)                        | capturedAt (TZ含)            | 端末側で TZ 判定用に DateTime.parse                |
 | month      | number (1..12)                           | month (int), monthKey ("MM") | monthKey = zero-pad                                |
-| type       | 'fujii-photos'                           | 'user-photos'                | type ('fujii-photos'                               | 'user-photos') + isStudioShot          | Firestore 値を直接使用 |
+| type       | 'fujii-photos' or 'user-photos'          | type                         | Firestore 値を直接使用                              |
 | priority   | (無し)                                   | priority(int)                | type=='fujii-photos' → >0 固定値 (例:10)           |
 | memo       | string                                   | memo                         | そのまま利用（現状UI未使用）                       |
 | updatedAt  | timestamp                                | updatedAt                    | キャッシュの比較指標                               |
 
 ### Index & Query Strategy
-| Use Case     | Query                                                            | Index 要否             | 備考                                 |
-| ------------ | ---------------------------------------------------------------- | ---------------------- | ------------------------------------ |
-| 月表示       | collectionGroup(`fujii-photos`), where month==X AND uid==current | 単一フィールド (month) | 必要なら複合: month + updatedAt desc |
-| ユーザー写真 | 同上 (user-photos)                                               | 同上                   | 同期タイミングで merge               |
-| 管理強調     | 上記結果をメモリでソート                                         | 不要                   | priority はクライアント生成          |
+| Use Case     | Query                                             | Index 要否 | 備考                                       |
+| ------------ | ------------------------------------------------- | ---------- | ------------------------------------------ |
+| 月表示       | doc(`users/{uid}/calendar/{MM}`) を単一取得/購読 | 不要       | 1ドキュメント読取。配列を結合して使用       |
+| 管理強調     | メモリ上で `type` に基づき優先度付与/選抜        | 不要       | priority はクライアント生成（派生フィールド） |
 
 ### Security Rules (High Level Draft)
 1. 認証ユーザーのみ自分の `users/{uid}` 階層を read（共有URL閲覧は別メカニズムで tokenized path 予定）
-2. Write: Admin ロールのみ `fujii-photos` 追加可 / 一般ユーザーは `user-photos`
+2. Write: 配列要素の `type` に応じた書込制御（Admin のみ `fujii-photos` 要素を追加/更新可、一般ユーザーは `user-photos` のみ）
 3. month フィールドは 1..12 の整数であることを rule で検証
 4. 画像 URL は Storage ダウンロードトークンを含むが今後 CDN 経由へ移行検討
 5. 共有リンク閲覧時は read-only かつユーザー固有 UID の限定された subset のみアクセス許可（別Issue）。

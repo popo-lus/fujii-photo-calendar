@@ -3,7 +3,7 @@
 // - Mapper 適用 (Firestore raw -> PhotoEntity)
 // - メモリキャッシュ (uid:MM -> List<PhotoEntity>)
 // - NetworkException のみ 1 回リトライ
-// - 空集合時は EmptyPhotoSetException を Failure として返却
+// - 空集合時は Success([]) を返却（UI 側でプレースホルダー表示を判断）
 
 //TODO: キャッシュをRepository側で実装
 
@@ -41,18 +41,23 @@ class CalendarRepositoryImpl implements CalendarRepository {
           uid: uid,
           month: month,
         );
-        final entities = rawList
+        var entities = rawList
             .map((r) => mapFirestorePhoto(r['id'] as String, r))
             .toList();
-        if (entities.isEmpty) {
-          throw EmptyPhotoSetException('No photos for $uid month=$month');
+        // 月ドキュメントID (引数 month) と各要素の month の整合性を担保
+        // 差異があるものは除外（寛容動作）。
+        if (entities.any((e) => e.month != month)) {
+          entities = entities.where((e) => e.month == month).toList();
         }
+        // 空集合は仕様上プレースホルダー表示対象 → 成功で返す
         // 優先度 (priority) / capturedAt ソート (priority desc, capturedAt asc)
-        entities.sort((a, b) {
-          final p = b.priority.compareTo(a.priority);
-          if (p != 0) return p;
-          return a.capturedAt.compareTo(b.capturedAt);
-        });
+        if (entities.isNotEmpty) {
+          entities.sort((a, b) {
+            final p = b.priority.compareTo(a.priority);
+            if (p != 0) return p;
+            return a.capturedAt.compareTo(b.capturedAt);
+          });
+        }
         _cache[key] = entities;
         return Success<List<PhotoEntity>>(entities);
       } catch (e, st) {

@@ -1,4 +1,4 @@
-// (T011) Firestore Service: 指定ユーザー & 月の fujii-photos / user-photos を取得。
+// (T011) Firestore Service: 指定ユーザー & 月の写真を、月ドキュメント配列（userPhotos / fujiiPhotos）から取得。
 //
 // Repository 層から呼び出される最下層 (データ取得) 責務。
 // 返却値は Firestore 生データ Map リスト（id フィールド付与済）。
@@ -22,25 +22,30 @@ class CalendarService {
   }) async {
     final monthKey = month.toString().padLeft(2, '0');
     try {
-      final base = _firestore
+      final docRef = _firestore
           .collection('users')
           .doc(uid)
           .collection('calendar')
           .doc(monthKey);
-      final futures = [
-        base.collection('fujii-photos').get(),
-        base.collection('user-photos').get(),
-      ];
-      final snaps = await Future.wait(futures);
-      final all = <Map<String, dynamic>>[];
-      for (final qs in snaps) {
-        for (final doc in qs.docs) {
-          final data = doc.data();
-          // id を明示保持
-          all.add({...data, 'id': doc.id});
-        }
+      final snap = await docRef.get();
+      if (!snap.exists) {
+        return <Map<String, dynamic>>[];
       }
-      return all;
+      final data = snap.data() ?? <String, dynamic>{};
+      List<dynamic> asList(dynamic v) => v is List ? v : const [];
+
+      final user = asList(data['userPhotos'])
+          .whereType<Map<String, dynamic>>()
+          .map((e) => {...e, 'type': 'user-photos'})
+          .toList();
+      final fujii = asList(data['fujiiPhotos'])
+          .whereType<Map<String, dynamic>>()
+          .map((e) => {...e, 'type': 'fujii-photos'})
+          .toList();
+
+      // どちらの配列にも id が含まれている前提（seed に準拠）。
+      // 念のため欠落時は URL 末尾やインデックスで補完しない（DecodeException で上位へ）。
+      return [...user, ...fujii];
     } on FirebaseException catch (e, st) {
       throw NetworkException(
         'Firestore fetch failed: ${e.message}',

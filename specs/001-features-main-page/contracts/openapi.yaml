@@ -12,7 +12,7 @@ components:
       properties:
         id:
           type: string
-          description: ファイル名/FirestoreドキュメントID
+          description: 配列要素の id（ファイル名）
         type:
           type: string
           description: 写真種別 (Firestoreの 'type' フィールドをそのまま利用)
