@@ -32,15 +32,15 @@
 - [x] T007 CI ワークフロー下書き `.github/workflows/ci.yaml` (fvm セットアップ → flutter pub get → analyze → build_runner build)
 
 ## Phase 3.2: Core / Model Implementation
-- [ ] T007 `core/result/result.dart` Result<T> 実装 (success/error, map, flatMap)
-- [ ] T008 [P] 例外階層 `core/error/app_exceptions.dart` (NetworkException, DecodeException, EmptyPhotoSetException, AdminExposureViolation)
-- [ ] T009 PhotoEntity (freezed + json) `lib/domain/entities/photo_entity.dart`
-- [ ] T010 [P] Photo マッピング関数 `lib/data/mappers/photo_mapper.dart` (Firestore Map→Entity, priority/monthKey 派生)
+- [x] T007 `core/result/result.dart` Result<T> 実装 (success/error, map, flatMap)
+- [x] T008 [P] 例外階層 `core/error/app_exceptions.dart` (NetworkException, DecodeException, EmptyPhotoSetException, AdminExposureViolation)
+- [x] T009 PhotoEntity (freezed + json) `lib/domain/entities/photo_entity.dart`
+- [x] T010 [P] Photo マッピング関数 `lib/data/mappers/photo_mapper.dart` (Firestore Map→Entity, priority/monthKey 派生)
 
 ## Phase 3.3: Data Layer
-- [ ] T011 Firestore Service `lib/data/services/calendar_service.dart` (uid+month で fujii & user 取得)
-- [ ] T012 Repository Interface `lib/domain/repositories/calendar_repository.dart` (loadMonthPhotos)
-- [ ] T013 Repository 実装 `lib/data/repositories/calendar_repository_impl.dart` (Service 呼出 + Mapper + メモリキャッシュ + 単回リトライ)
+- [x] T011 Firestore Service `lib/data/services/calendar_service.dart` (uid+month で fujii & user 取得)
+- [x] T012 Repository Interface `lib/domain/repositories/calendar_repository.dart` (loadMonthPhotos)
+- [x] T013 Repository 実装 `lib/data/repositories/calendar_repository_impl.dart` (Service 呼出 + Mapper + メモリキャッシュ + 単回リトライ)
 
 ## Phase 3.4: Domain UseCases
 - [ ] T014 UseCase: 月写真ロード `lib/domain/usecases/load_month_photos_usecase.dart`
