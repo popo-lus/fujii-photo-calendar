@@ -5,7 +5,6 @@ import 'package:fujii_photo_calendar/data/services/fujii_photos_service.dart';
 import 'package:fujii_photo_calendar/domain/entities/photo_entity.dart';
 import 'package:fujii_photo_calendar/domain/repositories/fujii_photos_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 part 'fujii_photos_repository_impl.g.dart';
 

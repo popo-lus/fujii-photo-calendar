@@ -16,7 +16,7 @@ class AuthGuard extends AutoRouteGuard {
       AppLogger.instance.log('auth_session_reuse', data: {'uid': user.uid});
       resolver.next(true);
     } else {
-      resolver.redirect(const LoginRoute());
+      resolver.redirectUntil(const LoginRoute());
     }
   }
 }

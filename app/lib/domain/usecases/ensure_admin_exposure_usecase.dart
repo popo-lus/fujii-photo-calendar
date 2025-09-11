@@ -9,7 +9,6 @@
 import 'package:fujii_photo_calendar/core/error/app_exceptions.dart';
 import 'package:fujii_photo_calendar/domain/entities/photo_entity.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 part 'ensure_admin_exposure_usecase.g.dart';
 
