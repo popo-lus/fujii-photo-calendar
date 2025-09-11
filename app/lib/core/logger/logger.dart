@@ -75,4 +75,17 @@ class AppLogger {
       if (stack != null) 'stack': stack.toString(),
     },
   );
+
+  // (T003) Auth ログ
+  void logAuthSignInStart({required String email}) =>
+      _emit('auth_signin_start', data: {'email': email});
+  void logAuthSignInSuccess({required String uid, required String email}) =>
+      _emit('auth_signin_success', data: {'uid': uid, 'email': email});
+  void logAuthSignInFailure({required String email, required Object error}) =>
+      _emit(
+        'auth_signin_failure',
+        data: {'email': email, 'error': error.toString()},
+      );
+  void logAuthSignOut({required String uid}) =>
+      _emit('auth_signout', data: {'uid': uid});
 }

@@ -7,10 +7,10 @@ Branch: `002-features-login`
 注: 要望によりテストタスクを除去。品質/回 regress リスク上昇に注意 (後から最小テスト復活推奨)。
 
 ## Phase 3.1: Setup
-- [ ] T001 依存追加: `firebase_auth` を `app/pubspec.yaml` に追記し取得 (`flutter pub get`) ファイル: `app/pubspec.yaml`
-- [ ] T002 Firebase Auth Emulator 設定追加: `main.dart` に Auth emulator 接続処理 (localhost:9099) 追記 ファイル: `app/lib/main.dart`
-- [ ] T003 [P] Logger 拡張: `AppLogger` に `logAuthSignInStart/success/failure`, `logAuthSignOut` 追加 ファイル: `app/lib/core/logger/logger.dart`
-- [ ] T004 [P] Auth 基礎 Provider: `auth_providers.dart` 新規 (FirebaseAuth / authStateChanges) ファイル: `app/lib/providers/auth_providers.dart`
+- [x] T001 依存追加: `firebase_auth` を `app/pubspec.yaml` に追記し取得 (`flutter pub get`) ファイル: `app/pubspec.yaml`
+- [x] T002 Firebase Auth Emulator 設定追加: `main.dart` に Auth emulator 接続処理 (localhost:9099) 追記 ファイル: `app/lib/main.dart`
+- [x] T003 [P] Logger 拡張: `AppLogger` に `logAuthSignInStart/success/failure`, `logAuthSignOut` 追加 ファイル: `app/lib/core/logger/logger.dart`
+- [x] T004 [P] Auth 基礎 Provider: `auth_providers.dart` 新規 (FirebaseAuth / authStateChanges) ファイル: `app/lib/providers/auth_providers.dart`
 
 ## Phase 3.2: Core Implementation
 - [ ] T005 AuthResult モデル (freezed, FirebaseUser 変換) フィールド: email, userUid, identifier, lastLoginAt ファイル: `app/lib/domain/entities/auth_result.dart`
