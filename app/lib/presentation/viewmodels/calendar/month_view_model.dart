@@ -22,6 +22,7 @@
 import 'dart:async';
 
 import 'package:fujii_photo_calendar/data/services/auth_service.dart';
+import 'package:fujii_photo_calendar/providers/auth_providers.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:fujii_photo_calendar/core/result/result.dart';
 import 'package:fujii_photo_calendar/domain/entities/photo_entity.dart';
@@ -71,7 +72,6 @@ const Object _noChangeSentinel = Object();
 
 @Riverpod(keepAlive: true)
 class MonthViewModel extends _$MonthViewModel {
-  final String _uid = 'demo-user';
   int _month = DateTime.now().month;
 
   @override
@@ -80,17 +80,22 @@ class MonthViewModel extends _$MonthViewModel {
   }
 
   Future<MonthData> _fetch() async {
+    final user = ref.read(firebaseAuthProvider).currentUser;
+    if (user == null) {
+      throw StateError('Not authenticated');
+    }
+    final uid = user.uid;
     final loader = ref.read(loadMonthPhotosUseCaseProvider);
     return PerfTimer.measureFuture('month_load_$_month', () async {
-      final result = await loader.call(uid: _uid, month: _month);
+      final result = await loader.call(uid: uid, month: _month);
       switch (result) {
         case Success<List<PhotoEntity>>(value: final list):
           AppLogger.instance.logMonthLoad(
-            uid: _uid,
+            uid: uid,
             month: _month,
             count: list.length,
           );
-          return MonthData(uid: _uid, month: _month, photos: list);
+          return MonthData(uid: uid, month: _month, photos: list);
         case Failure<List<PhotoEntity>>(rawError: final e):
           AppLogger.instance.logError(e, phase: 'month_load');
           throw e; // AsyncValue.error へ伝播
