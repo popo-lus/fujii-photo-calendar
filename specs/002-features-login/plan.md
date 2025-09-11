@@ -154,7 +154,7 @@ ios/ or android/
 *Prerequisites: research.md complete*
 
 1. **Extract entities** → `data-model.md`:
-   - AuthResult(Parent): email, displayName, lastLoginAt
+   - AuthResult(Parent): email, userUid, identifier, lastLoginAt
    - セッションは独立モデルを作らず挙動のみ定義
    - Validation rules: email形式, password非空/長さ(最小) [研究で決定]
 
@@ -211,10 +211,10 @@ ios/ or android/
 ## Complexity Tracking
 *Fill ONLY if Constitution Check has violations that must be justified*
 
-| Violation                  | Why Needed         | Simpler Alternative Rejected Because |
-| -------------------------- | ------------------ | ------------------------------------ |
-| [e.g., 4th project]        | [current need]     | [why 3 projects insufficient]        |
-| [e.g., Repository pattern] | [specific problem] | [why direct DB access insufficient]  |
+| Violation                                           | Why Needed (Stakeholder Rationale)                        | Simpler Alternative Rejected Because                         |
+| --------------------------------------------------- | --------------------------------------------------------- | ------------------------------------------------------------ |
+| Omitted automated tests (contract/integration/unit) | 初期デモ優先 / 時間制約で先にUIを可視化し意思決定を早める | 最小限の失敗テスト維持: 品質向上だが初期投入時間増を許容せず |
+| Introduced AuthGuard abstraction                    | AutoRoute Guard 機構活用で責務分離と将来拡張 (role別)     | main.dart に if 分岐: 短期的には簡単だが散在と複雑化の懸念   |
 
 
 ## Progress Tracking
@@ -223,16 +223,16 @@ ios/ or android/
 **Phase Status**:
 - [x] Phase 0: Research complete (/plan command)
 - [x] Phase 1: Design complete (/plan command)
-- [ ] Phase 2: Task planning complete (/plan command - describe approach only)
-- [ ] Phase 3: Tasks generated (/tasks command)
-- [ ] Phase 4: Implementation complete
-- [ ] Phase 5: Validation passed
+- [x] Phase 2: Task planning complete (/plan command - describe approach only)
+- [x] Phase 3: Tasks generated (tasks.md created; test tasks intentionally omitted)
+   - [ ] Phase 4: Implementation complete
+   - [ ] Phase 5: Validation passed
 
 **Gate Status**:
 - [x] Initial Constitution Check: PASS
 - [x] Post-Design Constitution Check: PASS (更新: cloud_firestore 依存除去で簡素化)
 - [x] All NEEDS CLARIFICATION resolved
-- [ ] Complexity deviations documented
+- [x] Complexity deviations documented (テスト省略特例)
 
 ---
 *Based on Constitution v2.1.1 - See `/memory/constitution.md`*

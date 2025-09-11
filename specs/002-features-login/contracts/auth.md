@@ -18,4 +18,7 @@
 | too-many-requests                                    | しばらく待って再度お試しください                 |
 | unknown                                              | 予期しないエラーが発生しました                   |
 
+### AuthResult Fields (Reference)
+Returned AuthResult includes: `email`, `userUid`, `identifier`, `lastLoginAt` (identifier は表示/識別用。displayName は廃止。)
+
 (Phase 1 / contracts END)

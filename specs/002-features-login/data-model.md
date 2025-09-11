@@ -2,11 +2,12 @@
 
 ## Entities
 ### AuthResult (Parent)
-| Field       | Type      | Required | Notes                  |
-| ----------- | --------- | -------- | ---------------------- |
-| email       | string    | yes      | Unique (Firebase Auth) |
-| displayName | string    | yes      | 表示用                 |
-| lastLoginAt | Timestamp | no       | ログイン成功時更新     |
+| Field       | Type      | Required | Notes                                             |
+| ----------- | --------- | -------- | ------------------------------------------------- |
+| email       | string    | yes      | Unique (Firebase Auth)                            |
+| userUid     | string    | yes      | Firebase Auth UID                                 |
+| identifier  | string    | yes      | アプリ内識別/表示用（表示名や家族内識別コード等） |
+| lastLoginAt | Timestamp | no       | ログイン成功時更新                                |
 
 <!-- 独立した Session エンティティは保持せず、FirebaseAuth.currentUser の存在と資格情報失効イベントで状態管理 -->
 
@@ -15,6 +16,7 @@
 ## Validation Rules
 - email: 正規表現軽量チェック + Firebase Auth エラー補完
 - password: length >= 6, 非空
+- identifier: 非空 / 先頭末尾空白除去後の長さ > 0 / 長さ上限 (暫定 64) ※仕様拡張時再検討
 
 ## State Transitions (Simplified)
 ```

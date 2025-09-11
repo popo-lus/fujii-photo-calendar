@@ -87,7 +87,7 @@ When creating this spec from a user prompt:
 - **FR-012**: システムは親ユーザー認証方式としてメールアドレス+パスワードのみをサポートし他の外部ID/SSOを提供しない。
 
 ### Key Entities *(include if feature involves data)*
-- **AuthResult (Parent Authentication Snapshot)**: 認証成功時点の親ユーザー情報スナップショット。属性（最低限）: email, displayName, lastLoginAt。セッションは独立エンティティを設けず Firebase Auth の状態 + トークン有効性で判定し、明示ログアウトまたは資格情報失効まで持続。
+- **AuthResult (Parent Authentication Snapshot)**: 認証成功時点の親ユーザー情報スナップショット。属性（最低限）: email, userUid, identifier, lastLoginAt。`identifier` はアプリ内表示/識別用（表示名や家族内識別コード等）。セッションは独立エンティティを設けず Firebase Auth の状態 + トークン有効性で判定し、明示ログアウトまたは資格情報失効まで持続。
 
 （閲覧専用ユーザー/共有トークンは別仕様）
 
