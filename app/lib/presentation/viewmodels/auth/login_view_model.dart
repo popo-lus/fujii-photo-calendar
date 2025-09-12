@@ -7,49 +7,37 @@ import 'package:fujii_photo_calendar/domain/entities/auth_result.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fujii_photo_calendar/core/error/auth_error_mapper.dart';
 import 'package:fujii_photo_calendar/core/logger/logger.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'login_view_model.g.dart';
+part 'login_view_model.freezed.dart';
 
-sealed class LoginState {
-  const LoginState();
-}
-
-class LoginIdle extends LoginState {
-  const LoginIdle();
-}
-
-class LoginLoading extends LoginState {
-  const LoginLoading();
-}
-
-class LoginError extends LoginState {
-  const LoginError(this.message);
-  final String message;
-}
-
-class LoginSuccess extends LoginState {
-  const LoginSuccess(this.result);
-  final AuthResult result;
+@freezed
+class LoginState with _$LoginState {
+  const factory LoginState.idle() = _LoginIdle;
+  const factory LoginState.loading() = _LoginLoading;
+  const factory LoginState.error(String message) = _LoginError;
+  const factory LoginState.success(AuthResult result) = _LoginSuccess;
 }
 
 @Riverpod(keepAlive: true)
 class LoginViewModel extends _$LoginViewModel {
   @override
-  LoginState build() => const LoginIdle();
+  LoginState build() => const LoginState.idle();
 
   Future<void> login({required String email, required String password}) async {
     // 既にロード中なら無視
-    if (state is LoginLoading) return;
-    state = const LoginLoading();
+    if (state is _LoginLoading) return;
+    state = const LoginState.loading();
     final service = ref.read(authServiceProvider);
     try {
       final res = await service.signIn(email: email, password: password);
-      state = LoginSuccess(res);
+      state = LoginState.success(res);
     } on FirebaseAuthException catch (e) {
-      state = LoginError(mapAuthError(e));
+      state = LoginState.error(mapAuthError(e));
       AppLogger.instance.logAuthSignInFailure(email: email, error: e.code);
     } catch (e) {
-      state = LoginError(mapAuthError(e));
+      state = LoginState.error(mapAuthError(e));
       AppLogger.instance.logAuthSignInFailure(email: email, error: e);
     }
   }
@@ -58,12 +46,12 @@ class LoginViewModel extends _$LoginViewModel {
     final service = ref.read(authServiceProvider);
     try {
       await service.signOut();
-      state = const LoginIdle();
+      state = const LoginState.idle();
     } catch (e) {
       AppLogger.instance.logAuthSignOutFailure(error: e);
       // 失敗しても状態は変えない
     }
   }
 
-  void reset() => state = const LoginIdle();
+  void reset() => state = const LoginState.idle();
 }

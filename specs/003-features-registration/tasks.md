@@ -48,20 +48,20 @@ Branch: `003-features-registration`
   - `userByUidStreamProvider(uid)`（family）→ `app/lib/data/repositories/user_repository_impl.dart` の実装の下に配置
 
 ## Phase 3.5: ViewModel（登録 / 招待コード）
-- [ ] T010 Register 用 VM 作成: 状態（idle/loading/error/success）と `submit()` 実装。`AuthService.register` を呼び、成功でホームへ遷移。ファイル: `app/lib/presentation/viewmodels/auth/register_view_model.dart`
-- [ ] T011 Invite 用 VM 作成: 状態と `submit(code)` 実装。`AuthService.signInAnonymousWithCode` を呼び、返却された `ownerUid` と現在月をもとにカレンダーへ遷移。ファイル: `app/lib/presentation/viewmodels/auth/invite_view_model.dart`
+- [x] T010 Register 用 VM 作成: 状態（idle/loading/error/success）と `submit()` 実装。`AuthService.register` を呼び、成功でホームへ遷移。ファイル: `app/lib/presentation/viewmodels/auth/register_view_model.dart`
+- [x] T011 Invite 用 VM 作成: 状態と `submit(code)` 実装。`AuthService.signInAnonymousWithCode` を呼び、返却された `ownerUid` と現在月をもとにカレンダーへ遷移。ファイル: `app/lib/presentation/viewmodels/auth/invite_view_model.dart`
 
 ## Phase 3.6: Router / 画面
-- [ ] T012 ルーター更新: `RegisterRoute`, `InviteCodeRoute` を追加（`auto_route`）。ファイル: `app/lib/presentation/router/app_router.dart`
-- [ ] T013 [P] 画面: `RegisterPage` 作成（名前/メール/パスワード入力、バリデーション、日本語エラー表示）。ファイル: `app/lib/presentation/screens/auth/register_page.dart`
-- [ ] T014 [P] 画面: `InviteCodePage` 作成（招待コード入力、日本語エラー表示）。ファイル: `app/lib/presentation/screens/auth/invite_code_page.dart`
-- [ ] T015 Login 画面更新: 「新規登録」「招待コードで閲覧」ボタンを追加し、それぞれの Route に遷移。ファイル: `app/lib/presentation/screens/auth/login_page.dart`
-- [ ] T016 ルート生成: build_runner を実行して `app_router.gr.dart` を更新（コマンド実行）。
+- [x] T012 ルーター更新: `RegisterRoute`, `InviteCodeRoute` を追加（`auto_route`）。ファイル: `app/lib/presentation/router/app_router.dart`
+- [x] T013 [P] 画面: `RegisterPage` 作成（名前/メール/パスワード入力、バリデーション、日本語エラー表示）。ファイル: `app/lib/presentation/screens/auth/register_page.dart`
+- [x] T014 [P] 画面: `InviteCodePage` 作成（招待コード入力、日本語エラー表示）。ファイル: `app/lib/presentation/screens/auth/invite_code_page.dart`
+- [x] T015 Login 画面更新: 「新規登録」「招待コードで閲覧」ボタンを追加し、それぞれの Route に遷移。ファイル: `app/lib/presentation/screens/auth/login_page.dart`
+- [x] T016 ルート生成: build_runner を実行して `app_router.gr.dart` を更新（コマンド実行）。
 
 ## Phase 3.7: フロー統合 / 遷移
-- [ ] T017 登録成功時の遷移: `RegisterViewModel` 成功 → `MonthCalendarRoute()`（自分の `uid`、現在月）。ファイル: `app/lib/presentation/viewmodels/auth/register_view_model.dart`
-- [ ] T018 招待成功時の遷移: `InviteViewModel` 成功 → `MonthCalendarRoute(ownerUid: invite.ownerUid, month: now)`（読み取り専用前提）。ファイル: `app/lib/presentation/viewmodels/auth/invite_view_model.dart`
-- [ ] T019 [P] ログ呼び出し: Register/Anonymous の start/success/failure を各 VM/Service から `AppLogger` へ出力。ファイル: `app/lib/core/logger/logger.dart`, `app/lib/data/services/auth_service.dart`, `app/lib/data/services/user_service.dart`, `app/lib/presentation/viewmodels/auth/*`
+- [x] T017 登録成功時の遷移: `RegisterViewModel` 成功 → `MonthCalendarRoute()`（自分の `uid`、現在月）。ファイル: `app/lib/presentation/viewmodels/auth/register_view_model.dart`
+- [x] T018 招待成功時の遷移: `InviteViewModel` 成功 → `MonthCalendarRoute(ownerUid: invite.ownerUid, month: now)`（読み取り専用前提）。ファイル: `app/lib/presentation/viewmodels/auth/invite_view_model.dart`
+- [x] T019 [P] ログ呼び出し: Register/Anonymous の start/success/failure を各 VM/Service から `AppLogger` へ出力。ファイル: `app/lib/core/logger/logger.dart`, `app/lib/data/services/auth_service.dart`, `app/lib/data/services/user_service.dart`, `app/lib/presentation/viewmodels/auth/*`
 
 ## Phase 3.8: 権限制御（設計整合の確認）
 - [ ] T020 Firestore 読み取り: 匿名ユーザーでも `users/{ownerUid}/calendar/{MM}` を参照可能な想定で、アプリ側は編集 UI を無効化（既存 UI の編集操作は登録ユーザー限定）。コード変更は UI の表示制御のみで可。ファイル: `app/lib/presentation/screens/calendar/*`（必要箇所のみ）

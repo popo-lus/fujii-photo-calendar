@@ -38,7 +38,7 @@ class MonthCalendarPage extends ConsumerWidget {
             },
           ),
           asyncData.maybeWhen(
-            data: (MonthData data) {
+            data: (MonthState data) {
               if (data.inSlideshow) {
                 return IconButton(
                   icon: const Icon(Icons.close),
@@ -61,7 +61,7 @@ class MonthCalendarPage extends ConsumerWidget {
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (Object e, StackTrace st) =>
             ErrorView(message: e.toString(), onRetry: () => notifier.reload()),
-        data: (MonthData data) {
+        data: (MonthState data) {
           if (data.inSlideshow) {
             return PhotoSlideshow(
               all: data.photos,

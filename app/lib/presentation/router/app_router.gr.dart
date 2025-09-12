@@ -11,6 +11,22 @@
 part of 'app_router.dart';
 
 /// generated route for
+/// [InviteCodePage]
+class InviteCodeRoute extends PageRouteInfo<void> {
+  const InviteCodeRoute({List<PageRouteInfo>? children})
+    : super(InviteCodeRoute.name, initialChildren: children);
+
+  static const String name = 'InviteCodeRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const InviteCodePage();
+    },
+  );
+}
+
+/// generated route for
 /// [LoginPage]
 class LoginRoute extends PageRouteInfo<void> {
   const LoginRoute({List<PageRouteInfo>? children})
@@ -38,6 +54,22 @@ class MonthCalendarRoute extends PageRouteInfo<void> {
     name,
     builder: (data) {
       return const MonthCalendarPage();
+    },
+  );
+}
+
+/// generated route for
+/// [RegisterPage]
+class RegisterRoute extends PageRouteInfo<void> {
+  const RegisterRoute({List<PageRouteInfo>? children})
+    : super(RegisterRoute.name, initialChildren: children);
+
+  static const String name = 'RegisterRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const RegisterPage();
     },
   );
 }

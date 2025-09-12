@@ -31,60 +31,51 @@ import 'package:fujii_photo_calendar/domain/usecases/compute_slideshow_batch_use
 import 'package:fujii_photo_calendar/domain/usecases/ensure_admin_exposure_usecase.dart';
 import 'package:fujii_photo_calendar/core/logger/logger.dart';
 import 'package:fujii_photo_calendar/core/utils/perf_timer.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'month_view_model.g.dart';
+part 'month_view_model.freezed.dart';
 
-// データモデル (AsyncValue<Data>) で扱う
-class MonthData {
-  const MonthData({
-    required this.uid,
-    required this.month,
-    required this.photos,
-    this.slideshowBatch,
-  });
-  final String uid;
-  final int month; // 1..12
-  final List<PhotoEntity> photos;
-  final List<PhotoEntity>? slideshowBatch;
-
-  bool get isEmpty => photos.isEmpty;
-  bool get inSlideshow => slideshowBatch != null;
-
-  MonthData copyWith({
-    String? uid,
-    int? month,
-    List<PhotoEntity>? photos,
-    Object? slideshowBatch = _noChangeSentinel,
-  }) {
-    return MonthData(
-      uid: uid ?? this.uid,
-      month: month ?? this.month,
-      photos: photos ?? this.photos,
-      slideshowBatch: identical(slideshowBatch, _noChangeSentinel)
-          ? this.slideshowBatch
-          : slideshowBatch as List<PhotoEntity>?,
-    );
-  }
+// Freezed ベースの状態モデル
+@freezed
+abstract class MonthState with _$MonthState {
+  const factory MonthState({
+    required String uid,
+    required int month, // 1..12
+    required List<PhotoEntity> photos,
+    List<PhotoEntity>? slideshowBatch,
+    @Default(false) bool isReadOnly,
+  }) = _MonthState;
 }
 
-// sentinel オブジェクト
-const Object _noChangeSentinel = Object();
+extension MonthStateX on MonthState {
+  bool get isEmpty => photos.isEmpty;
+  bool get inSlideshow => slideshowBatch != null;
+}
 
 @Riverpod(keepAlive: true)
 class MonthViewModel extends _$MonthViewModel {
   int _month = DateTime.now().month;
 
   @override
-  Future<MonthData> build() async {
+  Future<MonthState> build() async {
     return _fetch();
   }
 
-  Future<MonthData> _fetch() async {
-    final user = ref.read(firebaseAuthProvider).currentUser;
-    if (user == null) {
-      throw StateError('Not authenticated');
+  Future<MonthState> _fetch() async {
+    final auth = ref.read(authServiceProvider);
+    String uid;
+    bool isReadOnly = false;
+    if (auth.isCurrentUserAnonymous()) {
+      uid = await auth.resolveOwnerUidForCurrentAnonymous();
+      isReadOnly = true;
+    } else {
+      final user = ref.read(firebaseAuthProvider).currentUser;
+      if (user == null) {
+        throw StateError('Not authenticated');
+      }
+      uid = user.uid;
     }
-    final uid = user.uid;
     final loader = ref.read(loadMonthPhotosUseCaseProvider);
     return PerfTimer.measureFuture('month_load_$_month', () async {
       final result = await loader.call(uid: uid, month: _month);
@@ -95,7 +86,12 @@ class MonthViewModel extends _$MonthViewModel {
             month: _month,
             count: list.length,
           );
-          return MonthData(uid: uid, month: _month, photos: list);
+          return MonthState(
+            uid: uid,
+            month: _month,
+            photos: list,
+            isReadOnly: isReadOnly,
+          );
         case Failure<List<PhotoEntity>>(rawError: final e):
           AppLogger.instance.logError(e, phase: 'month_load');
           throw e; // AsyncValue.error へ伝播
@@ -104,7 +100,7 @@ class MonthViewModel extends _$MonthViewModel {
   }
 
   Future<void> reload() async {
-    state = const AsyncLoading<MonthData>();
+    state = const AsyncLoading<MonthState>();
     state = await AsyncValue.guard(_fetch);
   }
 

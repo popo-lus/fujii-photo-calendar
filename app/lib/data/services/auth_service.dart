@@ -63,6 +63,41 @@ class AuthService {
     (u) => u == null ? null : AuthResult.fromFirebaseUser(u),
   );
 
+  // 現在のユーザーが匿名（招待閲覧）かどうか
+  bool isCurrentUserAnonymous() {
+    final u = _auth.currentUser;
+    return u?.isAnonymous ?? false;
+  }
+
+  // 現在の匿名ユーザーに紐づく招待コードから ownerUid を解決
+  // guestSessions/{viewerUid}.code を取得し、resolveOwnerUidForInviteCode を用いて検証・解決する
+  Future<String> resolveOwnerUidForCurrentAnonymous() async {
+    final viewer = _auth.currentUser;
+    if (viewer == null || !viewer.isAnonymous) {
+      throw const AuthDomainException(
+        code: 'not-anonymous',
+        message: '匿名ユーザーではありません',
+      );
+    }
+    final snap = await _db.collection('guestSessions').doc(viewer.uid).get();
+    if (!snap.exists) {
+      throw const AuthDomainException(
+        code: 'guest-session-not-found',
+        message: '招待セッションが見つかりません',
+      );
+    }
+    final data = snap.data();
+    final code = data?['code'] as String? ?? '';
+    if (code.isEmpty) {
+      throw const AuthDomainException(
+        code: 'invite-code-missing',
+        message: '招待コードが見つかりません',
+      );
+    }
+    // コードの妥当性は resolveOwnerUidForInviteCode 内で検証
+    return resolveOwnerUidForInviteCode(code);
+  }
+
   // (T004) 新規登録
   Future<AuthResult> register({
     required String displayName,
