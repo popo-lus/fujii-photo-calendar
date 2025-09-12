@@ -8,8 +8,8 @@ Branch: `003-features-registration`
 
 ---
 ## Phase 3.1: Setup / 下準備（軽微）
-- [ ] T001 依存関係の確認（変更なし想定）: `firebase_auth`, `cloud_firestore`, `firebase_core`, `flutter_riverpod`, `riverpod_annotation`, `auto_route` が `app/pubspec.yaml` に存在することを確認（不足あれば追記して `flutter pub get`）。ファイル: `app/pubspec.yaml`
-- [ ] T002 [P] ログカテゴリの追加: 登録/匿名閲覧用のイベント関数を `AppLogger` に追加（`logRegisterStart/success/failure`, `logAnonymousStart/success/failure`）。ファイル: `app/lib/core/logger/logger.dart`
+- [x] T001 依存関係の確認（変更なし想定）: `firebase_auth`, `cloud_firestore`, `firebase_core`, `flutter_riverpod`, `riverpod_annotation`, `auto_route` が `app/pubspec.yaml` に存在することを確認（不足あれば追記して `flutter pub get`）。ファイル: `app/pubspec.yaml`
+- [x] T002 [P] ログカテゴリの追加: 登録/匿名閲覧用のイベント関数を `AppLogger` に追加（`logRegisterStart/success/failure`, `logAnonymousStart/success/failure`）。ファイル: `app/lib/core/logger/logger.dart`
 
 ## Phase 3.2: Validation / ルール整備
 - [ ] T003 入力バリデーション拡張: `AuthValidators` に `displayName`（非空）と `password`（最小8文字・簡易強度）を追加。ファイル: `app/lib/core/utils/validators/auth_validators.dart`

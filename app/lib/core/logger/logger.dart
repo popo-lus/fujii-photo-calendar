@@ -90,4 +90,33 @@ class AppLogger {
       _emit('auth_signout', data: {'uid': uid});
   void logAuthSignOutFailure({required Object error}) =>
       _emit('auth_signout_failure', data: {'error': error.toString()});
+
+  // (T002) Register / Anonymous view logs
+  // Register
+  void logRegisterStart({required String email}) =>
+      _emit('auth_register_start', data: {'email': email});
+  void logRegisterSuccess({required String uid, required String email}) =>
+      _emit('auth_register_success', data: {'uid': uid, 'email': email});
+  void logRegisterFailure({required String email, required Object error}) =>
+      _emit(
+        'auth_register_failure',
+        data: {'email': email, 'error': error.toString()},
+      );
+
+  // Anonymous with invite code
+  void logAnonymousStart({required String code}) =>
+      _emit('auth_anonymous_start', data: {'code': code});
+  void logAnonymousSuccess({
+    required String viewerUid,
+    required String ownerUid,
+    required String code,
+  }) => _emit(
+    'auth_anonymous_success',
+    data: {'viewerUid': viewerUid, 'ownerUid': ownerUid, 'code': code},
+  );
+  void logAnonymousFailure({required String code, required Object error}) =>
+      _emit(
+        'auth_anonymous_failure',
+        data: {'code': code, 'error': error.toString()},
+      );
 }
