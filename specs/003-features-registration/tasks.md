@@ -27,13 +27,13 @@ Branch: `003-features-registration`
   - ファイル: `app/lib/data/services/auth_service.dart`
 
 ## Phase 3.4: User Service / Repository（Firestore 単一データソース）
-- [ ] T006 ドメイン Entity: `UserEntity`（uid, email, displayName, status）を追加（freezed/json は任意、最小で可）。ファイル: `app/lib/domain/entities/user_entity.dart`
-- [ ] T007 リポジトリIF: `UserRepository` を追加。
+- [x] T006 ドメイン Entity: `UserEntity`（uid, email, displayName, status）を追加（freezed/json は任意、最小で可）。ファイル: `app/lib/domain/entities/user_entity.dart`
+- [x] T007 リポジトリIF: `UserRepository` を追加。
   - `Stream<UserEntity?> watchByUid(String uid);`
   - `Future<UserEntity?> getByUidOnce(String uid);`
   - `Future<void> updateDisplayName({required String uid, required String displayName});`（Firestore のみ更新）
   - ファイル: `app/lib/domain/repositories/user_repository.dart`
-- [ ] T008 実装: `UserService` ＋ `UserRepositoryImpl` を追加。
+- [x] T008 実装: `UserService` ＋ `UserRepositoryImpl` を追加。
   - UserService（Firestore 単一ソース）
     - `Stream<Map<String, dynamic>?> watchUserJson(String uid);`
     - `Future<Map<String, dynamic>?> getUserJsonOnce(String uid);`
@@ -42,7 +42,7 @@ Branch: `003-features-registration`
     - `watchByUid`/`getByUidOnce` を実装し、`UserEntity` を返す
     - `updateDisplayName` は Firestore の users/{uid}.displayName のみ更新
     - ファイル: `app/lib/data/repositories/user_repository_impl.dart`
-- [ ] T009 [P] Provider 追加（各実装の直下に定義）:
+- [x] T009 [P] Provider 追加（各実装の直下に定義）:
   - `userServiceProvider` → `app/lib/data/services/user_service.dart` の実装の下に配置
   - `userRepositoryProvider` → `app/lib/data/repositories/user_repository_impl.dart` の実装の下に配置
   - `userByUidStreamProvider(uid)`（family）→ `app/lib/data/repositories/user_repository_impl.dart` の実装の下に配置
