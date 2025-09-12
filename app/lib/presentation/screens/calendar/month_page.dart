@@ -24,6 +24,20 @@ class MonthCalendarPage extends ConsumerWidget {
       appBar: AppBar(
         title: const Text('Photo Calendar'),
         actions: [
+          // 閲覧モードインジケータ（匿名ユーザー時は編集不可）
+          asyncData.maybeWhen(
+            data: (MonthState data) {
+              if (data.isReadOnly) {
+                return const IconButton(
+                  onPressed: null,
+                  icon: Icon(Icons.lock_outline),
+                  tooltip: '閲覧モード (編集不可)',
+                );
+              }
+              return const SizedBox.shrink();
+            },
+            orElse: () => const SizedBox.shrink(),
+          ),
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: asyncData.isLoading ? null : () => notifier.reload(),
@@ -38,7 +52,7 @@ class MonthCalendarPage extends ConsumerWidget {
             },
           ),
           asyncData.maybeWhen(
-            data: (MonthData data) {
+            data: (MonthState data) {
               if (data.inSlideshow) {
                 return IconButton(
                   icon: const Icon(Icons.close),
@@ -61,7 +75,7 @@ class MonthCalendarPage extends ConsumerWidget {
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (Object e, StackTrace st) =>
             ErrorView(message: e.toString(), onRetry: () => notifier.reload()),
-        data: (MonthData data) {
+        data: (MonthState data) {
           if (data.inSlideshow) {
             return PhotoSlideshow(
               all: data.photos,
@@ -69,7 +83,7 @@ class MonthCalendarPage extends ConsumerWidget {
             );
           }
           if (data.isEmpty) return const EmptyMonthPlaceholder();
-          return MonthGrid(photos: data.photos);
+          return MonthGrid(photos: data.photos, readOnly: data.isReadOnly);
         },
       ),
       bottomNavigationBar: MonthNavBar(

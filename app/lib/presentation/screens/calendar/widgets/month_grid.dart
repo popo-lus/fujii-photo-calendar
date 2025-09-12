@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:fujii_photo_calendar/domain/entities/photo_entity.dart';
 
 class MonthGrid extends StatelessWidget {
-  const MonthGrid({super.key, required this.photos});
+  const MonthGrid({super.key, required this.photos, this.readOnly = false});
   final List<PhotoEntity> photos;
+  final bool readOnly;
   @override
   Widget build(BuildContext context) {
     if (photos.isEmpty) {
@@ -40,6 +41,13 @@ class MonthGrid extends StatelessWidget {
                   right: 4,
                   child: Icon(Icons.star, size: 14, color: Colors.amber),
                 ),
+              // 将来の編集UI（削除/移動/説明変更など）は readOnly に応じて無効化する
+              // 例:
+              // if (!readOnly) const Positioned(
+              //   bottom: 4,
+              //   right: 4,
+              //   child: Icon(Icons.edit, size: 14, color: Colors.white70),
+              // ),
             ],
           ),
         );

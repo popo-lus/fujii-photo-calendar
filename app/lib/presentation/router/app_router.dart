@@ -4,6 +4,8 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:fujii_photo_calendar/presentation/screens/calendar/month_page.dart';
 import 'package:fujii_photo_calendar/presentation/screens/auth/login_page.dart';
+import 'package:fujii_photo_calendar/presentation/screens/auth/register_page.dart';
+import 'package:fujii_photo_calendar/presentation/screens/auth/invite_code_page.dart';
 import 'auth_guard.dart';
 
 part 'app_router.gr.dart';
@@ -18,6 +20,8 @@ class AppRouter extends RootStackRouter {
   @override
   List<AutoRoute> get routes => [
     AutoRoute(page: LoginRoute.page),
+    AutoRoute(page: RegisterRoute.page),
+    AutoRoute(page: InviteCodeRoute.page),
     AutoRoute(
       page: MonthCalendarRoute.page,
       guards: [_authGuard],

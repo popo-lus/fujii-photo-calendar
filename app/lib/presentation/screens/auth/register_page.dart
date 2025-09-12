@@ -1,37 +1,34 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:fujii_photo_calendar/presentation/viewmodels/auth/login_view_model.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:fujii_photo_calendar/presentation/viewmodels/auth/register_view_model.dart';
 import 'package:fujii_photo_calendar/core/utils/validators/auth_validators.dart';
 import 'package:fujii_photo_calendar/presentation/router/app_router.dart';
-import 'package:fujii_photo_calendar/domain/entities/auth_result.dart';
 
 @RoutePage()
-class LoginPage extends HookConsumerWidget {
-  const LoginPage({super.key});
+class RegisterPage extends HookConsumerWidget {
+  const RegisterPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final formKey = useMemoized(GlobalKey<FormState>.new);
+    final nameCtrl = useTextEditingController();
     final emailCtrl = useTextEditingController();
     final pwCtrl = useTextEditingController();
     final obscure = useState(true);
 
-    final state = ref.watch(loginViewModelProvider);
-    final notifier = ref.read(loginViewModelProvider.notifier);
+    final state = ref.watch(registerViewModelProvider);
+    final notifier = ref.read(registerViewModelProvider.notifier);
 
-    ref.listen<LoginState>(loginViewModelProvider, (prev, next) {
-      if (next.maybeWhen(
-        success: (AuthResult _) => true,
-        orElse: () => false,
-      )) {
+    ref.listen<RegisterState>(registerViewModelProvider, (prev, next) {
+      if (next.maybeWhen(success: (_) => true, orElse: () => false)) {
         context.router.replaceAll([const MonthCalendarRoute()]);
       }
     });
 
     return Scaffold(
-      appBar: AppBar(title: const Text('ログイン')),
+      appBar: AppBar(title: const Text('新規登録')),
       body: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 420),
@@ -42,6 +39,16 @@ class LoginPage extends HookConsumerWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  TextFormField(
+                    controller: nameCtrl,
+                    decoration: const InputDecoration(labelText: '表示名'),
+                    validator: AuthValidators.validateDisplayName,
+                    enabled: !state.maybeWhen(
+                      loading: () => true,
+                      orElse: () => false,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
                   TextFormField(
                     controller: emailCtrl,
                     decoration: const InputDecoration(labelText: 'メールアドレス'),
@@ -84,7 +91,8 @@ class LoginPage extends HookConsumerWidget {
                           ? null
                           : () {
                               if (formKey.currentState?.validate() ?? false) {
-                                notifier.login(
+                                notifier.submit(
+                                  displayName: nameCtrl.text.trim(),
                                   email: emailCtrl.text.trim(),
                                   password: pwCtrl.text,
                                 );
@@ -96,35 +104,15 @@ class LoginPage extends HookConsumerWidget {
                           width: 20,
                           child: CircularProgressIndicator(strokeWidth: 2),
                         ),
-                        orElse: () => const Text('ログイン'),
+                        orElse: () => const Text('登録'),
                       ),
                     ),
                   ),
                   const SizedBox(height: 12),
                   state.maybeWhen(
-                    error: (String msg) =>
+                    error: (msg) =>
                         Text(msg, style: const TextStyle(color: Colors.red)),
                     orElse: () => const SizedBox.shrink(),
-                  ),
-                  const SizedBox(height: 24),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: OutlinedButton(
-                          onPressed: () =>
-                              context.router.push(const RegisterRoute()),
-                          child: const Text('新規登録'),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: OutlinedButton(
-                          onPressed: () =>
-                              context.router.push(const InviteCodeRoute()),
-                          child: const Text('招待コードで閲覧'),
-                        ),
-                      ),
-                    ],
                   ),
                 ],
               ),

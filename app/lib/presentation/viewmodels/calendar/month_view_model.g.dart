@@ -13,7 +13,7 @@ part of 'month_view_model.dart';
 const monthViewModelProvider = MonthViewModelProvider._();
 
 final class MonthViewModelProvider
-    extends $AsyncNotifierProvider<MonthViewModel, MonthData> {
+    extends $AsyncNotifierProvider<MonthViewModel, MonthState> {
   const MonthViewModelProvider._()
     : super(
         from: null,
@@ -33,20 +33,20 @@ final class MonthViewModelProvider
   MonthViewModel create() => MonthViewModel();
 }
 
-String _$monthViewModelHash() => r'b5fa64a2c307913c607d59c63f0ae911f07b49b7';
+String _$monthViewModelHash() => r'd239c0c1080344d143ca35fe1d0b6a7a5648aa25';
 
-abstract class _$MonthViewModel extends $AsyncNotifier<MonthData> {
-  FutureOr<MonthData> build();
+abstract class _$MonthViewModel extends $AsyncNotifier<MonthState> {
+  FutureOr<MonthState> build();
   @$mustCallSuper
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<AsyncValue<MonthData>, MonthData>;
+    final ref = this.ref as $Ref<AsyncValue<MonthState>, MonthState>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<AsyncValue<MonthData>, MonthData>,
-              AsyncValue<MonthData>,
+              AnyNotifier<AsyncValue<MonthState>, MonthState>,
+              AsyncValue<MonthState>,
               Object?,
               Object?
             >;
