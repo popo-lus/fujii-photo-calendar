@@ -1,11 +1,3 @@
-# Feature Specification: [FEATURE NAME]
-
-**Feature Branch**: `[###-feature-name]`  
-**Created**: [DATE]  
-**Status**: Draft  
-**Input**: User description: "$ARGUMENTS"
-
-## Execution Flow (main)
 # Feature Specification: アカウント新規登録機能
 
 **Feature Branch**: `003-features-registration`  
