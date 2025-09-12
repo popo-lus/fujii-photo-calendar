@@ -68,9 +68,9 @@ Branch: `003-features-registration`
 - [x] T021 invites の参照: list 禁止 / get のみ利用という前提で、`AuthService.signInAnonymousWithCode` 内の実装方針をコメントで明示。ファイル: `app/lib/data/services/auth_service.dart`
 
 ## Phase 3.9: ドキュメント / 手動検証
-- [ ] T022 Quickstart 更新: 招待コード閲覧の手順に画面名・遷移先・失敗時メッセージ例を追記。ファイル: `specs/003-features-registration/quickstart.md`
-- [ ] T023 [P] contracts/auth.md 追記（任意・軽微）: `users/{uid}` 作成は登録フロー内で行い、以後の同期待ちは UserRepository で吸収する旨の注釈を1行追記。ファイル: `specs/003-features-registration/contracts/auth.md`
-- [ ] T024 [P] README 追記（任意）: 新規登録/匿名閲覧の概要と起動手順リンクを追加。ファイル: `README.md`
+- [x] T022 Quickstart 更新: 招待コード閲覧の手順に画面名・遷移先・失敗時メッセージ例を追記。ファイル: `specs/003-features-registration/quickstart.md`
+- [x] T023 [P] contracts/auth.md 追記（任意・軽微）: `users/{uid}` 作成は登録フロー内で行い、以後の同期待ちは UserRepository で吸収する旨の注釈を1行追記。ファイル: `specs/003-features-registration/contracts/auth.md`
+- [x] T024 [P] README 追記（任意）: 新規登録/匿名閲覧の概要と起動手順リンクを追加。ファイル: `README.md`
 
 ---
 ## 依存関係 / 並列性

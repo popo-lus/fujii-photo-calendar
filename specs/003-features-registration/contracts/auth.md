@@ -9,6 +9,7 @@
   - firebase_auth.createUserWithEmailAndPassword(email, password)
   - updateProfile(displayName)
   - Firestore: users/{uid} に { displayName, email, createdAt, updatedAt }
+  - 備考: users/{uid} の初期作成は登録フロー内で行い、その後の同期待ちはクライアント側の UserRepository が吸収（UI は即座に反映される想定）
 - Response: 201 Created（uid, displayName, email）
 - Errors:
   - 400: validation error（名前空、メール形式、パスワード弱い）
