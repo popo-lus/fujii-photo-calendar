@@ -64,8 +64,8 @@ Branch: `003-features-registration`
 - [x] T019 [P] ログ呼び出し: Register/Anonymous の start/success/failure を各 VM/Service から `AppLogger` へ出力。ファイル: `app/lib/core/logger/logger.dart`, `app/lib/data/services/auth_service.dart`, `app/lib/data/services/user_service.dart`, `app/lib/presentation/viewmodels/auth/*`
 
 ## Phase 3.8: 権限制御（設計整合の確認）
-- [ ] T020 Firestore 読み取り: 匿名ユーザーでも `users/{ownerUid}/calendar/{MM}` を参照可能な想定で、アプリ側は編集 UI を無効化（既存 UI の編集操作は登録ユーザー限定）。コード変更は UI の表示制御のみで可。ファイル: `app/lib/presentation/screens/calendar/*`（必要箇所のみ）
-- [ ] T021 invites の参照: list 禁止 / get のみ利用という前提で、`AuthService.signInAnonymousWithCode` 内の実装方針をコメントで明示。ファイル: `app/lib/data/services/auth_service.dart`
+- [x] T020 Firestore 読み取り: 匿名ユーザーでも `users/{ownerUid}/calendar/{MM}` を参照可能な想定で、アプリ側は編集 UI を無効化（既存 UI の編集操作は登録ユーザー限定）。コード変更は UI の表示制御のみで可。ファイル: `app/lib/presentation/screens/calendar/*`（必要箇所のみ）
+- [x] T021 invites の参照: list 禁止 / get のみ利用という前提で、`AuthService.signInAnonymousWithCode` 内の実装方針をコメントで明示。ファイル: `app/lib/data/services/auth_service.dart`
 
 ## Phase 3.9: ドキュメント / 手動検証
 - [ ] T022 Quickstart 更新: 招待コード閲覧の手順に画面名・遷移先・失敗時メッセージ例を追記。ファイル: `specs/003-features-registration/quickstart.md`

@@ -152,6 +152,11 @@ class AuthService {
   // (T005) 招待コードで匿名サインイン
   // 返り値は AuthResult に統一。ownerUid は必要に応じて
   // resolveOwnerUidForInviteCode(code) を別途呼び出して取得してください。
+  // (T021) invites の参照方針:
+  //  - セキュリティルールで invites コレクションは list/クエリ禁止、単一ドキュメント get のみ許可
+  //  - したがってここでは invites/{code} のドキュメント ID を直接指定して get する
+  //  - コード列挙や部分一致検索は行わない（プライバシー/探索耐性のため）
+  //  - 期限切れ/disabled をアプリ側でも検証し、監査用に guestSessions/{viewerUid} を作成
   Future<AuthResult> signInAnonymousWithCode(String code) async {
     AppLogger.instance.logAnonymousStart(code: code);
     try {
@@ -164,7 +169,7 @@ class AuthService {
         );
       }
 
-      // invites/{code} は list 禁止前提、get のみ
+      // invites/{code} は list 禁止前提、get のみ（クエリ/列挙は行わない）
       final snap = await _db.collection('invites').doc(code).get();
       if (!snap.exists) {
         throw const AuthDomainException(
@@ -235,6 +240,7 @@ class AuthService {
   }
 
   // 招待コード -> ownerUid の解決ヘルパ（VM 遷移に利用）
+  // (T021) ここでも list 禁止 / get のみのポリシーに従い、invites/{code} を直接取得して検証する
   Future<String> resolveOwnerUidForInviteCode(String code) async {
     final snap = await _db.collection('invites').doc(code).get();
     if (!snap.exists) {
