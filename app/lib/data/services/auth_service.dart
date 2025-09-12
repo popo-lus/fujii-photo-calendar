@@ -126,7 +126,7 @@ class AuthService {
       await _db.collection('users').doc(uid).set({
         'displayName': displayName,
         'email': user.email ?? email,
-        'status': 'active',
+        'role': 'client',
         'createdAt': now,
         'updatedAt': now,
       }, SetOptions(merge: true));

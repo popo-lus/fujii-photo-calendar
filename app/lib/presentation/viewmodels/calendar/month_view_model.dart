@@ -145,6 +145,7 @@ class MonthViewModel extends _$MonthViewModel {
     final service = ref.read(authServiceProvider);
     try {
       await service.signOut();
+      ref.invalidateSelf();
     } catch (e) {
       AppLogger.instance.logAuthSignOutFailure(error: e);
     }
