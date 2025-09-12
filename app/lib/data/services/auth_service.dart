@@ -1,18 +1,23 @@
 // (T007) AuthService 実装
 // 契約: signIn / signOut / getCurrentUser / observeAuthState
+// (T004/T005) register / signInAnonymousWithCode を追加
 
 import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fujii_photo_calendar/domain/entities/auth_result.dart';
 import 'package:fujii_photo_calendar/core/logger/logger.dart';
+import 'package:fujii_photo_calendar/core/error/app_exceptions.dart';
 import 'package:fujii_photo_calendar/providers/auth_providers.dart';
+import 'package:fujii_photo_calendar/providers/firebase_providers.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'auth_service.g.dart';
 
 class AuthService {
-  AuthService(this._auth);
+  AuthService(this._auth, this._db);
   final FirebaseAuth _auth;
+  final FirebaseFirestore _db;
 
   Future<AuthResult> signIn({
     required String email,
@@ -57,10 +62,191 @@ class AuthService {
   Stream<AuthResult?> observeAuthState() => _auth.authStateChanges().map(
     (u) => u == null ? null : AuthResult.fromFirebaseUser(u),
   );
+
+  // (T004) 新規登録
+  Future<AuthResult> register({
+    required String displayName,
+    required String email,
+    required String password,
+  }) async {
+    AppLogger.instance.logRegisterStart(email: email);
+    try {
+      final cred = await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      final user = cred.user;
+      if (user == null) {
+        throw const AuthDomainException(
+          code: 'user-null',
+          message: 'ユーザー作成に失敗しました',
+        );
+      }
+      // 表示名更新
+      await user.updateDisplayName(displayName);
+
+      final uid = user.uid;
+      // Firestore users/{uid}
+      final now = FieldValue.serverTimestamp();
+      await _db.collection('users').doc(uid).set({
+        'displayName': displayName,
+        'email': user.email ?? email,
+        'status': 'active',
+        'createdAt': now,
+        'updatedAt': now,
+      }, SetOptions(merge: true));
+
+      final result = AuthResult.fromFirebaseUser(user);
+      AppLogger.instance.logRegisterSuccess(uid: uid, email: result.email);
+      return result;
+    } on FirebaseAuthException catch (e) {
+      AppLogger.instance.logRegisterFailure(email: email, error: e.code);
+      throw AuthDomainException.fromFirebaseAuth(e);
+    } on FirebaseException catch (e) {
+      AppLogger.instance.logRegisterFailure(email: email, error: e.code);
+      throw AuthDomainException(
+        code: 'firestore',
+        message: e.message ?? e.code,
+      );
+    } catch (e) {
+      AppLogger.instance.logRegisterFailure(email: email, error: e);
+      throw AuthDomainException(code: 'unknown', message: e.toString());
+    }
+  }
+
+  // (T005) 招待コードで匿名サインイン
+  // 返り値は AuthResult に統一。ownerUid は必要に応じて
+  // resolveOwnerUidForInviteCode(code) を別途呼び出して取得してください。
+  Future<AuthResult> signInAnonymousWithCode(String code) async {
+    AppLogger.instance.logAnonymousStart(code: code);
+    try {
+      final cred = await _auth.signInAnonymously();
+      final viewer = cred.user;
+      if (viewer == null) {
+        throw const AuthDomainException(
+          code: 'anonymous-failed',
+          message: '匿名サインインに失敗しました',
+        );
+      }
+
+      // invites/{code} は list 禁止前提、get のみ
+      final snap = await _db.collection('invites').doc(code).get();
+      if (!snap.exists) {
+        throw const AuthDomainException(
+          code: 'invalid-code',
+          message: '無効な招待コードです',
+        );
+      }
+      final data = snap.data() as Map<String, dynamic>;
+      final disabled = (data['disabled'] as bool?) ?? false;
+      if (disabled) {
+        throw const AuthDomainException(
+          code: 'invite-disabled',
+          message: 'この招待は無効です',
+        );
+      }
+      final expiresAtRaw = data['expiresAt'];
+      if (expiresAtRaw != null) {
+        DateTime expiresAt;
+        if (expiresAtRaw is Timestamp) {
+          expiresAt = expiresAtRaw.toDate();
+        } else if (expiresAtRaw is DateTime) {
+          expiresAt = expiresAtRaw;
+        } else {
+          // 予期しない型は即時期限切れとみなす
+          expiresAt = DateTime.fromMillisecondsSinceEpoch(0);
+        }
+        if (expiresAt.isBefore(DateTime.now())) {
+          throw const AuthDomainException(
+            code: 'invite-expired',
+            message: '招待の有効期限が切れています',
+          );
+        }
+      }
+      final ownerUid = (data['ownerUid'] as String?) ?? '';
+      if (ownerUid.isEmpty) {
+        throw const AuthDomainException(
+          code: 'invite-no-owner',
+          message: '招待の参照先が不明です',
+        );
+      }
+
+      // 任意: guestSessions/{viewerUid}
+      await _db.collection('guestSessions').doc(viewer.uid).set({
+        'code': code,
+        'albumOwnerUid': ownerUid,
+        'createdAt': FieldValue.serverTimestamp(),
+      }, SetOptions(merge: true));
+
+      AppLogger.instance.logAnonymousSuccess(
+        viewerUid: viewer.uid,
+        ownerUid: ownerUid,
+        code: code,
+      );
+      return AuthResult.fromFirebaseUser(viewer);
+    } on FirebaseAuthException catch (e) {
+      AppLogger.instance.logAnonymousFailure(code: code, error: e.code);
+      throw AuthDomainException.fromFirebaseAuth(e);
+    } on FirebaseException catch (e) {
+      AppLogger.instance.logAnonymousFailure(code: code, error: e.code);
+      throw AuthDomainException(
+        code: 'firestore',
+        message: e.message ?? e.code,
+      );
+    } catch (e) {
+      AppLogger.instance.logAnonymousFailure(code: code, error: e);
+      throw AuthDomainException(code: 'unknown', message: e.toString());
+    }
+  }
+
+  // 招待コード -> ownerUid の解決ヘルパ（VM 遷移に利用）
+  Future<String> resolveOwnerUidForInviteCode(String code) async {
+    final snap = await _db.collection('invites').doc(code).get();
+    if (!snap.exists) {
+      throw const AuthDomainException(
+        code: 'invalid-code',
+        message: '無効な招待コードです',
+      );
+    }
+    final data = snap.data() as Map<String, dynamic>;
+    final disabled = (data['disabled'] as bool?) ?? false;
+    if (disabled) {
+      throw const AuthDomainException(
+        code: 'invite-disabled',
+        message: 'この招待は無効です',
+      );
+    }
+    final ownerUid = (data['ownerUid'] as String?) ?? '';
+    if (ownerUid.isEmpty) {
+      throw const AuthDomainException(
+        code: 'invite-no-owner',
+        message: '招待の参照先が不明です',
+      );
+    }
+    final expiresAtRaw = data['expiresAt'];
+    if (expiresAtRaw != null) {
+      DateTime expiresAt;
+      if (expiresAtRaw is Timestamp) {
+        expiresAt = expiresAtRaw.toDate();
+      } else if (expiresAtRaw is DateTime) {
+        expiresAt = expiresAtRaw;
+      } else {
+        expiresAt = DateTime.fromMillisecondsSinceEpoch(0);
+      }
+      if (expiresAt.isBefore(DateTime.now())) {
+        throw const AuthDomainException(
+          code: 'invite-expired',
+          message: '招待の有効期限が切れています',
+        );
+      }
+    }
+    return ownerUid;
+  }
 }
 
 @Riverpod(keepAlive: true)
 AuthService authService(Ref ref) {
   final auth = ref.watch(firebaseAuthProvider);
-  return AuthService(auth);
+  final db = ref.watch(firestoreProvider);
+  return AuthService(auth, db);
 }

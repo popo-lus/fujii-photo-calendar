@@ -15,12 +15,12 @@ Branch: `003-features-registration`
 - [x] T003 入力バリデーション拡張: `AuthValidators` に `displayName`（非空）と `password`（最小8文字・簡易強度）を追加。ファイル: `app/lib/core/utils/validators/auth_validators.dart`
 
 ## Phase 3.3: Auth Service 拡張（登録 / 匿名）
-- [ ] T004 `AuthService.register(displayName, email, password)` を追加。
+ [x] T004 `AuthService.register(displayName, email, password)` を追加。
   - createUserWithEmailAndPassword → currentUser.updateDisplayName(displayName)
   - Firestore: `users/{uid}` に `{ displayName, email, status: 'active', createdAt, updatedAt }` を作成
   - 失敗時: 例外をドメイン向けに正規化（日本語メッセージは VM/UI 層で対応可）
   - ファイル: `app/lib/data/services/auth_service.dart`
-- [ ] T005 `AuthService.signInAnonymousWithCode(code)` を追加。
+ [x] T005 `AuthService.signInAnonymousWithCode(code)` を追加。
   - FirebaseAuth.signInAnonymously → Firestore で `invites/{code}` を get（存在・disabled=false・期限内を確認）
   - 任意: 監査用に `guestSessions/{viewerUid}` を作成 `{ code, albumOwnerUid, createdAt }`
   - 招待の `ownerUid` を返せる戻り値 or 結果型を整備（VM から遷移先決定に使用）
