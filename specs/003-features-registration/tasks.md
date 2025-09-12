@@ -12,7 +12,7 @@ Branch: `003-features-registration`
 - [x] T002 [P] ログカテゴリの追加: 登録/匿名閲覧用のイベント関数を `AppLogger` に追加（`logRegisterStart/success/failure`, `logAnonymousStart/success/failure`）。ファイル: `app/lib/core/logger/logger.dart`
 
 ## Phase 3.2: Validation / ルール整備
-- [ ] T003 入力バリデーション拡張: `AuthValidators` に `displayName`（非空）と `password`（最小8文字・簡易強度）を追加。ファイル: `app/lib/core/utils/validators/auth_validators.dart`
+- [x] T003 入力バリデーション拡張: `AuthValidators` に `displayName`（非空）と `password`（最小8文字・簡易強度）を追加。ファイル: `app/lib/core/utils/validators/auth_validators.dart`
 
 ## Phase 3.3: Auth Service 拡張（登録 / 匿名）
 - [ ] T004 `AuthService.register(displayName, email, password)` を追加。
