@@ -28,6 +28,8 @@ import 'package:fujii_photo_calendar/core/result/result.dart';
 import 'package:fujii_photo_calendar/domain/entities/photo_entity.dart';
 import 'package:fujii_photo_calendar/domain/usecases/load_month_photos_usecase.dart';
 import 'package:fujii_photo_calendar/domain/usecases/compute_slideshow_batch_usecase.dart';
+import 'package:fujii_photo_calendar/domain/usecases/upload_user_photo_usecase.dart';
+import 'dart:io';
 import 'package:fujii_photo_calendar/domain/usecases/ensure_admin_exposure_usecase.dart';
 import 'package:fujii_photo_calendar/core/logger/logger.dart';
 import 'package:fujii_photo_calendar/core/utils/perf_timer.dart';
@@ -148,6 +150,32 @@ class MonthViewModel extends _$MonthViewModel {
       ref.invalidateSelf();
     } catch (e) {
       AppLogger.instance.logAuthSignOutFailure(error: e);
+    }
+  }
+
+  /// UIから選択された画像ファイルを受け取り、アップロードする。
+  /// 成功時は当月のリストへ即時反映されるよう reload を行う。
+  Future<void> onAddPhotoFile(File file, {String? memo}) async {
+    final data = state.value;
+    if (data == null) {
+      throw StateError('State not ready');
+    }
+    if (data.isReadOnly) {
+      throw StateError('Read-only mode: upload not allowed');
+    }
+    final useCase = ref.read(uploadUserPhotoUseCaseProvider);
+    final result = await useCase.call(
+      ownerUid: data.uid,
+      file: file,
+      memo: memo,
+    );
+    switch (result) {
+      case Success<String>():
+        // 成功: 再読み込みしてUI反映
+        await reload();
+      case Failure<String>(rawError: final e):
+        AppLogger.instance.logError(e, phase: 'upload_photo');
+        throw e;
     }
   }
 }

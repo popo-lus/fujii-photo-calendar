@@ -45,6 +45,9 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<!-- Photo Library usage description for image picker -->
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>家族の写真をアップロードするためにフォトライブラリへアクセスします。</string>
 	<!-- Deep Link: Custom URL Scheme -->
 	<!-- Deep Links　ここから -->
     <key>FlutterDeepLinkingEnabled</key>
