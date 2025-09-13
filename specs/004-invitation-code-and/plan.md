@@ -149,7 +149,7 @@ research.md で解消・確定した事項:
 - [x] Phase 0: Research 完了（/plan）
 - [x] Phase 1: Design 完了（/plan）
 - [x] Phase 2: Task 計画を記述（/plan）
-- [ ] Phase 3: Tasks 生成（/tasks）
+- [x] Phase 3: Tasks 生成（/tasks）
 - [ ] Phase 4: 実装完了
 - [ ] Phase 5: 検証完了
 
