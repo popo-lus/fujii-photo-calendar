@@ -45,6 +45,9 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<!-- Photo Library usage description for image picker -->
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>家族の写真をアップロードするためにフォトライブラリへアクセスします。</string>
     <key>NSCalendarsUsageDescription</key>
     <string>カレンダーの予定を表示するために使用します</string>
 	<!-- Deep Link: Custom URL Scheme -->

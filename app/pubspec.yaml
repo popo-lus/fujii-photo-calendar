@@ -54,6 +54,8 @@ dependencies:
   uni_links: ^0.5.1
   # EXIF metadata parsing for capturedAt detection
   exif: ^3.3.0
+  # Image picker for selecting photos from device (UI entry on Month page)
+  image_picker: ^1.1.2
   # Device calendar (read-only usage in this project)
   device_calendar: ^4.3.1
 

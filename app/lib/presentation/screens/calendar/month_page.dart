@@ -10,6 +10,8 @@ import 'widgets/photo_slideshow.dart';
 import 'widgets/empty_month_placeholder.dart';
 import 'widgets/error_view.dart';
 import 'widgets/month_nav_bar.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
 @RoutePage()
 class MonthCalendarPage extends ConsumerWidget {
@@ -32,6 +34,42 @@ class MonthCalendarPage extends ConsumerWidget {
                   onPressed: null,
                   icon: Icon(Icons.lock_outline),
                   tooltip: '閲覧モード (編集不可)',
+                );
+              }
+              return const SizedBox.shrink();
+            },
+            orElse: () => const SizedBox.shrink(),
+          ),
+          // 被撮影者のみ: 写真追加ボタン
+          asyncData.maybeWhen(
+            data: (MonthState data) {
+              if (!data.isReadOnly) {
+                return IconButton(
+                  icon: const Icon(Icons.add_photo_alternate_outlined),
+                  tooltip: '写真を追加',
+                  onPressed: () async {
+                    // ギャラリーから画像選択
+                    final picker = ImagePicker();
+                    final picked = await picker.pickImage(
+                      source: ImageSource.gallery,
+                    );
+                    if (picked == null) return; // キャンセル
+                    try {
+                      final file = File(picked.path);
+                      await notifier.onAddPhotoFile(file);
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('写真をアップロードしました')),
+                        );
+                      }
+                    } catch (e) {
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('アップロードに失敗しました: $e')),
+                        );
+                      }
+                    }
+                  },
                 );
               }
               return const SizedBox.shrink();
