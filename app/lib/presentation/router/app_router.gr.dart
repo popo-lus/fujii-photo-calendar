@@ -104,6 +104,22 @@ class InviteCodeRouteArgs {
 }
 
 /// generated route for
+/// [InviteCreatePage]
+class InviteCreateRoute extends PageRouteInfo<void> {
+  const InviteCreateRoute({List<PageRouteInfo>? children})
+    : super(InviteCreateRoute.name, initialChildren: children);
+
+  static const String name = 'InviteCreateRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const InviteCreatePage();
+    },
+  );
+}
+
+/// generated route for
 /// [LoginPage]
 class LoginRoute extends PageRouteInfo<void> {
   const LoginRoute({List<PageRouteInfo>? children})

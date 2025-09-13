@@ -44,33 +44,40 @@ class MonthCalendarPage extends ConsumerWidget {
           asyncData.maybeWhen(
             data: (MonthState data) {
               if (!data.isReadOnly) {
-                return IconButton(
-                  icon: const Icon(Icons.add_photo_alternate_outlined),
-                  tooltip: '写真を追加',
-                  onPressed: () async {
-                    // ギャラリーから画像選択
-                    final picker = ImagePicker();
-                    final picked = await picker.pickImage(
-                      source: ImageSource.gallery,
-                    );
-                    if (picked == null) return; // キャンセル
-                    try {
-                      final file = File(picked.path);
-                      await notifier.onAddPhotoFile(file);
-                      if (context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('写真をアップロードしました')),
-                        );
+                return Row(children: [
+                  IconButton(
+                    icon: const Icon(Icons.qr_code_2),
+                    tooltip: '招待を作成',
+                    onPressed: () => context.router.push(const InviteCreateRoute()),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.add_photo_alternate_outlined),
+                    tooltip: '写真を追加',
+                    onPressed: () async {
+                      // ギャラリーから画像選択
+                      final picker = ImagePicker();
+                      final picked = await picker.pickImage(
+                        source: ImageSource.gallery,
+                      );
+                      if (picked == null) return; // キャンセル
+                      try {
+                        final file = File(picked.path);
+                        await notifier.onAddPhotoFile(file);
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('写真をアップロードしました')),
+                          );
+                        }
+                      } catch (e) {
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('アップロードに失敗しました: $e')),
+                          );
+                        }
                       }
-                    } catch (e) {
-                      if (context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('アップロードに失敗しました: $e')),
-                        );
-                      }
-                    }
-                  },
-                );
+                    },
+                  ),
+                ]);
               }
               return const SizedBox.shrink();
             },
