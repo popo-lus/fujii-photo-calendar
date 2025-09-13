@@ -43,26 +43,15 @@ Prerequisites: FVM 3.32.0, Firebase Emulator, シード投入、匿名認証の�
 
  
 
-## Phase 3.3: 共有メニュー経由アップロード（最小）
-- [ ] T010 共有受信パッケージ導入の検討と選定
-  - 候補: `receive_sharing_intent` など（iOS は Share Extension 必要・スコープ小）
-  - 成功条件: iOS/Android 両方で単一画像を受け取り、アプリ起動→アップロードに繋げる方針確定
-- [ ] T011 iOS 共有受信プロトタイプ（最小）
-  - 対象: iOS ターゲット/設定追加が必要な場合は別ターゲット作成の是非を判断
-  - 成功条件: 実機で共有→アプリへ連携し、アップロードフローに入る
-- [ ] T012 Android 共有受信インテント対応（最小）
-  - 対象: AndroidManifest の `SEND`/`SEND_MULTIPLE` intent-filter と受信コード
-  - 成功条件: 共有→アプリへ連携し、アップロードフローに入る
-
-## Phase 3.4: 仕上げ
+## Phase 3.3: 仕上げ
 - [ ] T013 [P] パフォーマンスとログの確認
   - 対象: `core/logger`, `PerfTimer`、アクセスログ量と頻度の調整
 - [ ] T014 [P] ドキュメント整備
-  - 対象: `specs/004-invitation-code-and/quickstart.md` 補足（深リンク起動手順/共有メニュー検証手順）
+  - 対象: `specs/004-invitation-code-and/quickstart.md` 補足（深リンク起動手順）
 - [ ] T015 [P] 静的解析/整形のパス確認
   - 実行: `scripts/format.sh`（lib/ が必須・test/ は存在時のみ）
 - [ ] T016 E2E 手動確認リスト（端末別）
-  - iOS 実機/Android 実機での深リンク・ピッカー・共有メニューの最小検証
+  - iOS 実機/Android 実機での深リンク・ピッカーの最小検証
 
 ---
 
@@ -71,12 +60,11 @@ Prerequisites: FVM 3.32.0, Firebase Emulator, シード投入、匿名認証の�
 - T002 → T006/T007/T008（Emulator を用いる実装）
 - T003 → T005（深リンク関連のUX）
 - T004 → 生成物に依存する実装（InviteViewModel 等）
-- T010 → T011/T012（選定後に各OS実装）
 - 実装（T005-T012）→ 仕上げ（T013-T016）
+  
 
 ## 並行実行（例）
 - 実装フェーズ: T005（main.dart/画面）と T007（アップロードメタ）を並行可（別ファイル/別層）
-- 共有メニュー: T011（iOS）と T012（Android）は別OSのため並行可
 
 ## 検証ゲート（実施のたびに）
 - Build: `fvm flutter build` は不要（開発は `fvm flutter run`）
@@ -86,14 +74,13 @@ Prerequisites: FVM 3.32.0, Firebase Emulator, シード投入、匿名認証の�
 ## 仕様カバレッジ
 - Deep Link（fujii://invite/{CODE}）: T003, T005, T006
 - ビューアー＝オーナーと同一スコープの参照（read-only）: 実装方針に反映（InviteViewModel/画面UX）
-- 画像アップロード（アプリ内/共有メニュー）: T008, T010-T012
+- 画像アップロード（アプリ内）: T008
 - メモ/capturedAt 保存: T007
 - 通知/分析/モデレーションなし: 非対象（タスク化せず）
   
 
 ## 注意/前提（このリポジトリの制約に合わせた判断）
 - Firestore Security Rules の厳密テストはエミュレータ前提の統合テスト（Dart）で代替。専用 Node ハーネスは追加しない。
-- iOS 共有メニュー（Share Extension）はスコープ大のため「最小機能」から入り、検証後に拡張可。
 - 既存スキーマを保持し、追加メタデータは配列要素（Photo）のフィールドのみに限定。
 
 ---
