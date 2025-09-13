@@ -40,7 +40,7 @@ types: Photo（配列要素の形）
 - disabled: boolean
 - expiresAt: timestamp | null
 - createdAt: timestamp
-- shareableUrl: string（導出）: `fujii://invite?code={code}`
+- shareableUrl: string（導出）: `fujii://invite/{code}`
 - status: 'active' | 'revoked' | 'expired'（導出）
 
 導出ルール（例）:

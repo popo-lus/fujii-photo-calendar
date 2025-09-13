@@ -31,14 +31,14 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <!-- Custom scheme: fujii://invite?code=... -->
+                <!-- Custom scheme: fujii://invite/{CODE} -->
                 <data android:scheme="fujii" android:host="invite" />
             </intent-filter>
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <!-- HTTPS link: https://fujii.photo/invite?code=... (host is an example) -->
+                <!-- HTTPS link: https://fujii.photo/invite/{CODE} (host is an example) -->
                 <data android:scheme="https" android:host="fujii.photo" android:pathPrefix="/invite" />
             </intent-filter>
         </activity>

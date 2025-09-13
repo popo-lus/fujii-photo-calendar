@@ -35,5 +35,5 @@ This project uses FVM and Firebase Emulator for local development.
  - Run: `fvm dart run build_runner build --delete-conflicting-outputs`
 
 5) Deep Link quick test
- - Android: `adb shell am start -a android.intent.action.VIEW -d "fujii://invite?code=DEMO" com.example.fujii_photo_calendar`
- - iOS Simulator: `xcrun simctl openurl booted "fujii://invite?code=DEMO"`
+ - Android: `adb shell am start -a android.intent.action.VIEW -d "fujii://invite/DEMO" com.example.fujii_photo_calendar`
+ - iOS Simulator: `xcrun simctl openurl booted "fujii://invite/DEMO"`

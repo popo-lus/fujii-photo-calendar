@@ -4,7 +4,7 @@
 仕様: /Users/lupisys/dev_project/fujii-photo-calendar/specs/004-invitation-code-and/spec.md
 
 ## 決定事項
-- ディープリンク: カスタムスキーム fujii://invite?code={CODE} を採用。Universal Links は今回は対象外。
+- ディープリンク: カスタムスキーム fujii://invite/{CODE} を採用。Universal Links は今回は対象外。
 - ビューアのスコープ: オーナー可視の写真と同一範囲。権限は閲覧のみ。
 - アップロードのメタデータ: 本機能では capturedAt と任意メモのみ記録。
 - 受け入れ形式: 画像であれば形式制限なし。本機能内でサイズ上限は設けない。
