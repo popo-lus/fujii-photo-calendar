@@ -28,16 +28,16 @@ Prerequisites: FVM 3.32.0, Firebase Emulator, シード投入、匿名認証の�
   - 成功条件: `*.g.dart`/`*.freezed.dart` が生成・最新
 
 ## Phase 3.2: Core 実装
-- [ ] T005 Deep Link エラー時 UX 強化
+- [x] T005 Deep Link エラー時 UX 強化
   - 対象: `app/lib/main.dart`（失敗時の画面誘導）、`app/lib/presentation/screens/auth/invite_code_page.dart`（文言/再取得導線）
   - 成功条件: 無効/期限切れで明示的メッセージと再試行導線
-- [ ] T006 InviteViewModel の成功/失敗ハンドリング拡充
+- [x] T006 InviteViewModel の成功/失敗ハンドリング拡充
   - 対象: `app/lib/presentation/viewmodels/auth/invite_view_model.dart`
   - 成功条件: 成功→遷移、失敗→状態が画面に伝播
-- [ ] T007 Photo 追加時のメタデータ保存
+- [x] T007 Photo 追加時のメタデータ保存
   - 対象: 既存アップロードフロー（適切な Service/Repo 層）
   - 成功条件: `capturedAt` と `memo` が `userPhotos[]` に保存、既存スキーマ互換
-- [ ] T008 画像アップロード サイズ/形式の制限なし運用
+- [x] T008 画像アップロード サイズ/形式の制限なし運用
   - 対象: `firebase_storage` への受け入れ（失敗時のエラー表示のみ）
   - 成功条件: 形式不問で受理、OS/Storage 由来エラーのユーザ向け文言
 
