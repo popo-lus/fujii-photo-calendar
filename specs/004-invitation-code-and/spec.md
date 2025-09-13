@@ -38,10 +38,10 @@
 ### Edge Cases
 - 招待コードの有効期限切れ、上限回数超過、被撮影者による明示的な失効。
 - スコープは被撮影者と閲覧者で同一（アクセス権限のみ異なる）。
-- 閲覧者が編集/ダウンロード/再共有を試みる場合の制御 [NEEDS CLARIFICATION]。
+- 閲覧者は編集/ダウンロード/再共有は不可（閲覧のみ）。
 - 共有メニュー経由のアップロード中にアプリがバックグラウンド化、オフライン、タイムアウト、重複ファイル、非常に大きいファイル、非対応形式。
  
-- 複数の招待コードとアクセス範囲の競合（優先順位や集約ルール）[NEEDS CLARIFICATION]。
+- 複数の招待コードがあってもアクセス範囲は同一（閲覧のみ）で競合しない（優先順位の概念は不要）。
 
 ---
 
@@ -78,15 +78,15 @@
 ---
 
 ## Review & Acceptance Checklist
-- [ ] No implementation details (languages, frameworks, APIs)
-- [ ] Focused on user value and business needs
-- [ ] Written for non-technical stakeholders
-- [ ] All mandatory sections completed
-- [ ] No [NEEDS CLARIFICATION] markers remain
-- [ ] Requirements are testable and unambiguous  
-- [ ] Success criteria are measurable
-- [ ] Scope is clearly bounded
-- [ ] Dependencies and assumptions identified
+- [x] No implementation details (languages, frameworks, APIs)
+- [x] Focused on user value and business needs
+- [x] Written for non-technical stakeholders
+- [x] All mandatory sections completed
+- [x] No [NEEDS CLARIFICATION] markers remain
+- [x] Requirements are testable and unambiguous  
+- [x] Success criteria are measurable
+- [x] Scope is clearly bounded
+- [x] Dependencies and assumptions identified
 
 ---
 
@@ -97,4 +97,4 @@
 - [x] User scenarios defined
 - [x] Requirements generated
 - [x] Entities identified
-- [ ] Review checklist passed
+- [x] Review checklist passed
