@@ -80,6 +80,17 @@
 - [ ] T034 Dead code / 重複削減最終パス
 - [ ] T035 リリースノートドラフト `CHANGELOG.md`
 
+## Phase 3.10: 月ページからの写真アップロード（FR-019）
+- [ ] T036 月ページに「写真を追加」ボタンを追加
+	- 対象: `lib/presentation/screens/calendar/month_page.dart`
+	- 表示条件: 被撮影者（編集可=readOnly=false）のみ表示。閲覧者（readOnly=true）では非表示。
+	- 成功条件: タップで ViewModel の `onAddPhoto()`（仮）を呼び出す。
+- [ ] T037 ViewModel にアップロードアクションを配線
+	- 対象: `lib/presentation/viewmodels/calendar/month_view_model.dart`
+	- 仕様: 既存の UploadUserPhotoUseCase（EXIF→capturedAt→month 派生）を呼び、成功で当月写真へ即時反映、失敗でエラーバナー＋再試行導線。
+	- 成功条件: 成功時に `state` の `photos` が増え UI に反映。失敗時はユーザーに理由を提示。
+
+
 ---
 ## Dependencies
 - T001 → (T002,T003,T005)

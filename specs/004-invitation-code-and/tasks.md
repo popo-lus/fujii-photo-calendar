@@ -74,7 +74,7 @@ Prerequisites: FVM 3.32.0, Firebase Emulator, シード投入、匿名認証の�
 ## 仕様カバレッジ
 - Deep Link（fujii://invite/{CODE}）: T003, T005, T006
 - ビューアー＝オーナーと同一スコープの参照（read-only）: 実装方針に反映（InviteViewModel/画面UX）
-- 画像アップロード（アプリ内）: T008
+- 画像アップロード（アプリ内）: T008（UIエントリポイントは MonthCalendarPage。閲覧者には非表示）
 - メモ/capturedAt 保存: T007
 - 通知/分析/モデレーションなし: 非対象（タスク化せず）
   
