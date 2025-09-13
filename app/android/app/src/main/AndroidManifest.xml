@@ -1,4 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Device calendar read permission (read-only feature) -->
+    <uses-permission android:name="android.permission.READ_CALENDAR" />
     <application
         android:label="fujii_photo_calendar"
         android:name="${applicationName}"

@@ -56,7 +56,8 @@
   - Service 内でガードし、`false`/空配列を返すか、明示的に `UnsupportedError` を domain エラーに正規化
 
 ## エラーハンドリング方針
-- 権限未許可 → `ensurePermission()` が `false` を返却。Presentation はダイアログ/トーストで誘導。
+- Repository/Usecase は `Result<T>` を返却（成功: `Success<T>` / 失敗: `Failure<T>`）。
+- 権限未許可 → `ensurePermission()` が `Success(false)` を返却。Presentation はダイアログ/トーストで誘導。
 - 端末にカレンダー無し/対象期間にイベント無し → 空コレクション返却（正常系）。
 - 予期せぬ例外（プラグイン例外・プラットフォーム未対応） → `core/result` に合わせて `Result.failure` 相当へ正規化（既存パターンに準拠）。
 
@@ -74,22 +75,53 @@
   - `app/lib/data/repositories/device_calendar_repository_impl.dart`
 - Providers（配置方針）
   - Service/Repository は各ファイル内でクラス定義の直下に `@Riverpod(keepAlive: true)` な Provider を定義
-  - Usecase の Provider は今回は作成しない（必要になれば別タスクで追加）
+  - Usecase も各クラス直下に `@Riverpod()` な Provider を定義（codegen 使用）
 
 <!-- Presentation は今回スコープ外のため定義しない -->
 
-## 呼び出し例（擬似コード／Repository 直接利用）
-```dart
-final repo = ref.read(deviceCalendarRepositoryProvider);
-final granted = await repo.ensurePermission();
-if (!granted) return; // 必要ならダイアログ誘導
+## 呼び出し例
 
-final calendars = await repo.fetchCalendars();
-final events = await repo.fetchEvents(
+### Usecase Provider 経由（推奨 / Result 型）
+```dart
+final perm = await ref.read(ensureCalendarPermissionUsecaseProvider).call();
+final granted = perm.fold(
+  onSuccess: (v) => v,
+  onFailure: (e, _) => false,
+);
+if (!granted) return; // 権限未許可のUI誘導など
+
+final calendarsRes = await ref.read(loadDeviceCalendarsUsecaseProvider).call();
+final calendars = calendarsRes.fold(
+  onSuccess: (l) => l,
+  onFailure: (e, st) => const <DeviceCalendarEntity>[],
+);
+
+final eventsRes = await ref.read(loadDeviceEventsInRangeUsecaseProvider).call(
   calendarId: calendars.first.id,
   start: rangeStart,
   end: rangeEnd,
 );
+final events = eventsRes.fold(
+  onSuccess: (l) => l,
+  onFailure: (e, st) => const <DeviceEventEntity>[],
+);
+```
+
+### Repository を直接利用（低レベルAPI / Result 型）
+```dart
+final repo = ref.read(deviceCalendarRepositoryProvider);
+final perm = await repo.ensurePermission();
+if (!perm.isSuccess || perm.data != true) return;
+
+final calendarsRes = await repo.fetchCalendars();
+final calendars = calendarsRes.data ?? const [];
+
+final eventsRes = await repo.fetchEvents(
+  calendarId: calendars.first.id,
+  start: rangeStart,
+  end: rangeEnd,
+);
+final events = eventsRes.data ?? const [];
 ```
 
 ## 実装手順（チェックリスト）
@@ -97,7 +129,7 @@ final events = await repo.fetchEvents(
 2) iOS/Android の権限設定を追加（Info.plist / AndroidManifest.xml）
 3) Domain: Entity/Repository IF/Usecase を追加
 4) Data: Service（Plugin ラッパー）/Mapper/Repository Impl を追加
-5) Providers: 各 Service/Repository ファイル内で Provider 定義 → `fvm dart run build_runner build --delete-conflicting-outputs`
+5) Providers: 各 Service/Repository/Usecase ファイル内で Provider 定義 → `fvm dart run build_runner build --delete-conflicting-outputs`
 6) 静的解析・整形: `../scripts/format.sh` を `app/` で実行
 
 ## テスト
