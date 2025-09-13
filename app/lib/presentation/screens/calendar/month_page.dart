@@ -89,6 +89,12 @@ class MonthCalendarPage extends ConsumerWidget {
               }
             },
           ),
+          // 開発用: 記念日×生成AI テストページ
+          IconButton(
+            icon: const Icon(Icons.bug_report_outlined),
+            tooltip: 'Anniv Promo Test',
+            onPressed: () => context.router.push(const AnnivPromoTestRoute()),
+          ),
           asyncData.maybeWhen(
             data: (MonthState data) {
               if (data.inSlideshow) {
