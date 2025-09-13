@@ -7,12 +7,22 @@ import 'package:fujii_photo_calendar/presentation/router/app_router.dart';
 
 @RoutePage()
 class InviteCodePage extends HookConsumerWidget {
-  const InviteCodePage({super.key});
+  const InviteCodePage({
+    super.key,
+    this.initialCode,
+    this.initialError,
+    this.autoSubmit = true,
+  });
+
+  // Deep Link からの遷移時に受け取る初期値
+  final String? initialCode;
+  final String? initialError;
+  final bool autoSubmit;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final formKey = useMemoized(GlobalKey<FormState>.new);
-    final codeCtrl = useTextEditingController();
+    final codeCtrl = useTextEditingController(text: initialCode ?? '');
 
     final state = ref.watch(inviteViewModelProvider);
     final notifier = ref.read(inviteViewModelProvider.notifier);
@@ -22,6 +32,21 @@ class InviteCodePage extends HookConsumerWidget {
         context.router.replaceAll([const MonthCalendarRoute()]);
       }
     });
+
+    // 初期コードがあり、状態がidleなら自動送信（Deep Link UX）
+    useEffect(() {
+      if (autoSubmit && (initialCode != null) && (initialCode!.isNotEmpty)) {
+        final st = ref.read(inviteViewModelProvider);
+        if (st.maybeWhen(idle: () => true, orElse: () => false)) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            ref
+                .read(inviteViewModelProvider.notifier)
+                .submit(code: initialCode!.trim());
+          });
+        }
+      }
+      return null;
+    }, const []);
 
     return Scaffold(
       appBar: AppBar(title: const Text('招待コードで閲覧')),
@@ -35,6 +60,22 @@ class InviteCodePage extends HookConsumerWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  // Deep Link 失敗時などの明示メッセージ
+                  if (initialError != null && initialError!.isNotEmpty)
+                    Container(
+                      width: double.infinity,
+                      margin: const EdgeInsets.only(bottom: 12),
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.red.withValues(alpha: 0.08),
+                        border: Border.all(color: Colors.red.shade200),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+                        initialError!,
+                        style: const TextStyle(color: Colors.red),
+                      ),
+                    ),
                   TextFormField(
                     controller: codeCtrl,
                     decoration: const InputDecoration(labelText: '招待コード'),
@@ -73,6 +114,20 @@ class InviteCodePage extends HookConsumerWidget {
                     error: (msg) =>
                         Text(msg, style: const TextStyle(color: Colors.red)),
                     orElse: () => const SizedBox.shrink(),
+                  ),
+                  // 再取得・再試行導線
+                  const SizedBox(height: 8),
+                  TextButton(
+                    onPressed: state.maybeWhen(
+                      loading: () => null,
+                      orElse: () => () {
+                        final v = codeCtrl.text.trim();
+                        if (v.isNotEmpty) {
+                          notifier.submit(code: v);
+                        }
+                      },
+                    ),
+                    child: const Text('もう一度試す'),
                   ),
                 ],
               ),

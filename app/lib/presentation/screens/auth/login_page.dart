@@ -120,7 +120,7 @@ class LoginPage extends HookConsumerWidget {
                       Expanded(
                         child: OutlinedButton(
                           onPressed: () =>
-                              context.router.push(const InviteCodeRoute()),
+                              context.router.push(InviteCodeRoute()),
                           child: const Text('招待コードで閲覧'),
                         ),
                       ),

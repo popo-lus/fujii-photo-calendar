@@ -50,6 +50,12 @@ dependencies:
   cloud_firestore: ^6.0.1
   firebase_storage: ^13.0.1
   firebase_auth: ^6.0.2
+  # Deep link handling
+  uni_links: ^0.5.1
+  # EXIF metadata parsing for capturedAt detection
+  exif: ^3.3.0
+  # Image picker for selecting photos from device (UI entry on Month page)
+  image_picker: ^1.1.2
   # Device calendar (read-only usage in this project)
   device_calendar: ^4.3.1
   # Daily events feature

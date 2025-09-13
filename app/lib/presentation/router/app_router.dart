@@ -2,6 +2,7 @@
 // 将来: 設定画面や詳細画面を追加予定
 
 import 'package:auto_route/auto_route.dart';
+import 'package:flutter/material.dart';
 import 'package:fujii_photo_calendar/presentation/screens/calendar/month_page.dart';
 import 'package:fujii_photo_calendar/presentation/screens/auth/login_page.dart';
 import 'package:fujii_photo_calendar/presentation/screens/auth/register_page.dart';

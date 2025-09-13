@@ -3,6 +3,7 @@
 // 導出フィールド priority, monthKey を付与する。
 // 失敗時は DecodeException を投げ、呼び出し側で Result.guard 利用を推奨。
 import 'package:fujii_photo_calendar/core/error/app_exceptions.dart';
+import 'package:cloud_firestore/cloud_firestore.dart' show Timestamp;
 import 'package:fujii_photo_calendar/domain/entities/photo_entity.dart';
 
 /// 必須キー一覧
@@ -32,14 +33,7 @@ PhotoEntity mapFirestorePhoto(String id, Map<String, dynamic> raw) {
     final v = raw[field];
     if (v is DateTime) return v.toUtc();
     if (v is String) return DateTime.parse(v).toUtc();
-    // cloud_firestore Timestamp を遅延識別
-    try {
-      final dynamic dyn = v;
-      if (dyn != null && dyn.toString().startsWith('Timestamp(')) {
-        final date = dyn.toDate();
-        if (date is DateTime) return date.toUtc();
-      }
-    } catch (_) {}
+    if (v is Timestamp) return v.toDate().toUtc();
     throw DecodeException('Invalid timestamp `$field` for `$id`');
   }
 

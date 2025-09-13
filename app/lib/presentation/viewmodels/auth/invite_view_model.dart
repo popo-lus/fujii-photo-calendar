@@ -61,5 +61,18 @@ class InviteViewModel extends _$InviteViewModel {
     }
   }
 
+  // 成否を boolean で返す軽量版（Deep Link フローでの分岐に利用）
+  Future<bool> trySubmit({required String code}) async {
+    try {
+      await submit(code: code);
+      return state.maybeWhen(
+        success: (ownerUid, result) => true,
+        orElse: () => false,
+      );
+    } catch (_) {
+      return false;
+    }
+  }
+
   void reset() => state = const InviteState.idle();
 }

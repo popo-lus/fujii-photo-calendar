@@ -45,7 +45,31 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<!-- Photo Library usage description for image picker -->
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>家族の写真をアップロードするためにフォトライブラリへアクセスします。</string>
     <key>NSCalendarsUsageDescription</key>
     <string>カレンダーの予定を表示するために使用します</string>
+	<!-- Deep Link: Custom URL Scheme -->
+	<!-- Deep Links　ここから -->
+    <key>FlutterDeepLinkingEnabled</key>
+    <true/>
+    <key>CFBundleURLTypes</key>
+    <array>
+        <dict>
+        <key>CFBundleTypeRole</key>
+        <string>Editor</string>
+        <key>CFBundleURLSchemes</key>
+        <array>
+        <string>fujii</string>
+        </array>
+        </dict>
+    </array>
+	<!-- Deep Links　ここまで追加 -->
+	<!-- Associated Domains (optional for https links; requires proper entitlement setup in Xcode) -->
+	<key>com.apple.developer.associated-domains</key>
+	<array>
+		<string>applinks:fujii.photo</string>
+	</array>
 </dict>
 </plist>
