@@ -52,6 +52,10 @@ dependencies:
   firebase_auth: ^6.0.2
   # Device calendar (read-only usage in this project)
   device_calendar: ^4.3.1
+  # Daily events feature
+  http: ^1.2.2
+  google_generative_ai: ^0.4.6
+  flutter_dotenv: ^5.1.0
 
 dev_dependencies:
   flutter_test:

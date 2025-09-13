@@ -8,9 +8,16 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:fujii_photo_calendar/presentation/router/app_router.dart';
 import 'package:fujii_photo_calendar/core/logger/logger.dart';
 import 'package:fujii_photo_calendar/core/utils/perf_timer.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // Load local secrets (e.g., GEMINI_API_KEY)
+  try {
+    await dotenv.load(fileName: '.env');
+  } catch (_) {
+    // optional: ignore if missing in dev
+  }
   final initTimer = PerfTimer('firebase_init');
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   final initMs = initTimer.stop();

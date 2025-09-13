@@ -11,6 +11,22 @@
 part of 'app_router.dart';
 
 /// generated route for
+/// [AnnivPromoTestPage]
+class AnnivPromoTestRoute extends PageRouteInfo<void> {
+  const AnnivPromoTestRoute({List<PageRouteInfo>? children})
+    : super(AnnivPromoTestRoute.name, initialChildren: children);
+
+  static const String name = 'AnnivPromoTestRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const AnnivPromoTestPage();
+    },
+  );
+}
+
+/// generated route for
 /// [InviteCodePage]
 class InviteCodeRoute extends PageRouteInfo<void> {
   const InviteCodeRoute({List<PageRouteInfo>? children})

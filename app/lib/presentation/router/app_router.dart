@@ -6,6 +6,7 @@ import 'package:fujii_photo_calendar/presentation/screens/calendar/month_page.da
 import 'package:fujii_photo_calendar/presentation/screens/auth/login_page.dart';
 import 'package:fujii_photo_calendar/presentation/screens/auth/register_page.dart';
 import 'package:fujii_photo_calendar/presentation/screens/auth/invite_code_page.dart';
+import 'package:fujii_photo_calendar/presentation/screens/dev/anniv_promo_test_page.dart';
 import 'auth_guard.dart';
 
 part 'app_router.gr.dart';
@@ -22,6 +23,7 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: LoginRoute.page),
     AutoRoute(page: RegisterRoute.page),
     AutoRoute(page: InviteCodeRoute.page),
+    AutoRoute(page: AnnivPromoTestRoute.page),
     AutoRoute(
       page: MonthCalendarRoute.page,
       guards: [_authGuard],
