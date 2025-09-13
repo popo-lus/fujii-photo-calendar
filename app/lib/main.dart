@@ -95,9 +95,17 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     // 既存の招待コード入力機能を使う
     final container = ProviderScope.containerOf(context, listen: false);
     final vm = container.read(inviteViewModelProvider.notifier);
-    vm.submit(code: code).then((_) {
-      // 成功時は InviteCodePage のリスナでカレンダーへ遷移済み
-      // 失敗時はエラーステートが表示される画面が必要だが、今回は無視
+    vm.trySubmit(code: code).then((ok) {
+      if (!ok) {
+        // 失敗時は InviteCodePage に遷移し、コードを引き継いで再試行導線を提示
+        MyApp._router.push(
+          InviteCodeRoute(
+            initialCode: code,
+            initialError: '招待の検証に失敗しました。コードを確認して再度お試しください。',
+            autoSubmit: false,
+          ),
+        );
+      }
     });
   }
 
