@@ -55,3 +55,45 @@ final class FirestoreProvider
 }
 
 String _$firestoreHash() => r'864285def6284159b44f9598dcde96347e0c1dce';
+
+@ProviderFor(firebaseStorage)
+const firebaseStorageProvider = FirebaseStorageProvider._();
+
+final class FirebaseStorageProvider
+    extends
+        $FunctionalProvider<FirebaseStorage, FirebaseStorage, FirebaseStorage>
+    with $Provider<FirebaseStorage> {
+  const FirebaseStorageProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'firebaseStorageProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$firebaseStorageHash();
+
+  @$internal
+  @override
+  $ProviderElement<FirebaseStorage> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  FirebaseStorage create(Ref ref) {
+    return firebaseStorage(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(FirebaseStorage value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<FirebaseStorage>(value),
+    );
+  }
+}
+
+String _$firebaseStorageHash() => r'4d34fbbd82ac849c74805e19a05079afa5e20cad';
