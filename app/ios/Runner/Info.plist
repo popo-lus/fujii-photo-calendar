@@ -47,5 +47,22 @@
 	<true/>
     <key>NSCalendarsUsageDescription</key>
     <string>カレンダーの予定を表示するために使用します</string>
+	<!-- Deep Link: Custom URL Scheme -->
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>com.example.fujiiPhotoCalendar</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>fujii</string>
+			</array>
+		</dict>
+	</array>
+	<!-- Associated Domains (optional for https links; requires proper entitlement setup in Xcode) -->
+	<key>com.apple.developer.associated-domains</key>
+	<array>
+		<string>applinks:fujii.photo</string>
+	</array>
 </dict>
 </plist>
