@@ -8,6 +8,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:fujii_photo_calendar/presentation/router/app_router.dart';
 import 'package:fujii_photo_calendar/core/logger/logger.dart';
 import 'package:fujii_photo_calendar/core/utils/perf_timer.dart';
+import 'package:uni_links/uni_links.dart';
+import 'dart:async';
+import 'package:fujii_photo_calendar/presentation/viewmodels/auth/invite_view_model.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -37,9 +40,63 @@ Future<void> main() async {
   runApp(const ProviderScope(child: MyApp()));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
   static final _router = AppRouter();
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
+  StreamSubscription<Uri?>? _sub;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _handleInitialLink();
+    _sub = uriLinkStream.listen(
+      (Uri? uri) {
+        if (uri == null) return;
+        _handleInviteUri(uri);
+      },
+      onError: (Object e) {
+        debugPrint('deeplink error: $e');
+      },
+    );
+  }
+
+  Future<void> _handleInitialLink() async {
+    try {
+      final initial = await getInitialUri();
+      if (initial != null) {
+        _handleInviteUri(initial);
+      }
+    } catch (e) {
+      debugPrint('initial link error: $e');
+    }
+  }
+
+  void _handleInviteUri(Uri uri) {
+    // 期待する形式: fujii://invite?code=XXXX または https://.../invite?code=XXXX
+    final code = uri.queryParameters['code'];
+    if (code == null || code.isEmpty) return;
+    // 既存の招待コード入力機能を使う
+    final container = ProviderScope.containerOf(context, listen: false);
+    final vm = container.read(inviteViewModelProvider.notifier);
+    vm.submit(code: code).then((_) {
+      // 成功時は InviteCodePage のリスナでカレンダーへ遷移済み
+      // 失敗時はエラーステートが表示される画面が必要だが、今回は無視
+    });
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _sub?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) => MaterialApp.router(
@@ -48,6 +105,6 @@ class MyApp extends StatelessWidget {
       colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
       useMaterial3: true,
     ),
-    routerConfig: _router.config(),
+    routerConfig: MyApp._router.config(),
   );
 }
