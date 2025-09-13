@@ -1,6 +1,6 @@
 # Contract: Deep Link (Invitation)
 
-Scheme: `fujii://invite?code={CODE}`
+Scheme: `fujii://invite/{CODE}`
 
 ## Flow
 - OS opens app with the URI

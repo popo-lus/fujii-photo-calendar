@@ -89,8 +89,26 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   }
 
   void _handleInviteUri(Uri uri) {
-    // 期待する形式: fujii://invite?code=XXXX または https://.../invite?code=XXXX
-    final code = uri.queryParameters['code'];
+    // 期待する形式: fujii://invite/{CODE} または https://fujii.photo/invite/{CODE}
+    String? code;
+
+    // カスタムスキーム: fujii://invite/{CODE}
+    if (uri.scheme == 'fujii' && uri.host == 'invite') {
+      if (uri.pathSegments.isNotEmpty && uri.pathSegments.first.isNotEmpty) {
+        code = uri.pathSegments.first;
+      }
+    }
+
+    // HTTPS: https://fujii.photo/invite/{CODE}
+    if (code == null && (uri.scheme == 'https' || uri.scheme == 'http')) {
+      if (uri.host == 'fujii.photo') {
+        final segs = uri.pathSegments;
+        if (segs.length >= 2 && segs[0] == 'invite' && segs[1].isNotEmpty) {
+          code = segs[1];
+        }
+      }
+    }
+
     if (code == null || code.isEmpty) return;
     // 既存の招待コード入力機能を使う
     final container = ProviderScope.containerOf(context, listen: false);
@@ -105,6 +123,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             autoSubmit: false,
           ),
         );
+      } else {
+        MyApp._router.push(const MonthCalendarRoute());
       }
     });
   }

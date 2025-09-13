@@ -22,7 +22,7 @@ Prerequisites: FVM 3.32.0, Firebase Emulator, シード投入、匿名認証の�
   - 成功条件: エミュレータ起動時に Firestore/Storage/Auth へ接続（ログに出力）
 - [x] T003 Android/iOS のカスタムスキーム設定の検証
   - 対象: AndroidManifest の intent-filter、iOS Info.plist の URL Schemes
-  - 成功条件: 端末で `fujii://invite?code=XXXX` がアプリに到達
+  - 成功条件: 端末で `fujii://invite/XXXX` がアプリに到達
 - [x] T004 [P] build_runner 設定の検証（codegen）
   - 実行: `fvm dart run build_runner build --delete-conflicting-outputs`
   - 成功条件: `*.g.dart`/`*.freezed.dart` が生成・最新
@@ -84,7 +84,7 @@ Prerequisites: FVM 3.32.0, Firebase Emulator, シード投入、匿名認証の�
 - Smoke: 実機で深リンク・アップロード最小確認
 
 ## 仕様カバレッジ
-- Deep Link（fujii://invite?code=XXXX）: T003, T005, T006
+- Deep Link（fujii://invite/{CODE}）: T003, T005, T006
 - ビューアー＝オーナーと同一スコープの参照（read-only）: 実装方針に反映（InviteViewModel/画面UX）
 - 画像アップロード（アプリ内/共有メニュー）: T008, T010-T012
 - メモ/capturedAt 保存: T007
