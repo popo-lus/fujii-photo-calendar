@@ -33,7 +33,7 @@ final class MonthViewModelProvider
   MonthViewModel create() => MonthViewModel();
 }
 
-String _$monthViewModelHash() => r'd239c0c1080344d143ca35fe1d0b6a7a5648aa25';
+String _$monthViewModelHash() => r'7b44aca1c6ae9c238aa4a24a5774cedd2c65978a';
 
 abstract class _$MonthViewModel extends $AsyncNotifier<MonthState> {
   FutureOr<MonthState> build();

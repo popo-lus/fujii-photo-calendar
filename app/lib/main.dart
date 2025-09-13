@@ -28,6 +28,16 @@ Future<void> main() async {
       await FirebaseStorage.instance.useStorageEmulator('localhost', 9199);
       // (T002) Auth emulator 接続
       await FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
+      // (T002) 接続ログの明示出力
+      AppLogger.instance.log(
+        'emulator_setup',
+        data: {
+          'host': 'localhost',
+          'firestorePort': 8080,
+          'storagePort': 9199,
+          'authPort': 9099,
+        },
+      );
     } catch (e) {
       debugPrint('Emulator setup skipped/already connected: $e');
     }

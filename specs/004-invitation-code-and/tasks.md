@@ -14,16 +14,16 @@ Prerequisites: FVM 3.32.0, Firebase Emulator, シード投入、匿名認証の�
 ---
 
 ## Phase 3.1: Setup（環境・依存・構成）
-- [ ] T001 FVM セットアップと依存取得（ローカル開発の統一）
+- [x] T001 FVM セットアップと依存取得（ローカル開発の統一）
   - 実行: app/ で FVM 3.32.0 を use、`fvm flutter pub get`
   - 成功条件: 依存解決成功、`app/.dart_tool/`生成
-- [ ] T002 Firebase Emulator 接続の確認と切替手段の明記
+- [x] T002 Firebase Emulator 接続の確認と切替手段の明記
   - 対象: `app/lib/main.dart` の `USE_FIREBASE_EMULATORS` 環境定義と useEmulators ブロック
   - 成功条件: エミュレータ起動時に Firestore/Storage/Auth へ接続（ログに出力）
-- [ ] T003 Android/iOS のカスタムスキーム設定の検証
+- [x] T003 Android/iOS のカスタムスキーム設定の検証
   - 対象: AndroidManifest の intent-filter、iOS Info.plist の URL Schemes
   - 成功条件: 端末で `fujii://invite?code=XXXX` がアプリに到達
-- [ ] T004 [P] build_runner 設定の検証（codegen）
+- [x] T004 [P] build_runner 設定の検証（codegen）
   - 実行: `fvm dart run build_runner build --delete-conflicting-outputs`
   - 成功条件: `*.g.dart`/`*.freezed.dart` が生成・最新
 
