@@ -42,19 +42,21 @@ class PhotoUploadService {
           .collection('calendar')
           .doc(mm);
       final id = _firestore.collection('_').doc().id; // ランダムID生成用途
-      final now = FieldValue.serverTimestamp();
+      final serverNow = FieldValue.serverTimestamp();
       final map = <String, dynamic>{
         'id': id,
         'url': url,
         'capturedAt': capturedAt ?? DateTime.now(),
         'month': month,
         'type': 'user-photos',
-        'updatedAt': now,
+        // 配列要素内では serverTimestamp 変換が適用されないため、クライアント時刻を使用
+        'updatedAt': DateTime.now(),
         if (memo != null && memo.isNotEmpty) 'memo': memo,
       };
       await doc.set({
         'month': month,
-        'updatedAt': now,
+        // ドキュメント直下の updatedAt は serverTimestamp を使用
+        'updatedAt': serverNow,
         'userPhotos': FieldValue.arrayUnion([map]),
       }, SetOptions(merge: true));
 
