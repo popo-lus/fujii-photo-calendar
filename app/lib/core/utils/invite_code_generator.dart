@@ -2,7 +2,10 @@
 
 const String _defaultAlphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 
-String generateInviteCode({int length = 8, String alphabet = _defaultAlphabet}) {
+String generateInviteCode({
+  int length = 8,
+  String alphabet = _defaultAlphabet,
+}) {
   assert(length > 0);
   final buf = StringBuffer();
   final rand = DateTime.now().microsecondsSinceEpoch;
@@ -15,4 +18,3 @@ String generateInviteCode({int length = 8, String alphabet = _defaultAlphabet}) 
   }
   return buf.toString();
 }
-

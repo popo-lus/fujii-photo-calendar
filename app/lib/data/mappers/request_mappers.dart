@@ -17,4 +17,3 @@ RequestEntity mapJsonToRequestEntity(
     createdAt: createdAt,
   );
 }
-

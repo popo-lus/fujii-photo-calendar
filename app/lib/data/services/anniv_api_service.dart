@@ -9,7 +9,7 @@ part 'anniv_api_service.g.dart';
 
 class AnnivApiService {
   AnnivApiService({http.Client? client, this.baseUrl, this.baseVersion = 'v3'})
-      : _client = client ?? http.Client();
+    : _client = client ?? http.Client();
 
   final http.Client _client;
   final String? baseUrl;

@@ -12,6 +12,7 @@ import 'widgets/photo_calendar_card.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:fujii_photo_calendar/presentation/widgets/glass_circle_button.dart';
+import 'package:fujii_photo_calendar/presentation/screens/requests/widgets/request_dialog.dart';
 
 enum MonthMenuAction {
   readOnlyInfo,
@@ -21,6 +22,8 @@ enum MonthMenuAction {
   annivPromo,
   startSlideshow,
   endSlideshow,
+  inviteCreate,
+  photoRequests,
 }
 
 @RoutePage()
@@ -77,6 +80,32 @@ class _MonthCalendarPageState extends ConsumerState<MonthCalendarPage> {
       case MonthMenuAction.endSlideshow:
         notifier.endSlideshow();
         break;
+      case MonthMenuAction.inviteCreate:
+        if (context.mounted) {
+          context.router.push(const InviteCreateRoute());
+        }
+        break;
+      case MonthMenuAction.photoRequests:
+        try {
+          final data = ref.read(monthViewModelProvider).value;
+          if (data == null) return;
+          final ownerUid = data.uid; // 匿名閲覧時も ownerUid が入る
+          if (data.isReadOnly) {
+            // ビューアは送信ダイアログのみ
+            if (!context.mounted) return;
+            // 遅延インポートせず直接ダイアログを使用
+            // ignore: use_build_context_synchronously
+            await showDialog<bool>(
+              context: context,
+              builder: (_) => RequestDialog(ownerUid: ownerUid),
+            );
+          } else {
+            if (context.mounted) {
+              context.router.push(RequestsListRoute(ownerUid: ownerUid));
+            }
+          }
+        } catch (_) {}
+        break;
     }
   }
 
@@ -111,21 +140,6 @@ class _MonthCalendarPageState extends ConsumerState<MonthCalendarPage> {
                         ],
                       ),
                     ),
-                    const PopupMenuDivider(),
-                    PopupMenuItem<MonthMenuAction>(
-                      value: MonthMenuAction.reload,
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.refresh,
-                            color: Theme.of(context).colorScheme.primary,
-                            size: 20,
-                          ),
-                          const SizedBox(width: 10),
-                          const Text('再読み込み'),
-                        ],
-                      ),
-                    ),
                   ],
                   error: (Object e, StackTrace st) =>
                       <PopupMenuEntry<MonthMenuAction>>[
@@ -141,21 +155,6 @@ class _MonthCalendarPageState extends ConsumerState<MonthCalendarPage> {
                               ),
                               const SizedBox(width: 10),
                               const Text('エラーが発生しました'),
-                            ],
-                          ),
-                        ),
-                        const PopupMenuDivider(),
-                        PopupMenuItem<MonthMenuAction>(
-                          value: MonthMenuAction.reload,
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.refresh,
-                                color: Theme.of(context).colorScheme.primary,
-                                size: 20,
-                              ),
-                              const SizedBox(width: 10),
-                              const Text('再読み込み'),
                             ],
                           ),
                         ),
@@ -181,6 +180,7 @@ class _MonthCalendarPageState extends ConsumerState<MonthCalendarPage> {
                         ),
                       );
                     }
+                    // 写真追加を一番上に
                     if (!data.isReadOnly) {
                       items.add(
                         PopupMenuItem<MonthMenuAction>(
@@ -198,36 +198,25 @@ class _MonthCalendarPageState extends ConsumerState<MonthCalendarPage> {
                           ),
                         ),
                       );
+                      items.add(
+                        PopupMenuItem<MonthMenuAction>(
+                          value: MonthMenuAction.inviteCreate,
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.qr_code_2,
+                                color: Theme.of(context).colorScheme.primary,
+                                size: 20,
+                              ),
+                              const SizedBox(width: 10),
+                              const Text('共有コードを作成'),
+                            ],
+                          ),
+                        ),
+                      );
                     }
-                    items.addAll([
-                      PopupMenuItem<MonthMenuAction>(
-                        value: MonthMenuAction.reload,
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.refresh,
-                              color: Theme.of(context).colorScheme.primary,
-                              size: 20,
-                            ),
-                            const SizedBox(width: 10),
-                            const Text('再読み込み'),
-                          ],
-                        ),
-                      ),
-                      PopupMenuItem<MonthMenuAction>(
-                        value: MonthMenuAction.logout,
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.logout,
-                              color: Theme.of(context).colorScheme.primary,
-                              size: 20,
-                            ),
-                            const SizedBox(width: 10),
-                            const Text('ログアウト'),
-                          ],
-                        ),
-                      ),
+                    // Anniv Promo はそのまま
+                    items.add(
                       PopupMenuItem<MonthMenuAction>(
                         value: MonthMenuAction.annivPromo,
                         child: Row(
@@ -242,7 +231,8 @@ class _MonthCalendarPageState extends ConsumerState<MonthCalendarPage> {
                           ],
                         ),
                       ),
-                    ]);
+                    );
+                    // スライドショー関連
                     if (data.inSlideshow) {
                       items.add(
                         PopupMenuItem<MonthMenuAction>(
@@ -278,6 +268,39 @@ class _MonthCalendarPageState extends ConsumerState<MonthCalendarPage> {
                         ),
                       );
                     }
+                    // フォトリクエストをログアウトの直前に配置
+                    items.add(
+                      PopupMenuItem<MonthMenuAction>(
+                        value: MonthMenuAction.photoRequests,
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.mail_outline,
+                              color: Theme.of(context).colorScheme.primary,
+                              size: 20,
+                            ),
+                            const SizedBox(width: 10),
+                            const Text('フォトリクエスト'),
+                          ],
+                        ),
+                      ),
+                    );
+                    items.add(
+                      PopupMenuItem<MonthMenuAction>(
+                        value: MonthMenuAction.logout,
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.logout,
+                              color: Theme.of(context).colorScheme.primary,
+                              size: 20,
+                            ),
+                            const SizedBox(width: 10),
+                            const Text('ログアウト'),
+                          ],
+                        ),
+                      ),
+                    );
                     return items;
                   },
                 );

@@ -123,8 +123,18 @@ class AppLogger {
   // Invite Create
   void logInviteCreateStart({required String ownerUid}) =>
       _emit('invite_create_start', data: {'ownerUid': ownerUid});
-  void logInviteCreateSuccess({required String ownerUid, required String code}) =>
-      _emit('invite_create_success', data: {'ownerUid': ownerUid, 'code': code});
-  void logInviteCreateFailure({required String ownerUid, required Object error}) =>
-      _emit('invite_create_failure', data: {'ownerUid': ownerUid, 'error': error.toString()});
+  void logInviteCreateSuccess({
+    required String ownerUid,
+    required String code,
+  }) => _emit(
+    'invite_create_success',
+    data: {'ownerUid': ownerUid, 'code': code},
+  );
+  void logInviteCreateFailure({
+    required String ownerUid,
+    required Object error,
+  }) => _emit(
+    'invite_create_failure',
+    data: {'ownerUid': ownerUid, 'error': error.toString()},
+  );
 }

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'month_calendar_grid.dart';
 import 'month_label.dart';
+import 'anniv_promo_banner.dart';
 import 'dart:async';
 import 'dart:ui' show ImageFilter;
 
@@ -120,7 +121,52 @@ class _FullScreenImageBackgroundState
     if (!hasImage) {
       return GestureDetector(
         onTap: () => widget.onTapEmpty?.call(),
-        child: Container(color: const Color(0xFFEDEDED)),
+        child: Container(
+          color: const Color(0xFFEDEDED),
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 360),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.add_photo_alternate_outlined,
+                      size: 56,
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.primary.withOpacity(0.75),
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      '写真がありません',
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.onSurface.withOpacity(0.85),
+                        fontWeight: FontWeight.w600,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      widget.onTapEmpty != null
+                          ? 'タップして写真をアップロード'
+                          : 'メニューから写真を追加してください',
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.onSurface.withOpacity(0.7),
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
       );
     }
     if (widget.urls.length > 1) {
@@ -158,7 +204,7 @@ class _FullScreenImageBackgroundState
                 borderRadius: BorderRadius.circular(8),
                 child: CachedNetworkImage(
                   imageUrl: widget.urls[i],
-                  fit: BoxFit.cover,
+                  fit: BoxFit.fitWidth,
                 ),
               ),
             ),
@@ -212,19 +258,27 @@ class _GlassyCalendarOverlay extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              MonthCalendarGrid(
-                month: DateTime(month.year, month.month, 1),
-                holidays: holidays,
-                shrinkText: true,
-                showHeader: true,
-                cellAlignment: Alignment.center,
-                fixedRowHeight: 16,
-                fixedCellWidth: 20,
-                rowGap: 2,
-                headerSundayTextColor: const Color(0xFF8E2A2A),
-                headerWeekdayTextColor: const Color(0xFF222222),
-                bodySundayHolidayTextColor: const Color(0xFF8E2A2A),
-                bodyWeekdayTextColor: const Color(0xFF151515),
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const AnnivPromoBanner(),
+                  const SizedBox(height: 8),
+                  MonthCalendarGrid(
+                    month: DateTime(month.year, month.month, 1),
+                    holidays: holidays,
+                    shrinkText: true,
+                    showHeader: true,
+                    cellAlignment: Alignment.center,
+                    fixedRowHeight: 16,
+                    fixedCellWidth: 20,
+                    rowGap: 2,
+                    headerSundayTextColor: const Color(0xFF8E2A2A),
+                    headerWeekdayTextColor: const Color(0xFF222222),
+                    bodySundayHolidayTextColor: const Color(0xFF8E2A2A),
+                    bodyWeekdayTextColor: const Color(0xFF151515),
+                  ),
+                ],
               ),
               const SizedBox(width: 12),
               MonthLabel(month: month),

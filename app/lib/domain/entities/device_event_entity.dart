@@ -21,4 +21,3 @@ class DeviceEventEntity {
   final DateTime end;
   final bool isAllDay;
 }
-

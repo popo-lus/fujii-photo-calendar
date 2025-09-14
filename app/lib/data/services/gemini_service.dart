@@ -23,10 +23,10 @@ class GeminiService {
   }) async {
     final csv = anniversaries.join(', ');
     final prompt =
-        'あなたは日本の小売向けコピーライターです。以下の記念日から1つ以上を活用して、\n'
-        '短い販促コピーを1つだけ日本語で作ってください。40〜60文字、絵文字は最多1つ、\n'
-        '誇大・不正確な断定は避け、誰でも楽しめる表現にしてください。\n\n'
-        '日付: $mmdd\n候補: $csv\n出力は1行のみ。説明・接頭辞・記号は不要。';
+        'あなたは写真コンシェルジュです。以下の記念日から1つ以上を活用して、\n'
+        '今日撮ると楽しい「写真テーマ」を1つだけ、日本語で1行の短い誘い文として作成してください。\n'
+        '40〜60文字、絵文字は最多1つ、誇大・不正確な断定は避け、誰でも実践しやすい内容にしてください。\n\n'
+        '日付: $mmdd\n候補: $csv\n出力は1行のみ。説明や接頭辞は不要。可能なら冒頭に記念日名を含めてください。';
     final res = await _model.generateContent([Content.text(prompt)]);
     final text = res.text?.trim();
     if (text == null || text.isEmpty) {

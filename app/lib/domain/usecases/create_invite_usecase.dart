@@ -15,20 +15,23 @@ class CreateInviteUsecase {
     DateTime? expiresAt,
     int length = 20,
   }) async {
-    AppLogger.instance
-        .log('invite_create_start', data: {'ownerUid': ownerUid});
+    AppLogger.instance.log('invite_create_start', data: {'ownerUid': ownerUid});
     try {
       final inv = await _repo.create(
         ownerUid: ownerUid,
         expiresAt: expiresAt,
         length: length,
       );
-      AppLogger.instance.log('invite_create_success',
-          data: {'ownerUid': ownerUid, 'code': inv.code});
+      AppLogger.instance.log(
+        'invite_create_success',
+        data: {'ownerUid': ownerUid, 'code': inv.code},
+      );
       return inv;
     } catch (e) {
-      AppLogger.instance
-          .log('invite_create_failure', data: {'ownerUid': ownerUid, 'e': e.toString()});
+      AppLogger.instance.log(
+        'invite_create_failure',
+        data: {'ownerUid': ownerUid, 'e': e.toString()},
+      );
       rethrow;
     }
   }

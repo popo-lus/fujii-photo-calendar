@@ -10,4 +10,3 @@ abstract class RequestRepository {
 
   Future<void> delete({required String ownerUid, required String requestId});
 }
-

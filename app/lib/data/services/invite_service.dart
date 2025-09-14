@@ -33,9 +33,7 @@ class InviteService {
   }
 
   Future<void> updateDisabled(String code, bool disabled) async {
-    await _db.collection('invites').doc(code).update({
-      'disabled': disabled,
-    });
+    await _db.collection('invites').doc(code).update({'disabled': disabled});
   }
 }
 
@@ -44,4 +42,3 @@ InviteService inviteService(Ref ref) {
   final db = ref.watch(firestoreProvider);
   return InviteService(db);
 }
-

@@ -22,4 +22,3 @@ WatchIncomingRequestsUsecase watchIncomingRequestsUsecase(Ref ref) {
   final repo = ref.watch(requestRepositoryProvider);
   return WatchIncomingRequestsUsecase(repo);
 }
-

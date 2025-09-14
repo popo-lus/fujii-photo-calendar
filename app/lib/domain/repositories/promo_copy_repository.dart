@@ -7,4 +7,3 @@ abstract interface class PromoCopyRepository {
     required List<String> anniversaries,
   });
 }
-

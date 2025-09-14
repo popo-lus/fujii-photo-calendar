@@ -11,4 +11,3 @@ DailyAnniversariesEntity parseAnnivV3({
   ];
   return DailyAnniversariesEntity(mmdd: mmdd, items: items);
 }
-

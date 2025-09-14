@@ -13,4 +13,3 @@ class DeviceCalendarEntity {
   final String? accountName;
   final bool isReadOnly;
 }
-

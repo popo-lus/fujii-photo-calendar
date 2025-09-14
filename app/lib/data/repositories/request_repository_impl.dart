@@ -1,5 +1,6 @@
 import 'package:fujii_photo_calendar/data/mappers/request_mappers.dart';
 import 'package:fujii_photo_calendar/data/services/requests_service.dart';
+import 'package:fujii_photo_calendar/core/error/app_exceptions.dart';
 import 'package:fujii_photo_calendar/data/services/auth_service.dart';
 import 'package:fujii_photo_calendar/domain/entities/request_entity.dart';
 import 'package:fujii_photo_calendar/domain/repositories/request_repository.dart';
@@ -13,18 +14,21 @@ class RequestRepositoryImpl implements RequestRepository {
   final AuthService _auth;
 
   @override
-  Future<void> submit({required String ownerUid, required String comment}) async {
+  Future<void> submit({
+    required String ownerUid,
+    required String comment,
+  }) async {
     final viewer = _auth.getCurrentUser();
     final requesterUid = viewer?.userUid;
     if (requesterUid == null || requesterUid.isEmpty) {
-      throw StateError('Not authenticated');
+      throw const AuthDomainException(
+        code: 'not-authenticated',
+        message: 'ログインが必要です',
+      );
     }
     await _service.addRequest(
       ownerUid: ownerUid,
-      json: {
-        'requesterUid': requesterUid,
-        'comment': comment,
-      },
+      json: {'requesterUid': requesterUid, 'comment': comment},
     );
   }
 
@@ -35,20 +39,21 @@ class RequestRepositoryImpl implements RequestRepository {
   }) {
     return _service
         .watchRecent(ownerUid: ownerUid, retentionDays: retentionDays)
-        .map((list) => list
-            .map((json) => mapJsonToRequestEntity(
+        .map(
+          (list) => list
+              .map(
+                (json) => mapJsonToRequestEntity(
                   (json['id'] as String?) ?? '',
                   ownerUid,
                   json,
-                ))
-            .toList());
+                ),
+              )
+              .toList(),
+        );
   }
 
   @override
-  Future<void> delete({
-    required String ownerUid,
-    required String requestId,
-  }) {
+  Future<void> delete({required String ownerUid, required String requestId}) {
     return _service.delete(ownerUid: ownerUid, requestId: requestId);
   }
 }
@@ -66,4 +71,3 @@ Stream<List<RequestEntity>> recentRequestsStream(Ref ref, String ownerUid) {
   final repo = ref.watch(requestRepositoryProvider);
   return repo.watchRecent(ownerUid: ownerUid, retentionDays: 14);
 }
-

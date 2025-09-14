@@ -8,10 +8,7 @@ class DeleteRequestUsecase {
   const DeleteRequestUsecase(this._repo);
   final RequestRepository _repo;
 
-  Future<void> call({
-    required String ownerUid,
-    required String requestId,
-  }) {
+  Future<void> call({required String ownerUid, required String requestId}) {
     return _repo.delete(ownerUid: ownerUid, requestId: requestId);
   }
 }
@@ -21,4 +18,3 @@ DeleteRequestUsecase deleteRequestUsecase(Ref ref) {
   final repo = ref.watch(requestRepositoryProvider);
   return DeleteRequestUsecase(repo);
 }
-

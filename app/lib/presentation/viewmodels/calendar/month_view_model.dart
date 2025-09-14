@@ -21,6 +21,8 @@
 
 import 'dart:async';
 
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fujii_photo_calendar/core/error/app_exceptions.dart';
 import 'package:fujii_photo_calendar/data/services/auth_service.dart';
 import 'package:fujii_photo_calendar/providers/auth_providers.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -66,17 +68,34 @@ class MonthViewModel extends _$MonthViewModel {
 
   Future<MonthState> _fetch() async {
     final auth = ref.read(authServiceProvider);
+    final firebase = ref.read(firebaseAuthProvider);
+
     String uid;
     bool isReadOnly = false;
-    if (auth.isCurrentUserAnonymous()) {
+
+    // ログイン直後の反映遅延に備え、必要に応じて認証状態を待つ
+    User? user = firebase.currentUser;
+    if (user == null) {
+      try {
+        user = await firebase
+            .authStateChanges()
+            .firstWhere((u) => u != null)
+            .timeout(const Duration(seconds: 5));
+      } catch (_) {
+        user = null;
+      }
+    }
+
+    if (user != null && user.isAnonymous) {
       uid = await auth.resolveOwnerUidForCurrentAnonymous();
       isReadOnly = true;
-    } else {
-      final user = ref.read(firebaseAuthProvider).currentUser;
-      if (user == null) {
-        throw StateError('Not authenticated');
-      }
+    } else if (user != null) {
       uid = user.uid;
+    } else {
+      throw const AuthDomainException(
+        code: 'not-authenticated',
+        message: 'ログインが必要です',
+      );
     }
     final loader = ref.read(loadMonthPhotosUseCaseProvider);
     return PerfTimer.measureFuture('month_load_$_month', () async {

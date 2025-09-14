@@ -13,7 +13,8 @@ class DeviceCalendarService {
   final DeviceCalendarPlugin _plugin;
 
   bool get _isSupportedPlatform =>
-      !kIsWeb && (defaultTargetPlatform == TargetPlatform.android ||
+      !kIsWeb &&
+      (defaultTargetPlatform == TargetPlatform.android ||
           defaultTargetPlatform == TargetPlatform.iOS);
 
   Future<bool> hasPermissions() async {
@@ -31,8 +32,7 @@ class DeviceCalendarService {
   Future<List<Calendar>> retrieveCalendars({bool onlyWritable = false}) async {
     if (!_isSupportedPlatform) return const <Calendar>[];
     final res = await _plugin.retrieveCalendars();
-    final List<Calendar> items =
-        res.data?.toList() ?? const <Calendar>[];
+    final List<Calendar> items = res.data?.toList() ?? const <Calendar>[];
     if (!onlyWritable) return items;
     // フィルタ: 書き込み可能（isReadOnly!=true）
     return items.where((c) => !(c.isReadOnly ?? false)).toList(growable: false);
@@ -46,10 +46,7 @@ class DeviceCalendarService {
     if (!_isSupportedPlatform) return const <Event>[];
     final res = await _plugin.retrieveEvents(
       calendarId,
-      RetrieveEventsParams(
-        startDate: start,
-        endDate: end,
-      ),
+      RetrieveEventsParams(startDate: start, endDate: end),
     );
     return res.data?.toList() ?? const <Event>[];
   }

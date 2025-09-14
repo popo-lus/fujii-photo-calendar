@@ -22,8 +22,86 @@ class MonthPhotoListPage extends ConsumerWidget {
             loading: () => const Center(child: CircularProgressIndicator()),
             error: (Object e, StackTrace st) =>
                 Center(child: Text('Error: $e')),
-            data: (MonthState data) =>
-                PhotoMasonryGrid(urls: data.photos.map((p) => p.url).toList()),
+            data: (MonthState data) => PhotoMasonryGrid(
+              urls: data.photos.map((p) => p.url).toList(),
+              onTap: (index) async {
+                if (data.isReadOnly) {
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('閲覧モードでは追加できません')),
+                    );
+                  }
+                  return;
+                }
+                final picker = ImagePicker();
+                final picked = await picker.pickImage(
+                  source: ImageSource.gallery,
+                );
+                if (picked == null) return;
+                try {
+                  final file = File(picked.path);
+                  await notifier.onAddPhotoFile(file);
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Row(
+                          children: [
+                            const Icon(
+                              Icons.check_circle_outline,
+                              color: Colors.white,
+                            ),
+                            const SizedBox(width: 12),
+                            const Expanded(child: Text('写真をアップロードしました')),
+                          ],
+                        ),
+                        behavior: SnackBarBehavior.floating,
+                        backgroundColor: Theme.of(context).colorScheme.primary,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        showCloseIcon: true,
+                        closeIconColor: Colors.white,
+                        duration: const Duration(seconds: 2),
+                        margin: const EdgeInsets.all(16),
+                      ),
+                    );
+                  }
+                } catch (e) {
+                  if (context.mounted) {
+                    final onErr = Theme.of(
+                      context,
+                    ).colorScheme.onErrorContainer;
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Row(
+                          children: [
+                            Icon(Icons.error_outline, color: onErr),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Text(
+                                'アップロードに失敗しました: $e',
+                                style: TextStyle(color: onErr),
+                              ),
+                            ),
+                          ],
+                        ),
+                        behavior: SnackBarBehavior.floating,
+                        backgroundColor: Theme.of(
+                          context,
+                        ).colorScheme.errorContainer,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        showCloseIcon: true,
+                        closeIconColor: onErr,
+                        duration: const Duration(seconds: 3),
+                        margin: const EdgeInsets.all(16),
+                      ),
+                    );
+                  }
+                }
+              },
+            ),
           ),
           SafeArea(
             child: Align(

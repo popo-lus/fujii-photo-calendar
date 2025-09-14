@@ -9,21 +9,22 @@ class SubmitRequestUsecase {
   const SubmitRequestUsecase(this._repo);
   final RequestRepository _repo;
 
-  Future<void> call({
-    required String ownerUid,
-    required String comment,
-  }) async {
-    AppLogger.instance.log('request_submit_start', data: {
-      'ownerUid': ownerUid,
-    });
+  Future<void> call({required String ownerUid, required String comment}) async {
+    AppLogger.instance.log(
+      'request_submit_start',
+      data: {'ownerUid': ownerUid},
+    );
     try {
       await _repo.submit(ownerUid: ownerUid, comment: comment);
-      AppLogger.instance.log('request_submit_success', data: {
-        'ownerUid': ownerUid,
-      });
+      AppLogger.instance.log(
+        'request_submit_success',
+        data: {'ownerUid': ownerUid},
+      );
     } catch (e) {
-      AppLogger.instance
-          .log('request_submit_failure', data: {'ownerUid': ownerUid, 'e': e.toString()});
+      AppLogger.instance.log(
+        'request_submit_failure',
+        data: {'ownerUid': ownerUid, 'e': e.toString()},
+      );
       rethrow;
     }
   }
@@ -34,4 +35,3 @@ SubmitRequestUsecase submitRequestUsecase(Ref ref) {
   final repo = ref.watch(requestRepositoryProvider);
   return SubmitRequestUsecase(repo);
 }
-

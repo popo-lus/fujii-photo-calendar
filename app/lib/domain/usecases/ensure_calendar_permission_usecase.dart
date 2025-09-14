@@ -6,6 +6,7 @@ import 'package:fujii_photo_calendar/data/repositories/device_calendar_repositor
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'ensure_calendar_permission_usecase.g.dart';
+
 class EnsureCalendarPermissionUsecase {
   const EnsureCalendarPermissionUsecase(this._repo);
   final DeviceCalendarRepository _repo;

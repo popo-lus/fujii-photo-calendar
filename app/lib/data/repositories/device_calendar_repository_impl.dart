@@ -9,6 +9,7 @@ import 'package:fujii_photo_calendar/domain/repositories/device_calendar_reposit
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'device_calendar_repository_impl.g.dart';
+
 class DeviceCalendarRepositoryImpl implements DeviceCalendarRepository {
   DeviceCalendarRepositoryImpl(this._service);
   final DeviceCalendarService _service;
@@ -30,8 +31,7 @@ class DeviceCalendarRepositoryImpl implements DeviceCalendarRepository {
     bool onlyWritable = false,
   }) async {
     try {
-      final list =
-          await _service.retrieveCalendars(onlyWritable: onlyWritable);
+      final list = await _service.retrieveCalendars(onlyWritable: onlyWritable);
       final mapped = list.map(mapCalendarToEntity).toList(growable: false);
       return Success(mapped);
     } catch (e, st) {
