@@ -26,4 +26,3 @@ class AnnivRepositoryImpl implements AnnivRepository {
 @Riverpod(keepAlive: true)
 AnnivRepository annivRepository(Ref ref) =>
     AnnivRepositoryImpl(ref.watch(annivApiServiceProvider));
-

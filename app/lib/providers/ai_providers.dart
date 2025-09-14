@@ -5,4 +5,3 @@ part 'ai_providers.g.dart';
 
 @Riverpod(keepAlive: true)
 String geminiApiKey(Ref ref) => dotenv.env['GEMINI_API_KEY'] ?? '';
-

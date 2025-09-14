@@ -42,7 +42,7 @@ final class InviteCreateViewModelProvider
 }
 
 String _$inviteCreateViewModelHash() =>
-    r'698f7d797561af572bc48fef32ccda65e7512ffa';
+    r'3df64d2543c8804d9b559a575327e5f626ca07f3';
 
 abstract class _$InviteCreateViewModel extends $Notifier<InviteCreateState> {
   InviteCreateState build();

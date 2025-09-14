@@ -30,9 +30,9 @@ class _RequestDialogState extends ConsumerState<RequestDialog> {
       if (mounted) Navigator.of(context).pop(true);
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('送信に失敗しました: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('送信に失敗しました: $e')));
     } finally {
       if (mounted) setState(() => _sending = false);
     }
@@ -44,9 +44,7 @@ class _RequestDialogState extends ConsumerState<RequestDialog> {
       title: const Text('リクエストを送信'),
       content: TextField(
         controller: _controller,
-        decoration: const InputDecoration(
-          hintText: 'コメント (最大500文字)',
-        ),
+        decoration: const InputDecoration(hintText: 'コメント (最大500文字)'),
         maxLength: 500,
         minLines: 3,
         maxLines: 6,
@@ -65,4 +63,3 @@ class _RequestDialogState extends ConsumerState<RequestDialog> {
     );
   }
 }
-

@@ -4,4 +4,3 @@ import 'package:fujii_photo_calendar/domain/entities/daily_anniversaries_entity.
 abstract interface class AnnivRepository {
   Future<Result<DailyAnniversariesEntity>> fetchAnniv({required String mmdd});
 }
-

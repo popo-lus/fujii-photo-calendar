@@ -7,6 +7,7 @@ import 'package:fujii_photo_calendar/data/repositories/device_calendar_repositor
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'load_device_calendars_usecase.g.dart';
+
 class LoadDeviceCalendarsUsecase {
   const LoadDeviceCalendarsUsecase(this._repo);
   final DeviceCalendarRepository _repo;

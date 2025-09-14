@@ -86,15 +86,16 @@ class _AnnivPromoTestPageState extends ConsumerState<AnnivPromoTestPage> {
             const SizedBox(height: 24),
             if (_loading) const LinearProgressIndicator(),
             if (_result != null) ...[
-              Text('source: ${_source ?? '-'}',
-                  style: Theme.of(context).textTheme.labelMedium),
+              Text(
+                'source: ${_source ?? '-'}',
+                style: Theme.of(context).textTheme.labelMedium,
+              ),
               const SizedBox(height: 8),
               SelectableText(
                 _result!,
-                style: Theme.of(context)
-                    .textTheme
-                    .titleMedium
-                    ?.copyWith(fontWeight: FontWeight.bold),
+                style: Theme.of(
+                  context,
+                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
               ),
             ],
             const Spacer(),

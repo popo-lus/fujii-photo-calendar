@@ -20,6 +20,8 @@ class PhotoMasonryGrid extends StatelessWidget {
         ? 1
         : (urls.length < base ? urls.length : base);
 
+    // 空配列時は空グリッド（従来挙動）
+
     return MasonryGridView.count(
       padding: const EdgeInsets.all(12),
       crossAxisCount: crossAxisCount,
@@ -32,7 +34,7 @@ class PhotoMasonryGrid extends StatelessWidget {
           borderRadius: BorderRadius.circular(8),
           child: InkWell(
             onTap: onTap != null ? () => onTap!(index) : null,
-            child: CachedNetworkImage(imageUrl: url, fit: BoxFit.cover),
+            child: CachedNetworkImage(imageUrl: url, fit: BoxFit.fitWidth),
           ),
         );
       },

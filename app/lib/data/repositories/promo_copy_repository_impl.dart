@@ -30,4 +30,3 @@ class PromoCopyRepositoryImpl implements PromoCopyRepository {
 @Riverpod(keepAlive: true)
 PromoCopyRepository promoCopyRepository(Ref ref) =>
     PromoCopyRepositoryImpl(ref.watch(geminiServiceProvider));
-
