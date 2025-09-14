@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -25,10 +26,8 @@ Future<void> main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   final initMs = initTimer.stop();
 
-  const useEmulators = bool.fromEnvironment(
-    'USE_FIREBASE_EMULATORS',
-    defaultValue: true,
-  );
+  // Debugモードでは Firebase Emulators を使用、Release では本番接続
+  const useEmulators = kDebugMode;
   if (useEmulators) {
     try {
       FirebaseFirestore.instance.useFirestoreEmulator('localhost', 8080);
