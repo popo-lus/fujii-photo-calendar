@@ -13,7 +13,7 @@ class CreateInviteUsecase {
   Future<InviteEntity> call({
     required String ownerUid,
     DateTime? expiresAt,
-    int length = 8,
+    int length = 20,
   }) async {
     AppLogger.instance
         .log('invite_create_start', data: {'ownerUid': ownerUid});
@@ -39,4 +39,3 @@ CreateInviteUsecase createInviteUsecase(Ref ref) {
   final repo = ref.watch(inviteRepositoryProvider);
   return CreateInviteUsecase(repo);
 }
-

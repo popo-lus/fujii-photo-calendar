@@ -15,33 +15,25 @@ class InviteRepositoryImpl implements InviteRepository {
   Future<InviteEntity> create({
     required String ownerUid,
     DateTime? expiresAt,
-    int length = 8,
-    int maxRetry = 5,
+    int length = 20,
+    int maxRetry = 1,
   }) async {
-    var attempt = 0;
-    while (true) {
-      final code = generateInviteCode(length: length);
-      final exists = await _service.exists(code);
-      if (!exists) {
-        await _service.put(
-          code: code,
-          ownerUid: ownerUid,
-          disabled: false,
-          expiresAt: expiresAt,
-        );
-        return InviteEntity(
-          code: code,
-          ownerUid: ownerUid,
-          disabled: false,
-          expiresAt: expiresAt,
-          createdAt: null,
-        );
-      }
-      attempt++;
-      if (attempt >= maxRetry) {
-        throw Exception('招待コードの生成に失敗しました。時間をおいて再試行してください。');
-      }
-    }
+    // Firestore ルールの都合で invites の get が許可されない環境があるため、
+    // 衝突確認は行わず、十分に長いコードを一度で発行する。
+    final code = generateInviteCode(length: length);
+    await _service.put(
+      code: code,
+      ownerUid: ownerUid,
+      disabled: false,
+      expiresAt: expiresAt,
+    );
+    return InviteEntity(
+      code: code,
+      ownerUid: ownerUid,
+      disabled: false,
+      expiresAt: expiresAt,
+      createdAt: null,
+    );
   }
 
   @override

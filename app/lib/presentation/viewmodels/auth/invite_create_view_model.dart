@@ -20,7 +20,7 @@ class InviteCreateViewModel extends _$InviteCreateViewModel {
   @override
   InviteCreateState build() => const InviteCreateState.idle();
 
-  Future<void> create({DateTime? expiresAt, int length = 8}) async {
+  Future<void> create({DateTime? expiresAt, int length = 20}) async {
     if (state is _Creating) return;
     state = const InviteCreateState.creating();
     try {

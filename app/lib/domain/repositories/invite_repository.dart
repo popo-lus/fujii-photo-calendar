@@ -4,12 +4,11 @@ abstract class InviteRepository {
   Future<InviteEntity> create({
     required String ownerUid,
     DateTime? expiresAt,
-    int length = 8,
-    int maxRetry = 5,
+    int length = 20,
+    int maxRetry = 1,
   });
 
   Future<InviteEntity?> getByCode(String code);
 
   Future<void> disable(String code);
 }
-
