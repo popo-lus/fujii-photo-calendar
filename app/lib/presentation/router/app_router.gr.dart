@@ -166,3 +166,50 @@ class RegisterRoute extends PageRouteInfo<void> {
     },
   );
 }
+
+/// generated route for
+/// [RequestsListPage]
+class RequestsListRoute extends PageRouteInfo<RequestsListRouteArgs> {
+  RequestsListRoute({
+    Key? key,
+    required String ownerUid,
+    List<PageRouteInfo>? children,
+  }) : super(
+         RequestsListRoute.name,
+         args: RequestsListRouteArgs(key: key, ownerUid: ownerUid),
+         initialChildren: children,
+       );
+
+  static const String name = 'RequestsListRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<RequestsListRouteArgs>();
+      return RequestsListPage(key: args.key, ownerUid: args.ownerUid);
+    },
+  );
+}
+
+class RequestsListRouteArgs {
+  const RequestsListRouteArgs({this.key, required this.ownerUid});
+
+  final Key? key;
+
+  final String ownerUid;
+
+  @override
+  String toString() {
+    return 'RequestsListRouteArgs{key: $key, ownerUid: $ownerUid}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! RequestsListRouteArgs) return false;
+    return key == other.key && ownerUid == other.ownerUid;
+  }
+
+  @override
+  int get hashCode => key.hashCode ^ ownerUid.hashCode;
+}

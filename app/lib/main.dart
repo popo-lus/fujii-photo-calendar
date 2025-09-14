@@ -12,7 +12,6 @@ import 'package:fujii_photo_calendar/core/utils/perf_timer.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:uni_links/uni_links.dart';
 import 'dart:async';
-import 'package:fujii_photo_calendar/presentation/viewmodels/auth/invite_view_model.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -117,22 +116,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
     if (code == null || code.isEmpty) return;
     // 既存の招待コード入力機能を使う
-    final container = ProviderScope.containerOf(context, listen: false);
-    final vm = container.read(inviteViewModelProvider.notifier);
-    vm.trySubmit(code: code).then((ok) {
-      if (!ok) {
-        // 失敗時は InviteCodePage に遷移し、コードを引き継いで再試行導線を提示
-        MyApp._router.push(
-          InviteCodeRoute(
-            initialCode: code,
-            initialError: '招待の検証に失敗しました。コードを確認して再度お試しください。',
-            autoSubmit: false,
-          ),
-        );
-      } else {
-        MyApp._router.push(const MonthCalendarRoute());
-      }
-    });
+
+    // 失敗時は InviteCodePage に遷移し、コードを引き継いで再試行導線を提示
+    MyApp._router.push(InviteCodeRoute(initialCode: code, autoSubmit: true));
   }
 
   @override
