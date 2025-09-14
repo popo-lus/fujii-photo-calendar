@@ -12,6 +12,7 @@ import 'package:fujii_photo_calendar/core/utils/perf_timer.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:uni_links/uni_links.dart';
 import 'dart:async';
+import 'package:google_fonts/google_fonts.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -131,10 +132,93 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) => MaterialApp.router(
     title: 'Fujii Photo Calendar',
-    theme: ThemeData(
-      colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
-      useMaterial3: true,
-    ),
+    theme: _buildTheme(Brightness.light),
+    darkTheme: _buildTheme(Brightness.dark),
+    themeMode: ThemeMode.system,
     routerConfig: MyApp._router.config(),
   );
+
+  ThemeData _buildTheme(Brightness brightness) {
+    // 画像の藍色をベースにしたカラーパレット
+    const primary = Color(0xFF0C1756); // 濃い藍
+    const secondary = Color(0xFF6E7EB7); // 補助の青
+    const accent = Color(0xFF2F3E9E); // 強調
+
+    final base = ThemeData(
+      brightness: brightness,
+      useMaterial3: true,
+      textTheme: GoogleFonts.notoSansJpTextTheme(),
+      fontFamily: GoogleFonts.notoSansJp().fontFamily,
+      colorScheme:
+          ColorScheme.fromSeed(
+            seedColor: primary,
+            brightness: brightness,
+          ).copyWith(
+            primary: primary,
+            secondary: secondary,
+            surfaceTint: Colors.transparent,
+          ),
+    );
+
+    return base.copyWith(
+      appBarTheme: base.appBarTheme.copyWith(
+        backgroundColor: Colors.transparent,
+        foregroundColor: brightness == Brightness.dark ? Colors.white : primary,
+        elevation: 0,
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: primary,
+          foregroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          padding: const EdgeInsets.symmetric(vertical: 14),
+        ),
+      ),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          foregroundColor: primary,
+          side: const BorderSide(color: primary, width: 1.2),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          padding: const EdgeInsets.symmetric(vertical: 14),
+        ),
+      ),
+      inputDecorationTheme: base.inputDecorationTheme.copyWith(
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: accent, width: 1.6),
+        ),
+        filled: true,
+        fillColor: brightness == Brightness.dark
+            ? Colors.white.withOpacity(0.06)
+            : Colors.white,
+        labelStyle: TextStyle(
+          color: brightness == Brightness.dark
+              ? Colors.white.withOpacity(0.9)
+              : const Color(0xFF1C1C1C),
+        ),
+      ),
+      cardTheme: base.cardTheme.copyWith(
+        color: brightness == Brightness.dark
+            ? const Color(0xFF111318)
+            : Colors.white,
+      ),
+      snackBarTheme: base.snackBarTheme.copyWith(
+        behavior: SnackBarBehavior.floating,
+        backgroundColor: brightness == Brightness.dark
+            ? const Color(0xFF0C1756)
+            : const Color(0xFF0C1756),
+        contentTextStyle: base.textTheme.bodyMedium?.copyWith(
+          color: Colors.white,
+          fontWeight: FontWeight.w600,
+        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        elevation: 6,
+      ),
+    );
+  }
 }

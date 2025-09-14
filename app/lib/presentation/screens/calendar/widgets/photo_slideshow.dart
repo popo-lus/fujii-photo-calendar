@@ -43,13 +43,17 @@ class PhotoSlideshow extends HookConsumerWidget {
             right: 16,
             child: Container(
               decoration: BoxDecoration(
-                color: Colors.black45,
+                color: Theme.of(context).colorScheme.primary.withOpacity(0.45),
                 borderRadius: BorderRadius.circular(12),
               ),
               padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
               child: Text(
                 '${index.value + 1}/${batch.length}',
-                style: const TextStyle(color: Colors.white70),
+                style: TextStyle(
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.onPrimary.withOpacity(0.85),
+                ),
               ),
             ),
           ),

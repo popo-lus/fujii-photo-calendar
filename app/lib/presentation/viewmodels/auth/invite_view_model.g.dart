@@ -41,7 +41,7 @@ final class InviteViewModelProvider
   }
 }
 
-String _$inviteViewModelHash() => r'206ef4a5a38467763901f0e255f867310ec8ef95';
+String _$inviteViewModelHash() => r'4348ad8f6338a06659bcc992d159a3a97a2726e3';
 
 abstract class _$InviteViewModel extends $Notifier<InviteState> {
   InviteState build();

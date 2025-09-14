@@ -152,6 +152,22 @@ class MonthCalendarRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [MonthPhotoListPage]
+class MonthPhotoListRoute extends PageRouteInfo<void> {
+  const MonthPhotoListRoute({List<PageRouteInfo>? children})
+    : super(MonthPhotoListRoute.name, initialChildren: children);
+
+  static const String name = 'MonthPhotoListRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const MonthPhotoListPage();
+    },
+  );
+}
+
+/// generated route for
 /// [RegisterPage]
 class RegisterRoute extends PageRouteInfo<void> {
   const RegisterRoute({List<PageRouteInfo>? children})

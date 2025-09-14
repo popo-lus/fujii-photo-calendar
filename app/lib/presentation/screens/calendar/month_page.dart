@@ -5,195 +5,294 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:fujii_photo_calendar/presentation/viewmodels/calendar/month_view_model.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:fujii_photo_calendar/presentation/router/app_router.dart';
-import 'widgets/month_grid.dart';
 import 'widgets/photo_slideshow.dart';
-import 'widgets/empty_month_placeholder.dart';
 import 'widgets/error_view.dart';
-import 'widgets/month_nav_bar.dart';
+// import 'widgets/month_nav_bar.dart';
+import 'widgets/photo_calendar_card.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-import 'package:fujii_photo_calendar/presentation/screens/requests/widgets/request_dialog.dart';
-import 'package:fujii_photo_calendar/data/repositories/request_repository_impl.dart';
+import 'package:fujii_photo_calendar/presentation/widgets/glass_circle_button.dart';
+
+enum MonthMenuAction {
+  readOnlyInfo,
+  addPhoto,
+  reload,
+  logout,
+  annivPromo,
+  startSlideshow,
+  endSlideshow,
+}
 
 @RoutePage()
-class MonthCalendarPage extends ConsumerWidget {
+class MonthCalendarPage extends ConsumerStatefulWidget {
   const MonthCalendarPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<MonthCalendarPage> createState() => _MonthCalendarPageState();
+}
+
+class _MonthCalendarPageState extends ConsumerState<MonthCalendarPage> {
+  Future<void> _onMenuSelected(MonthMenuAction action) async {
+    final notifier = ref.read(monthViewModelProvider.notifier);
+    switch (action) {
+      case MonthMenuAction.readOnlyInfo:
+        break;
+      case MonthMenuAction.addPhoto:
+        final picker = ImagePicker();
+        final picked = await picker.pickImage(source: ImageSource.gallery);
+        if (picked == null) return;
+        try {
+          final file = File(picked.path);
+          await notifier.onAddPhotoFile(file);
+          if (context.mounted) {
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(const SnackBar(content: Text('写真をアップロードしました')));
+          }
+        } catch (e) {
+          if (context.mounted) {
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text('アップロードに失敗しました: $e')));
+          }
+        }
+        break;
+      case MonthMenuAction.reload:
+        notifier.reload();
+        break;
+      case MonthMenuAction.logout:
+        await ref.read(monthViewModelProvider.notifier).logout();
+        if (context.mounted) {
+          context.router.replaceAll([const LoginRoute()]);
+        }
+        break;
+      case MonthMenuAction.annivPromo:
+        if (context.mounted) {
+          context.router.push(const AnnivPromoTestRoute());
+        }
+        break;
+      case MonthMenuAction.startSlideshow:
+        notifier.startSlideshow();
+        break;
+      case MonthMenuAction.endSlideshow:
+        notifier.endSlideshow();
+        break;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final asyncData = ref.watch(monthViewModelProvider);
     final notifier = ref.read(monthViewModelProvider.notifier);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Photo Calendar'),
-        actions: [
-          // 閲覧モードインジケータ（匿名ユーザー時は編集不可）
-          asyncData.maybeWhen(
-            data: (MonthState data) {
-              if (data.isReadOnly) {
-                return Row(
-                  children: [
-                    const IconButton(
-                      icon: Icon(Icons.lock_outline),
-                      onPressed: null,
-                      tooltip: '閲覧モード (編集不可)',
+    Widget buildTopRightButtons() {
+      return SafeArea(
+        child: Align(
+          alignment: Alignment.topRight,
+          child: Padding(
+            padding: const EdgeInsets.only(top: 8, right: 8),
+            child: GlassCirclePopupMenuButton<MonthMenuAction>(
+              tooltip: 'メニュー',
+              itemBuilder: (BuildContext context) {
+                return asyncData.when(
+                  loading: () => <PopupMenuEntry<MonthMenuAction>>[
+                    PopupMenuItem<MonthMenuAction>(
+                      enabled: false,
+                      value: MonthMenuAction.readOnlyInfo,
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.hourglass_empty,
+                            color: Theme.of(context).colorScheme.primary,
+                            size: 20,
+                          ),
+                          const SizedBox(width: 10),
+                          const Text('読み込み中'),
+                        ],
+                      ),
                     ),
-                    IconButton(
-                      icon: const Icon(Icons.chat_bubble_outline),
-                      tooltip: 'リクエストを送信',
-                      onPressed: () async {
-                        final ok =
-                            await showDialog<bool>(
-                              context: context,
-                              builder: (_) => RequestDialog(ownerUid: data.uid),
-                            ) ??
-                            false;
-                        if (!context.mounted) return;
-                        if (ok) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('リクエストを送信しました')),
-                          );
-                        }
-                      },
+                    const PopupMenuDivider(),
+                    PopupMenuItem<MonthMenuAction>(
+                      value: MonthMenuAction.reload,
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.refresh,
+                            color: Theme.of(context).colorScheme.primary,
+                            size: 20,
+                          ),
+                          const SizedBox(width: 10),
+                          const Text('再読み込み'),
+                        ],
+                      ),
                     ),
                   ],
-                );
-              }
-              return const SizedBox.shrink();
-            },
-            orElse: () => const SizedBox.shrink(),
-          ),
-          // 被撮影者のみ: 写真追加ボタン
-          asyncData.maybeWhen(
-            data: (MonthState data) {
-              if (!data.isReadOnly) {
-                // リクエストバッジ + メニュー
-                final reqs = ref.watch(recentRequestsStreamProvider(data.uid));
-                int count = 0;
-                reqs.whenData((v) => count = v.length);
-                Widget requestIcon = IconButton(
-                  icon: const Icon(Icons.chat_bubble_outline),
-                  tooltip: '受信リクエスト',
-                  onPressed: () => context.router.push(
-                    RequestsListRoute(ownerUid: data.uid),
-                  ),
-                );
-                if (count > 0) {
-                  requestIcon = Stack(
-                    clipBehavior: Clip.none,
-                    children: [
-                      requestIcon,
-                      Positioned(
-                        right: 6,
-                        top: 6,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 6,
-                            vertical: 2,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Colors.red,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          constraints: const BoxConstraints(minWidth: 18),
-                          child: Text(
-                            count > 99 ? '99+' : '$count',
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            textAlign: TextAlign.center,
+                  error: (Object e, StackTrace st) =>
+                      <PopupMenuEntry<MonthMenuAction>>[
+                        PopupMenuItem<MonthMenuAction>(
+                          enabled: false,
+                          value: MonthMenuAction.readOnlyInfo,
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.error_outline,
+                                color: Theme.of(context).colorScheme.primary,
+                                size: 20,
+                              ),
+                              const SizedBox(width: 10),
+                              const Text('エラーが発生しました'),
+                            ],
                           ),
                         ),
+                        const PopupMenuDivider(),
+                        PopupMenuItem<MonthMenuAction>(
+                          value: MonthMenuAction.reload,
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.refresh,
+                                color: Theme.of(context).colorScheme.primary,
+                                size: 20,
+                              ),
+                              const SizedBox(width: 10),
+                              const Text('再読み込み'),
+                            ],
+                          ),
+                        ),
+                      ],
+                  data: (MonthState data) {
+                    final List<PopupMenuEntry<MonthMenuAction>> items = [];
+                    if (data.isReadOnly) {
+                      items.add(
+                        PopupMenuItem<MonthMenuAction>(
+                          enabled: false,
+                          value: MonthMenuAction.readOnlyInfo,
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.lock_outline,
+                                color: Theme.of(context).colorScheme.primary,
+                                size: 20,
+                              ),
+                              const SizedBox(width: 10),
+                              const Text('閲覧モード (編集不可)'),
+                            ],
+                          ),
+                        ),
+                      );
+                    }
+                    if (!data.isReadOnly) {
+                      items.add(
+                        PopupMenuItem<MonthMenuAction>(
+                          value: MonthMenuAction.addPhoto,
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.add_photo_alternate_outlined,
+                                color: Theme.of(context).colorScheme.primary,
+                                size: 20,
+                              ),
+                              const SizedBox(width: 10),
+                              const Text('写真を追加'),
+                            ],
+                          ),
+                        ),
+                      );
+                    }
+                    items.addAll([
+                      PopupMenuItem<MonthMenuAction>(
+                        value: MonthMenuAction.reload,
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.refresh,
+                              color: Theme.of(context).colorScheme.primary,
+                              size: 20,
+                            ),
+                            const SizedBox(width: 10),
+                            const Text('再読み込み'),
+                          ],
+                        ),
                       ),
-                    ],
-                  );
-                }
-                return Row(
-                  children: [
-                    requestIcon,
-                    IconButton(
-                      icon: const Icon(Icons.qr_code_2),
-                      tooltip: '招待を作成',
-                      onPressed: () =>
-                          context.router.push(const InviteCreateRoute()),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.add_photo_alternate_outlined),
-                      tooltip: '写真を追加',
-                      onPressed: () async {
-                        // ギャラリーから画像選択
-                        final picker = ImagePicker();
-                        final picked = await picker.pickImage(
-                          source: ImageSource.gallery,
-                        );
-                        if (picked == null) return; // キャンセル
-                        try {
-                          final file = File(picked.path);
-                          await notifier.onAddPhotoFile(file);
-                          if (context.mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('写真をアップロードしました')),
-                            );
-                          }
-                        } catch (e) {
-                          if (context.mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('アップロードに失敗しました: $e')),
-                            );
-                          }
-                        }
-                      },
-                    ),
-                  ],
+                      PopupMenuItem<MonthMenuAction>(
+                        value: MonthMenuAction.logout,
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.logout,
+                              color: Theme.of(context).colorScheme.primary,
+                              size: 20,
+                            ),
+                            const SizedBox(width: 10),
+                            const Text('ログアウト'),
+                          ],
+                        ),
+                      ),
+                      PopupMenuItem<MonthMenuAction>(
+                        value: MonthMenuAction.annivPromo,
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.bug_report_outlined,
+                              color: Theme.of(context).colorScheme.primary,
+                              size: 20,
+                            ),
+                            const SizedBox(width: 10),
+                            const Text('Anniv Promo Test'),
+                          ],
+                        ),
+                      ),
+                    ]);
+                    if (data.inSlideshow) {
+                      items.add(
+                        PopupMenuItem<MonthMenuAction>(
+                          value: MonthMenuAction.endSlideshow,
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.close,
+                                color: Theme.of(context).colorScheme.primary,
+                                size: 20,
+                              ),
+                              const SizedBox(width: 10),
+                              const Text('スライドショーを終了'),
+                            ],
+                          ),
+                        ),
+                      );
+                    } else if (data.photos.isNotEmpty) {
+                      items.add(
+                        PopupMenuItem<MonthMenuAction>(
+                          value: MonthMenuAction.startSlideshow,
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.slideshow,
+                                color: Theme.of(context).colorScheme.primary,
+                                size: 20,
+                              ),
+                              const SizedBox(width: 10),
+                              const Text('スライドショー'),
+                            ],
+                          ),
+                        ),
+                      );
+                    }
+                    return items;
+                  },
                 );
-              }
-              return const SizedBox.shrink();
-            },
-            orElse: () => const SizedBox.shrink(),
+              },
+              onSelected: (action) {
+                _onMenuSelected(action);
+              },
+            ),
           ),
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: asyncData.isLoading ? null : () => notifier.reload(),
-          ),
-          IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: () async {
-              await ref.read(monthViewModelProvider.notifier).logout();
-              if (context.mounted) {
-                context.router.replaceAll([const LoginRoute()]);
-              }
-            },
-          ),
-          // 開発用: 記念日×生成AI テストページ
-          IconButton(
-            icon: const Icon(Icons.bug_report_outlined),
-            tooltip: 'Anniv Promo Test',
-            onPressed: () => context.router.push(const AnnivPromoTestRoute()),
-          ),
-          asyncData.maybeWhen(
-            data: (MonthState data) {
-              if (data.inSlideshow) {
-                return IconButton(
-                  icon: const Icon(Icons.close),
-                  onPressed: () => notifier.endSlideshow(),
-                );
-              }
-              if (data.photos.isNotEmpty) {
-                return IconButton(
-                  icon: const Icon(Icons.slideshow),
-                  onPressed: () => notifier.startSlideshow(),
-                );
-              }
-              return const SizedBox.shrink();
-            },
-            orElse: () => const SizedBox.shrink(),
-          ),
-        ],
-      ),
-      body: asyncData.when(
+        ),
+      );
+    }
+
+    Widget buildBody() {
+      return asyncData.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (Object e, StackTrace st) =>
             ErrorView(message: e.toString(), onRetry: () => notifier.reload()),
@@ -204,14 +303,74 @@ class MonthCalendarPage extends ConsumerWidget {
               batch: data.slideshowBatch ?? data.photos,
             );
           }
-          if (data.isEmpty) return const EmptyMonthPlaceholder();
-          return MonthGrid(photos: data.photos, readOnly: data.isReadOnly);
+          final photo = data.photos.isNotEmpty ? data.photos.first : null;
+          final nowYear = DateTime.now().year;
+          final monthDate = DateTime(nowYear, data.month, 1);
+
+          final controller = PageController(initialPage: 1, keepPage: false);
+          Widget buildCard(DateTime m, String? url) => SizedBox.expand(
+            child: PhotoCalendarCard(
+              month: m,
+              imageUrl: url,
+              imageUrls: data.photos.map((p) => p.url).toList(),
+              onTapImageWhenEmpty: () async {
+                final data = ref.read(monthViewModelProvider).value;
+                if (data == null || data.isReadOnly) {
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('閲覧モードでは追加できません')),
+                    );
+                  }
+                  return;
+                }
+                final picker = ImagePicker();
+                final picked = await picker.pickImage(
+                  source: ImageSource.gallery,
+                );
+                if (picked == null) return;
+                try {
+                  await notifier.onAddPhotoFile(File(picked.path));
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('写真をアップロードしました')),
+                    );
+                  }
+                } catch (e) {
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('アップロードに失敗しました: $e')),
+                    );
+                  }
+                }
+              },
+              onTapImageWhenExists: () {
+                context.router.push(const MonthPhotoListRoute());
+              },
+            ),
+          );
+          return PageView(
+            controller: controller,
+            onPageChanged: (index) {
+              if (index == 0) {
+                notifier.prevMonth();
+                controller.jumpToPage(1);
+              } else if (index == 2) {
+                notifier.nextMonth();
+                controller.jumpToPage(1);
+              }
+            },
+            children: [
+              buildCard(monthDate, photo?.url),
+              buildCard(monthDate, photo?.url),
+              buildCard(monthDate, photo?.url),
+            ],
+          );
         },
-      ),
-      bottomNavigationBar: MonthNavBar(
-        onPrev: () => notifier.prevMonth(),
-        onNext: () => notifier.nextMonth(),
-      ),
+      );
+    }
+
+    return Scaffold(
+      body: Stack(children: [buildBody(), buildTopRightButtons()]),
     );
   }
 }
