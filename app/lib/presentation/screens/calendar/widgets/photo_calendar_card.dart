@@ -54,7 +54,18 @@ class PhotoCalendarCard extends StatelessWidget {
             Positioned(
               right: 16,
               bottom: 16,
-              child: _GlassyCalendarOverlay(month: month, holidays: holidays),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 250),
+                    child: const AnnivPromoBanner(),
+                  ),
+                  const SizedBox(height: 8),
+                  _GlassyCalendarOverlay(month: month, holidays: holidays),
+                ],
+              ),
             ),
           ],
         ),
@@ -262,8 +273,6 @@ class _GlassyCalendarOverlay extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const AnnivPromoBanner(),
-                  const SizedBox(height: 8),
                   MonthCalendarGrid(
                     month: DateTime(month.year, month.month, 1),
                     holidays: holidays,

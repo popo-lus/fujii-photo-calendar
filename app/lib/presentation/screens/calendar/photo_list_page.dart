@@ -148,10 +148,42 @@ class MonthPhotoListPage extends ConsumerWidget {
                                 ],
                               ),
                             ),
+                            PopupMenuItem<_PhotoListMenuAction>(
+                              value: _PhotoListMenuAction.reload,
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.refresh,
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.primary,
+                                    size: 20,
+                                  ),
+                                  const SizedBox(width: 10),
+                                  const Text('更新'),
+                                ],
+                              ),
+                            ),
                           ],
                       data: (MonthState data) {
                         final List<PopupMenuEntry<_PhotoListMenuAction>> items =
                             [];
+                        items.add(
+                          PopupMenuItem<_PhotoListMenuAction>(
+                            value: _PhotoListMenuAction.reload,
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.refresh,
+                                  color: Theme.of(context).colorScheme.primary,
+                                  size: 20,
+                                ),
+                                const SizedBox(width: 10),
+                                const Text('更新'),
+                              ],
+                            ),
+                          ),
+                        );
                         if (!data.isReadOnly) {
                           items.add(
                             PopupMenuItem<_PhotoListMenuAction>(
@@ -178,6 +210,9 @@ class MonthPhotoListPage extends ConsumerWidget {
                   },
                   onSelected: (action) async {
                     switch (action) {
+                      case _PhotoListMenuAction.reload:
+                        notifier.reload();
+                        break;
                       case _PhotoListMenuAction.addPhoto:
                         final picker = ImagePicker();
                         final picked = await picker.pickImage(
@@ -266,4 +301,4 @@ class MonthPhotoListPage extends ConsumerWidget {
   }
 }
 
-enum _PhotoListMenuAction { addPhoto, loading, error }
+enum _PhotoListMenuAction { reload, addPhoto, loading, error }

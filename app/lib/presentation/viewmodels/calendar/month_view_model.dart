@@ -36,6 +36,7 @@ import 'package:fujii_photo_calendar/domain/usecases/ensure_admin_exposure_useca
 import 'package:fujii_photo_calendar/core/logger/logger.dart';
 import 'package:fujii_photo_calendar/core/utils/perf_timer.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:fujii_photo_calendar/data/repositories/user_photos_repository_impl.dart';
 
 part 'month_view_model.g.dart';
 part 'month_view_model.freezed.dart';
@@ -190,7 +191,8 @@ class MonthViewModel extends _$MonthViewModel {
     );
     switch (result) {
       case Success<String>():
-        // 成功: 再読み込みしてUI反映
+        // 成功: 関連キャッシュを無効化してから再読み込みし即時反映
+        ref.invalidate(userPhotosRepositoryProvider);
         await reload();
       case Failure<String>(rawError: final e):
         AppLogger.instance.logError(e, phase: 'upload_photo');

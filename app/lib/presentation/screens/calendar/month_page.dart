@@ -158,6 +158,20 @@ class _MonthCalendarPageState extends ConsumerState<MonthCalendarPage> {
                             ],
                           ),
                         ),
+                        PopupMenuItem<MonthMenuAction>(
+                          value: MonthMenuAction.reload,
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.refresh,
+                                color: Theme.of(context).colorScheme.primary,
+                                size: 20,
+                              ),
+                              const SizedBox(width: 10),
+                              const Text('更新'),
+                            ],
+                          ),
+                        ),
                       ],
                   data: (MonthState data) {
                     final List<PopupMenuEntry<MonthMenuAction>> items = [];
@@ -215,6 +229,23 @@ class _MonthCalendarPageState extends ConsumerState<MonthCalendarPage> {
                         ),
                       );
                     }
+                    // 更新
+                    items.add(
+                      PopupMenuItem<MonthMenuAction>(
+                        value: MonthMenuAction.reload,
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.refresh,
+                              color: Theme.of(context).colorScheme.primary,
+                              size: 20,
+                            ),
+                            const SizedBox(width: 10),
+                            const Text('更新'),
+                          ],
+                        ),
+                      ),
+                    );
                     // Anniv Promo はそのまま
                     items.add(
                       PopupMenuItem<MonthMenuAction>(
