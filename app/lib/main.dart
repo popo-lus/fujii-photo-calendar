@@ -12,7 +12,6 @@ import 'package:fujii_photo_calendar/core/utils/perf_timer.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:uni_links/uni_links.dart';
 import 'dart:async';
-import 'package:fujii_photo_calendar/presentation/viewmodels/auth/invite_view_model.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

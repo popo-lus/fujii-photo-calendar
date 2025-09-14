@@ -12,6 +12,8 @@ import 'widgets/error_view.dart';
 import 'widgets/month_nav_bar.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import 'package:fujii_photo_calendar/presentation/screens/requests/widgets/request_dialog.dart';
+import 'package:fujii_photo_calendar/data/repositories/request_repository_impl.dart';
 
 @RoutePage()
 class MonthCalendarPage extends ConsumerWidget {
@@ -30,10 +32,32 @@ class MonthCalendarPage extends ConsumerWidget {
           asyncData.maybeWhen(
             data: (MonthState data) {
               if (data.isReadOnly) {
-                return const IconButton(
-                  onPressed: null,
-                  icon: Icon(Icons.lock_outline),
-                  tooltip: '閲覧モード (編集不可)',
+                return Row(
+                  children: [
+                    const IconButton(
+                      icon: Icon(Icons.lock_outline),
+                      onPressed: null,
+                      tooltip: '閲覧モード (編集不可)',
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.chat_bubble_outline),
+                      tooltip: 'リクエストを送信',
+                      onPressed: () async {
+                        final ok =
+                            await showDialog<bool>(
+                              context: context,
+                              builder: (_) => RequestDialog(ownerUid: data.uid),
+                            ) ??
+                            false;
+                        if (!context.mounted) return;
+                        if (ok) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('リクエストを送信しました')),
+                          );
+                        }
+                      },
+                    ),
+                  ],
                 );
               }
               return const SizedBox.shrink();
@@ -44,40 +68,87 @@ class MonthCalendarPage extends ConsumerWidget {
           asyncData.maybeWhen(
             data: (MonthState data) {
               if (!data.isReadOnly) {
-                return Row(children: [
-                  IconButton(
-                    icon: const Icon(Icons.qr_code_2),
-                    tooltip: '招待を作成',
-                    onPressed: () => context.router.push(const InviteCreateRoute()),
+                // リクエストバッジ + メニュー
+                final reqs = ref.watch(recentRequestsStreamProvider(data.uid));
+                int count = 0;
+                reqs.whenData((v) => count = v.length);
+                Widget requestIcon = IconButton(
+                  icon: const Icon(Icons.chat_bubble_outline),
+                  tooltip: '受信リクエスト',
+                  onPressed: () => context.router.push(
+                    RequestsListRoute(ownerUid: data.uid),
                   ),
-                  IconButton(
-                    icon: const Icon(Icons.add_photo_alternate_outlined),
-                    tooltip: '写真を追加',
-                    onPressed: () async {
-                      // ギャラリーから画像選択
-                      final picker = ImagePicker();
-                      final picked = await picker.pickImage(
-                        source: ImageSource.gallery,
-                      );
-                      if (picked == null) return; // キャンセル
-                      try {
-                        final file = File(picked.path);
-                        await notifier.onAddPhotoFile(file);
-                        if (context.mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('写真をアップロードしました')),
-                          );
+                );
+                if (count > 0) {
+                  requestIcon = Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      requestIcon,
+                      Positioned(
+                        right: 6,
+                        top: 6,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 6,
+                            vertical: 2,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.red,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          constraints: const BoxConstraints(minWidth: 18),
+                          child: Text(
+                            count > 99 ? '99+' : '$count',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                }
+                return Row(
+                  children: [
+                    requestIcon,
+                    IconButton(
+                      icon: const Icon(Icons.qr_code_2),
+                      tooltip: '招待を作成',
+                      onPressed: () =>
+                          context.router.push(const InviteCreateRoute()),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.add_photo_alternate_outlined),
+                      tooltip: '写真を追加',
+                      onPressed: () async {
+                        // ギャラリーから画像選択
+                        final picker = ImagePicker();
+                        final picked = await picker.pickImage(
+                          source: ImageSource.gallery,
+                        );
+                        if (picked == null) return; // キャンセル
+                        try {
+                          final file = File(picked.path);
+                          await notifier.onAddPhotoFile(file);
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('写真をアップロードしました')),
+                            );
+                          }
+                        } catch (e) {
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('アップロードに失敗しました: $e')),
+                            );
+                          }
                         }
-                      } catch (e) {
-                        if (context.mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('アップロードに失敗しました: $e')),
-                          );
-                        }
-                      }
-                    },
-                  ),
-                ]);
+                      },
+                    ),
+                  ],
+                );
               }
               return const SizedBox.shrink();
             },
